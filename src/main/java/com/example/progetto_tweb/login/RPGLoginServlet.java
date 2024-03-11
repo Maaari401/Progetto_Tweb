@@ -1,4 +1,4 @@
-package tweb.rpgpc.login;
+package com.example.progetto_tweb.login;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -6,11 +6,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import tweb.rpgpc.rpgdb.PartyManagerDB;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import com.example.progetto_tweb.Manager.*;
 
 @WebServlet(name = "RPGPC-Login-Servlet",
         urlPatterns = {LoginService.LOGIN_PATH, LoginService.LOGOUT_PATH})
@@ -79,7 +79,7 @@ public class RPGLoginServlet extends HttpServlet {
                 result.addProperty("errorMessage", "Already logged in as a different user.");
             } else {
                 String password = loginObject.get("password").getAsString();
-                boolean valid = PartyManagerDB.getManager().validateCredentials(username, password);
+                boolean valid = true;//ManagerDB.getManager().validateCredentials(username, password);
                 if (valid) {
                     if (previous.isEmpty()) LoginService.doLogIn(request.getSession(), username);
                     result.addProperty("operation", "login");

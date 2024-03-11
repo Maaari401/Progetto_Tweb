@@ -1,4 +1,4 @@
-package tweb.rpgpc.db;
+package com.example.progetto_tweb.db;
 
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;

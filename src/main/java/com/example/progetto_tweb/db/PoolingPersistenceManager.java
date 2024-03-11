@@ -1,4 +1,4 @@
-package tweb.rpgpc.db;
+package com.example.progetto_tweb.db;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -11,7 +11,7 @@ import java.util.Enumeration;
 
 public class PoolingPersistenceManager {
 
-    private static PoolingPersistenceManager instance;
+    private static PoolingPersistenceManager instance = null;
 
     public static PoolingPersistenceManager getPersistenceManager() {
         if (instance == null) {
@@ -26,13 +26,13 @@ public class PoolingPersistenceManager {
         try {
             Class.forName("org.postgresql.Driver");
             HikariConfig config = new HikariConfig();
-            config.setJdbcUrl("jdbc:postgresql://localhost:5432/postgres?currentSchema=rpgpc");
-            config.setUsername("jakarta");
-            config.setPassword("jakarta");
+            config.setJdbcUrl("jdbc:postgresql://localhost:5432/postgres?currentSchema=tweb");
+            config.setUsername("tweb");
+            config.setPassword("tweb");
             config.addDataSourceProperty("dataSourceClassName", "org.postgresql.ds.PGSimpleDataSource");
             config.addDataSourceProperty("maximumPoolSize", "25");
-
             dataSource = new HikariDataSource(config);
+
         } catch (ClassNotFoundException ex) {
             ex.printStackTrace();
         }

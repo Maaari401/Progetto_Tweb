@@ -58,7 +58,7 @@ public class Film {
                 ", actors=" + actors +
                 '}';
     }
-    public Film loadFilm(int cod, Connection conn) throws SQLException {
+    public static Film loadFilm(int cod, Connection conn) throws SQLException {
         Film film = null;
         try (PreparedStatement ps = conn.prepareStatement("SELECT * from film where cod = ?")){
             ps.setInt(1, cod);
@@ -73,7 +73,8 @@ public class Film {
         return film;
     }
 
-    public void updateFilm(Film f, Connection conn) throws SQLException{
+    public static boolean updateFilm(Film f, Connection conn) throws SQLException{
+        boolean res = false;
         try (PreparedStatement ps = conn.prepareStatement("UPDATE film set cod = ?, name = ?, raning = ?, public_release = ? where cod = ?")){
             ps.setInt(1, f.getCod());
             ps.setString(2, f.getName());
@@ -82,13 +83,14 @@ public class Film {
             ps.setInt(5, f.getCod());
             ResultSet result = ps.executeQuery();
 
-            System.out.println(result);
+            System.out.println(result.getStatement());
             if (result.next()){
-
+                res = true;
             }
         }
+        return res;
     }
-    public ArrayList<Integer> getActorList(int cod, Connection conn) throws SQLException{
+    public static ArrayList<Integer> getActorList(int cod, Connection conn) throws SQLException{
         ArrayList<Integer> arr = new ArrayList<Integer>();
         try (PreparedStatement ps = conn.prepareStatement("SELECT * from act where film_id = ?")){
             ps.setInt(1, cod);

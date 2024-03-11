@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 public class ManagerDB {
     private static ManagerDB manager;
-    public final PoolingPersistenceManager persistence;
+    private final PoolingPersistenceManager persistence;
 
     public ManagerDB() {
         persistence = PoolingPersistenceManager.getPersistenceManager();
@@ -22,4 +22,74 @@ public class ManagerDB {
         }
         return manager;
     }
+
+
+    public Actor getActor(int id){
+        Actor res = null;
+        try{
+            res = Actor.loadActor(id, persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e.getStackTrace());
+        }
+        return res;
+    }
+    public int setNewActor(Actor a){
+        int res = -1;
+        try{
+            res = Actor.newActor(a, persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e);
+        }
+        return res;
+    }
+    public boolean updateActor(Actor a){
+        boolean res = false;
+        try{
+            res = Actor.updateActor(a, persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e.getStackTrace());
+        }
+        return res;
+    }
+
+    public ArrayList<Actor> getAllActor(){
+        ArrayList<Actor> arr = new ArrayList<>();
+        try {
+          arr = Actor.getAllActor(persistence.getConnection());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return arr;
+    }
+    public ArrayList<Integer> getFilmListOfActor(int id){
+        ArrayList<Integer> arr = new ArrayList<Integer>();
+        try{
+            arr = Actor.getFilmList(id, persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e.getStackTrace());
+        }
+        return arr;
+    }
+
+    public Film getFilm(int cod){
+        Film res = null;
+        try{
+            res = Film.loadFilm(cod, persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e.getStackTrace());
+        }
+        return res;
+    }
+
+    public boolean updateFilm(Film f){
+        boolean res = false;
+        try{
+            res = Film.updateFilm(f, persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e.getStackTrace());
+        }
+        return res;
+    }
+
+
 }

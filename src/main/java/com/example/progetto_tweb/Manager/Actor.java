@@ -45,27 +45,13 @@ public class Actor {
                 '}';
     }
 
-    public static int newActor(Actor a, Connection conn) throws SQLException {
-        int id = -1;
+    public static void newActor(Actor a, Connection conn) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement("insert into actors (name, surname, date_birth) values (?,?,?)")){
             ps.setString(1, a.getName());
             ps.setString(2, a.getSurname());
             ps.setDate(3, a.getDate_birth());
-            int rows = ps.executeUpdate();
-            /*if(rows > 0){
-                try (PreparedStatement ps2 = conn.prepareStatement("SELECT LAST_INSERT_ID()")) {
-                    ResultSet rs = ps2.executeQuery();
-                    if (rs.next()) {
-                        id = rs.getInt(1);
-                        System.out.println("Generated ID: " + id);
-                    } else {
-                        // In case the result set is empty
-                        System.err.println("Failed to retrieve generated ID for actor.");
-                    }
-                }
-            }*/
+            ps.executeQuery();
         }
-        return id;
     }
     public static Actor loadActor(int id, Connection conn) throws SQLException {
         Actor actor = null;
@@ -115,7 +101,7 @@ public class Actor {
     public static ArrayList<Actor> getAllActor(Connection conn) throws SQLException{
 
         ArrayList<Actor> arr = new ArrayList<Actor>();
-        try (PreparedStatement ps = conn.prepareStatement("select * from tmp")){;
+        try (PreparedStatement ps = conn.prepareStatement("select * from actors")){;
             ResultSet result = ps.executeQuery();
             while (result.next()){
                 arr.add(new Actor(result.getInt("id"),

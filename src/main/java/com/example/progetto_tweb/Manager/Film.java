@@ -58,6 +58,16 @@ public class Film {
                 ", actors=" + actors +
                 '}';
     }
+
+    public static void newFilm(Film f, Connection conn) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement("insert into film (name, ranking, public_release) values (?,?,?)")){
+            ps.setString(1, f.getName());
+            ps.setDouble(2, f.getRanking());
+            ps.setDate(3, f.getPublicRelease());
+            ps.executeQuery();
+        }
+    }
+
     public static Film loadFilm(int cod, Connection conn) throws SQLException {
         Film film = null;
         try (PreparedStatement ps = conn.prepareStatement("SELECT * from film where cod = ?")){
@@ -97,6 +107,22 @@ public class Film {
             ResultSet result = ps.executeQuery();
             while (result.next()){
                 arr.add(result.getInt("id_actor"));
+            }
+        }
+        return arr;
+    }
+
+    public static ArrayList<Film> getAllFilm(Connection conn) throws SQLException{
+        ArrayList<Film> arr = new ArrayList<Film>();
+        try (PreparedStatement ps = conn.prepareStatement("SELECT * from film")){
+            ResultSet result = ps.executeQuery();
+            while (result.next()){
+                arr.add(
+                        new Film(result.getInt("cod"),
+                                result.getString("name"),
+                                result.getDouble("ranking"),
+                                result.getDate("public_release"))
+                );
             }
         }
         return arr;

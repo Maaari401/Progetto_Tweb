@@ -23,7 +23,8 @@ public class HelloServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/html");
-        manager.setNewActor(new Actor(0,"a","a",new Date(System.currentTimeMillis())));
+
+        System.out.println(manager.getAllFilm());
     }
 
     public void destroy() {

@@ -33,14 +33,14 @@ public class ManagerDB {
         }
         return res;
     }
-    public int setNewActor(Actor a){
-        int res = -1;
+    public boolean setNewActor(Actor a){
         try{
-            res = Actor.newActor(a, persistence.getConnection());
+            Actor.newActor(a, persistence.getConnection());
+            return true;
         }catch (SQLException e){
             System.out.println(e);
+            return false;
         }
-        return res;
     }
     public boolean updateActor(Actor a){
         boolean res = false;
@@ -71,6 +71,15 @@ public class ManagerDB {
         return arr;
     }
 
+    public void setNewFilm(Film f){
+        try{
+            Film.newFilm(f, persistence.getConnection());
+            //return true;
+        }catch (SQLException e){
+            System.out.println(e);
+            //return false;
+        }
+    }
     public Film getFilm(int cod){
         Film res = null;
         try{
@@ -87,6 +96,15 @@ public class ManagerDB {
             res = Film.updateFilm(f, persistence.getConnection());
         }catch (SQLException e){
             System.out.println(e.getStackTrace());
+        }
+        return res;
+    }
+    public ArrayList<Film> getAllFilm(){
+        ArrayList<Film> res = new ArrayList<>();
+        try {
+            res = Film.getAllFilm(persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e);
         }
         return res;
     }

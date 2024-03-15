@@ -6,14 +6,16 @@ import java.util.ArrayList;
 public class Actor {
     private int id;
     private String name;
-    private String surname;
     private Date date_birth;
+    private String desc;
+    private byte[] image;
 
-    public Actor(int id, String name, String surname, Date date_birth) {
+    public Actor(int id, String name, String desc, Date date_birth, byte[] image) {
         this.id = id;
         this.name = name;
-        this.surname = surname;
+        this.desc = desc;
         this.date_birth = date_birth;
+        this.image=image;
     }
     public Actor() {
 
@@ -27,12 +29,17 @@ public class Actor {
         return name;
     }
 
-    public String getSurname() {
-        return surname;
-    }
 
     public Date getDate_birth() {
         return date_birth;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public byte[] getImage() {
+        return image;
     }
 
     @Override
@@ -40,16 +47,17 @@ public class Actor {
         return "Actor{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
                 ", date_birth=" + date_birth +
+                ", desc='" + desc + '\'' +
                 '}';
     }
 
     public static void newActor(Actor a, Connection conn) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement("insert into actors (name, surname, date_birth) values (?,?,?)")){
+        try (PreparedStatement ps = conn.prepareStatement("insert into actors (name, description, date_birth, image) values (?,?,?,?)")){
             ps.setString(1, a.getName());
-            ps.setString(2, a.getSurname());
+            ps.setString(2, a.getDesc());
             ps.setDate(3, a.getDate_birth());
+            ps.setBytes(4, a.getImage());
             ps.executeQuery();
         }
     }
@@ -61,8 +69,9 @@ public class Actor {
             if (result.next()){
                 actor = new Actor(result.getInt("id"),
                         result.getString("name"),
-                        result.getString("surname"),
-                        result.getDate("date_birth"));
+                        result.getString("desc"),
+                        result.getDate("date_birth"),
+                        result.getBytes("image"));
             }
         }
         return actor;
@@ -71,14 +80,14 @@ public class Actor {
 
     public static boolean updateActor(Actor a, Connection conn) throws SQLException{
         boolean res = false;
-        try (PreparedStatement ps = conn.prepareStatement("UPDATE actors set id = ?, name = ?, surname = ?, date_birth = ? where id = ?")){
+        try (PreparedStatement ps = conn.prepareStatement("UPDATE actors set id = ?, name = ?, surname = ?, date_birth = ?, image = ? where id = ?")){
             ps.setInt(1, a.getId());
             ps.setString(2, a.getName());
-            ps.setString(3, a.getSurname());
+            ps.setString(3, a.getDesc());
             ps.setDate(4, a.getDate_birth());
+            ps.setBytes(5, a.getImage());
             ps.setInt(5, a.getId());
             ResultSet result = ps.executeQuery();
-
             System.out.println(result);
             if (result.next()){
                 res = true;
@@ -107,7 +116,8 @@ public class Actor {
                 arr.add(new Actor(result.getInt("id"),
                         result.getString("name"),
                         result.getString("surname"),
-                        result.getDate("date_birth")));
+                        result.getDate("date_birth"),
+                        result.getBytes("image")));
             }
         }
         return arr;

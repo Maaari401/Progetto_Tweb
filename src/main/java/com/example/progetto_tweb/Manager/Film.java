@@ -12,17 +12,19 @@ public class Film {
     private int cod;
     private String name;
     private double ranking;
-
-
-
     private Date publicRelease;
+    private byte[] cover;
+    private String desc;
     private final ArrayList<Integer> actors = new ArrayList<>();
+    private final ArrayList<Integer> directors = new ArrayList<>();
 
-    public Film(int cod, String name, double ranking, Date publicRelease) {
+    public Film(int cod, String name, double ranking, Date publicRelease, String desc, byte[] image) {
         this.cod = cod;
         this.name = name;
         this.ranking = ranking;
         this.publicRelease = publicRelease;
+        this.desc = desc;
+        this.cover = image;
     }
     public Film(){
 
@@ -44,8 +46,20 @@ public class Film {
         return publicRelease;
     }
 
+    public byte[] getCover() {
+        return cover;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
     public ArrayList<Integer> getActors() {
         return actors;
+    }
+
+    public ArrayList<Integer> getDirectors() {
+        return directors;
     }
 
     @Override
@@ -55,15 +69,19 @@ public class Film {
                 ", name='" + name + '\'' +
                 ", ranking=" + ranking +
                 ", publicRelease=" + publicRelease +
+                ", desc='" + desc + '\'' +
                 ", actors=" + actors +
+                ", directors=" + directors +
                 '}';
     }
 
     public static void newFilm(Film f, Connection conn) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement("insert into film (name, ranking, public_release) values (?,?,?)")){
+        try (PreparedStatement ps = conn.prepareStatement("insert into film (name, ranking, public_release, description, cover) values (?,?,?,?,?)")){
             ps.setString(1, f.getName());
             ps.setDouble(2, f.getRanking());
             ps.setDate(3, f.getPublicRelease());
+            ps.setString(4, f.getDesc());
+            ps.setBytes(5, f.getCover());
             ps.executeQuery();
         }
     }
@@ -77,7 +95,10 @@ public class Film {
                 film = new Film(result.getInt("cod"),
                         result.getString("name"),
                         result.getDouble("ranking"),
-                        result.getDate("public_release"));
+                        result.getDate("public_release"),
+                        result.getString("description"),
+                        result.getBytes("cover")
+                );
             }
         }
         return film;
@@ -85,12 +106,14 @@ public class Film {
 
     public static boolean updateFilm(Film f, Connection conn) throws SQLException{
         boolean res = false;
-        try (PreparedStatement ps = conn.prepareStatement("UPDATE film set cod = ?, name = ?, raning = ?, public_release = ? where cod = ?")){
+        try (PreparedStatement ps = conn.prepareStatement("UPDATE film set cod = ?, name = ?, raning = ?, public_release = ?, description = ?, cover = ? where cod = ?")){
             ps.setInt(1, f.getCod());
             ps.setString(2, f.getName());
             ps.setDouble(3, f.getRanking());
             ps.setDate(4, f.getPublicRelease());
-            ps.setInt(5, f.getCod());
+            ps.setString(5, f.getDesc());
+            ps.setBytes(6, f.getCover());
+            ps.setInt(7, f.getCod());
             ResultSet result = ps.executeQuery();
 
             System.out.println(result.getStatement());
@@ -102,11 +125,22 @@ public class Film {
     }
     public static ArrayList<Integer> getActorList(int cod, Connection conn) throws SQLException{
         ArrayList<Integer> arr = new ArrayList<Integer>();
-        try (PreparedStatement ps = conn.prepareStatement("SELECT * from act where film_id = ?")){
+        try (PreparedStatement ps = conn.prepareStatement("SELECT id_actor from act where film_id = ?")){
             ps.setInt(1, cod);
             ResultSet result = ps.executeQuery();
             while (result.next()){
                 arr.add(result.getInt("id_actor"));
+            }
+        }
+        return arr;
+    }
+    public static ArrayList<Integer> getDirectorList(int cod, Connection conn) throws SQLException{
+        ArrayList<Integer> arr = new ArrayList<Integer>();
+        try (PreparedStatement ps = conn.prepareStatement("SELECT director_id from direct where film_id = ?")){
+            ps.setInt(1, cod);
+            ResultSet result = ps.executeQuery();
+            while (result.next()){
+                arr.add(result.getInt("director_id"));
             }
         }
         return arr;
@@ -117,11 +151,13 @@ public class Film {
         try (PreparedStatement ps = conn.prepareStatement("SELECT * from film")){
             ResultSet result = ps.executeQuery();
             while (result.next()){
-                arr.add(
-                        new Film(result.getInt("cod"),
+                arr.add(new Film(result.getInt("cod"),
                                 result.getString("name"),
                                 result.getDouble("ranking"),
-                                result.getDate("public_release"))
+                                result.getDate("public_release"),
+                                result.getString("description"),
+                                result.getBytes("cover")
+                        )
                 );
             }
         }

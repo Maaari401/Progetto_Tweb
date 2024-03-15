@@ -99,10 +99,74 @@ public class ManagerDB {
         }
         return res;
     }
+    public ArrayList<Integer> getActorsOfFilm(int cod){
+        ArrayList<Integer> res = new ArrayList<>();
+        try {
+            res = Film.getActorList(cod, persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e);
+        }
+        return res;
+    }
+    public ArrayList<Integer> getDirectorsOfFilm(int cod){
+        ArrayList<Integer> res = new ArrayList<>();
+        try {
+            res = Film.getDirectorList(cod, persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e);
+        }
+        return res;
+    }
     public ArrayList<Film> getAllFilm(){
         ArrayList<Film> res = new ArrayList<>();
         try {
             res = Film.getAllFilm(persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e);
+        }
+        return res;
+    }
+
+
+    public void setNewDirector(Director d){
+        try{
+            Director.newDirector(d, persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e);
+        }
+    }
+    public Director getDirector(int id){
+        Director res = null;
+        try{
+            res = Director.loadDirector(id, persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e.getStackTrace());
+        }
+        return res;
+    }
+
+    public boolean updateDirector(Director d){
+        boolean res = false;
+        try{
+            res = Director.updateDirector(d, persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e.getStackTrace());
+        }
+        return res;
+    }
+    public ArrayList<Integer> getDirectedFilmList(int id){
+        ArrayList<Integer> res = new ArrayList<>();
+        try {
+            res = Director.getDirectedFilmList(id, persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e);
+        }
+        return res;
+    }
+    public ArrayList<Director> getAllDirectors(){
+        ArrayList<Director> res = new ArrayList<>();
+        try {
+            res = Director.getAllDirector(persistence.getConnection());
         }catch (SQLException e){
             System.out.println(e);
         }

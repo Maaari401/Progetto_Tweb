@@ -62,6 +62,7 @@ public class Film {
         return directors;
     }
 
+    /*
     @Override
     public String toString() {
         return "Film{" +
@@ -70,9 +71,11 @@ public class Film {
                 ", ranking=" + ranking +
                 ", publicRelease=" + publicRelease +
                 ", desc='" + desc + '\'' +
-                ", actors=" + actors +
-                ", directors=" + directors +
                 '}';
+    }*/
+    @Override
+    public String toString() {
+        return "Film{cod=" + cod +"}";
     }
 
     public static void newFilm(Film f, Connection conn) throws SQLException {
@@ -84,11 +87,12 @@ public class Film {
             ps.setBytes(5, f.getCover());
             ps.executeQuery();
         }
+        conn.close();
     }
 
     public static Film loadFilm(int cod, Connection conn) throws SQLException {
         Film film = null;
-        try (PreparedStatement ps = conn.prepareStatement("SELECT * from film where cod = ?")){
+        try (PreparedStatement ps = conn.prepareStatement("SELECT * from film f where cod = ?")){
             ps.setInt(1, cod);
             ResultSet result = ps.executeQuery();
             if (result.next()){
@@ -101,6 +105,7 @@ public class Film {
                 );
             }
         }
+        conn.close();
         return film;
     }
 
@@ -121,6 +126,7 @@ public class Film {
                 res = true;
             }
         }
+        conn.close();
         return res;
     }
     public static ArrayList<Integer> getActorList(int cod, Connection conn) throws SQLException{
@@ -132,18 +138,20 @@ public class Film {
                 arr.add(result.getInt("id_actor"));
             }
         }
+        conn.close();
         return arr;
     }
-    public static ArrayList<Integer> getDirectorList(int cod, Connection conn) throws SQLException{
+    public static ArrayList<Integer> getDirectorList(int cod, Connection conn) throws SQLException {
         ArrayList<Integer> arr = new ArrayList<Integer>();
-        try (PreparedStatement ps = conn.prepareStatement("SELECT director_id from direct where film_id = ?")){
+        try (PreparedStatement ps = conn.prepareStatement("SELECT director_id from direct where film_id = ?")) {
             ps.setInt(1, cod);
             ResultSet result = ps.executeQuery();
-            while (result.next()){
+            while (result.next()) {
                 arr.add(result.getInt("director_id"));
             }
+            conn.close();
+            return arr;
         }
-        return arr;
     }
 
     public static ArrayList<Film> getAllFilm(Connection conn) throws SQLException{
@@ -161,6 +169,7 @@ public class Film {
                 );
             }
         }
+        conn.close();
         return arr;
     }
 }

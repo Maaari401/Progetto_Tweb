@@ -60,6 +60,7 @@ public class Actor {
             ps.setBytes(4, a.getImage());
             ps.executeQuery();
         }
+        conn.close();
     }
     public static Actor loadActor(int id, Connection conn) throws SQLException {
         Actor actor = null;
@@ -74,13 +75,14 @@ public class Actor {
                         result.getBytes("image"));
             }
         }
+        conn.close();
         return actor;
     }
 
 
     public static boolean updateActor(Actor a, Connection conn) throws SQLException{
         boolean res = false;
-        try (PreparedStatement ps = conn.prepareStatement("UPDATE actors set id = ?, name = ?, surname = ?, date_birth = ?, image = ? where id = ?")){
+        try (PreparedStatement ps = conn.prepareStatement("UPDATE actors set id = ?, name = ?, description = ?, date_birth = ?, image = ? where id = ?")){
             ps.setInt(1, a.getId());
             ps.setString(2, a.getName());
             ps.setString(3, a.getDesc());
@@ -93,6 +95,7 @@ public class Actor {
                 res = true;
             }
         }
+        conn.close();
         return res;
     }
     public static ArrayList<Integer> getFilmList(int id, Connection conn) throws SQLException{
@@ -104,6 +107,7 @@ public class Actor {
                 arr.add(result.getInt("film_id"));
             }
         }
+        conn.close();
         return arr;
     }
 
@@ -115,11 +119,12 @@ public class Actor {
             while (result.next()){
                 arr.add(new Actor(result.getInt("id"),
                         result.getString("name"),
-                        result.getString("surname"),
+                        result.getString("description"),
                         result.getDate("date_birth"),
                         result.getBytes("image")));
             }
         }
+        conn.close();
         return arr;
     }
 }

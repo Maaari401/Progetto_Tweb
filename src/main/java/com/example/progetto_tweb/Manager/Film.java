@@ -15,8 +15,11 @@ public class Film {
     private Date publicRelease;
     private byte[] cover;
     private String desc;
-    private final ArrayList<Integer> actors = new ArrayList<>();
-    private final ArrayList<Integer> directors = new ArrayList<>();
+    private ArrayList<Integer> actors = new ArrayList<>();
+
+
+
+    private ArrayList<Integer> directors = new ArrayList<>();
 
     public Film(int cod, String name, double ranking, Date publicRelease, String desc, byte[] image) {
         this.cod = cod;
@@ -60,6 +63,14 @@ public class Film {
 
     public ArrayList<Integer> getDirectors() {
         return directors;
+    }
+
+    public void setActors(ArrayList<Integer> actors) {
+        this.actors = actors;
+    }
+
+    public void setDirectors(ArrayList<Integer> directors) {
+        this.directors = directors;
     }
 
     /*

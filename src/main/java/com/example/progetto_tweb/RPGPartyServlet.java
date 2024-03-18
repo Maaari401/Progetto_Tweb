@@ -1,5 +1,7 @@
 package com.example.progetto_tweb;
 
+import com.example.progetto_tweb.Manager.Film;
+import com.example.progetto_tweb.Manager.ManagerDB;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -8,6 +10,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import com.example.progetto_tweb.login.LoginService;
+import jakarta.validation.constraints.Null;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,9 +29,6 @@ public class RPGPartyServlet extends HttpServlet {
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("application/json");
-
-        Map<String, String[]> pars = request.getParameterMap();
 
     }
 

@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ManagerDB {
     private static ManagerDB manager;
@@ -29,7 +30,7 @@ public class ManagerDB {
         try{
             res = Actor.loadActor(id, persistence.getConnection());
         }catch (SQLException e){
-            System.out.println(e.getStackTrace());
+            System.out.println(e);
         }
         return res;
     }
@@ -47,7 +48,7 @@ public class ManagerDB {
         try{
             res = Actor.updateActor(a, persistence.getConnection());
         }catch (SQLException e){
-            System.out.println(e.getStackTrace());
+            System.out.println(e);
         }
         return res;
     }
@@ -66,7 +67,7 @@ public class ManagerDB {
         try{
             arr = Actor.getFilmList(id, persistence.getConnection());
         }catch (SQLException e){
-            System.out.println(e.getStackTrace());
+            System.out.println(e);
         }
         return arr;
     }
@@ -85,17 +86,29 @@ public class ManagerDB {
         try{
             res = Film.loadFilm(cod, persistence.getConnection());
         }catch (SQLException e){
-            System.out.println(e.getStackTrace());
+            System.out.println(e);
         }
         return res;
     }
+    public Map<String, ArrayList<Integer>> getCredits(int cod){
+        Map<String, ArrayList<Integer>> res = new HashMap<>();
+        try{
+            res.put("actors", Film.getActorList(cod, persistence.getConnection()));
+            res.put("directors", Film.getDirectorList(cod, persistence.getConnection()));
+        }catch (SQLException e){
+            System.out.println(e);
+            res = null;
+        }
+        return res;
+    }
+
 
     public boolean updateFilm(Film f){
         boolean res = false;
         try{
             res = Film.updateFilm(f, persistence.getConnection());
         }catch (SQLException e){
-            System.out.println(e.getStackTrace());
+            System.out.println(e);
         }
         return res;
     }
@@ -140,7 +153,7 @@ public class ManagerDB {
         try{
             res = Director.loadDirector(id, persistence.getConnection());
         }catch (SQLException e){
-            System.out.println(e.getStackTrace());
+            System.out.println(e);
         }
         return res;
     }
@@ -150,7 +163,7 @@ public class ManagerDB {
         try{
             res = Director.updateDirector(d, persistence.getConnection());
         }catch (SQLException e){
-            System.out.println(e.getStackTrace());
+            System.out.println(e);
         }
         return res;
     }

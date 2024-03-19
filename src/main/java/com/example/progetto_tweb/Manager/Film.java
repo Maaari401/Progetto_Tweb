@@ -6,14 +6,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 
 public class Film {
     private int cod;
     private String name;
     private double ranking;
     private Date publicRelease;
-    private byte[] cover;
+    private String cover;
     private String desc;
     private ArrayList<Integer> actors = new ArrayList<>();
 
@@ -21,7 +23,7 @@ public class Film {
 
     private ArrayList<Integer> directors = new ArrayList<>();
 
-    public Film(int cod, String name, double ranking, Date publicRelease, String desc, byte[] image) {
+    public Film(int cod, String name, double ranking, Date publicRelease, String desc, String image) {
         this.cod = cod;
         this.name = name;
         this.ranking = ranking;
@@ -49,7 +51,7 @@ public class Film {
         return publicRelease;
     }
 
-    public byte[] getCover() {
+    public String getCover() {
         return cover;
     }
 
@@ -95,8 +97,8 @@ public class Film {
             ps.setDouble(2, f.getRanking());
             ps.setDate(3, f.getPublicRelease());
             ps.setString(4, f.getDesc());
-            ps.setBytes(5, f.getCover());
-            ps.executeQuery();
+            ps.setBytes(5, Base64.getDecoder().decode(f.getCover()));
+            ps.executeUpdate();
         }
         conn.close();
     }
@@ -112,7 +114,7 @@ public class Film {
                         result.getDouble("ranking"),
                         result.getDate("public_release"),
                         result.getString("description"),
-                        result.getBytes("cover")
+                        Base64.getEncoder().encodeToString(result.getBytes("cover"))
                 );
             }
         }
@@ -128,7 +130,7 @@ public class Film {
             ps.setDouble(3, f.getRanking());
             ps.setDate(4, f.getPublicRelease());
             ps.setString(5, f.getDesc());
-            ps.setBytes(6, f.getCover());
+            ps.setBytes(6, Base64.getDecoder().decode(f.getCover()));
             ps.setInt(7, f.getCod());
             ResultSet result = ps.executeQuery();
 
@@ -140,28 +142,31 @@ public class Film {
         conn.close();
         return res;
     }
-    public static ArrayList<Integer> getActorList(int cod, Connection conn) throws SQLException{
-        ArrayList<Integer> arr = new ArrayList<Integer>();
-        try (PreparedStatement ps = conn.prepareStatement("SELECT id_actor from act where film_id = ?")){
+    public static List<String[]> getActorList(int cod, Connection conn) throws SQLException{
+        List<String[]> l = new ArrayList<>();
+        try (PreparedStatement ps = conn.prepareStatement("SELECT *  from act where film_id = ?")){
             ps.setInt(1, cod);
             ResultSet result = ps.executeQuery();
             while (result.next()){
-                arr.add(result.getInt("id_actor"));
+                String[] tmp = {""+result.getInt("id_actor"), result.getString("character")};
+                l.add(tmp);
             }
         }
         conn.close();
-        return arr;
+        return l.isEmpty()? null : l;
     }
-    public static ArrayList<Integer> getDirectorList(int cod, Connection conn) throws SQLException {
-        ArrayList<Integer> arr = new ArrayList<Integer>();
-        try (PreparedStatement ps = conn.prepareStatement("SELECT director_id from direct where film_id = ?")) {
+    public static List<String[]> getDirectorList(int cod, Connection conn) throws SQLException {
+        List<String[]> l = new ArrayList<String[]>();
+        try (PreparedStatement ps = conn.prepareStatement("SELECT * from direct where film_id = ?")) {
             ps.setInt(1, cod);
             ResultSet result = ps.executeQuery();
             while (result.next()) {
-                arr.add(result.getInt("director_id"));
+                String[] tmp = {""+result.getInt("director_id"), result.getString("role")};
+                l.add(tmp);
             }
+
             conn.close();
-            return arr;
+            return l.isEmpty()? null : l;
         }
     }
 
@@ -175,7 +180,7 @@ public class Film {
                                 result.getDouble("ranking"),
                                 result.getDate("public_release"),
                                 result.getString("description"),
-                                result.getBytes("cover")
+                                Base64.getEncoder().encodeToString(result.getBytes("cover"))
                         )
                 );
             }

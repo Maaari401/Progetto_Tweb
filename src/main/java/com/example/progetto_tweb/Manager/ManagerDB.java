@@ -1,12 +1,11 @@
 package com.example.progetto_tweb.Manager;
 
 import com.example.progetto_tweb.db.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ManagerDB {
@@ -72,12 +71,13 @@ public class ManagerDB {
         return arr;
     }
 
-    public void setNewFilm(Film f){
+    public void setNewFilm(Film f) throws SQLException {
         try{
+
             Film.newFilm(f, persistence.getConnection());
             //return true;
         }catch (SQLException e){
-            System.out.println(e);
+            throw e;
             //return false;
         }
     }
@@ -90,16 +90,22 @@ public class ManagerDB {
         }
         return res;
     }
-    public Map<String, ArrayList<Integer>> getCredits(int cod){
-        Map<String, ArrayList<Integer>> res = new HashMap<>();
-        try{
-            res.put("actors", Film.getActorList(cod, persistence.getConnection()));
-            res.put("directors", Film.getDirectorList(cod, persistence.getConnection()));
-        }catch (SQLException e){
+    public Map<String, List<String[]>> getCredits(int cod) {
+        Boolean var = true;
+        Map<String, List<String[]>> res = new HashMap<>();
+        List<String[]> l1,l2;
+        try {
+            l1 = Film.getActorList(cod, persistence.getConnection());
+            l2 = Film.getDirectorList(cod, persistence.getConnection());
+            res.put("actors", l1);
+            res.put("directors", l2);
+        } catch (SQLException e) {
             System.out.println(e);
             res = null;
+            l1=null;
+            l2=null;
         }
-        return res;
+        return (l1 == null && l2 == null) ? null : res;
     }
 
 
@@ -112,8 +118,8 @@ public class ManagerDB {
         }
         return res;
     }
-    public ArrayList<Integer> getActorsOfFilm(int cod){
-        ArrayList<Integer> res = new ArrayList<>();
+    public List<String[]> getActorsOfFilm(int cod){
+        List<String[]> res = new ArrayList<>();
         try {
             res = Film.getActorList(cod, persistence.getConnection());
         }catch (SQLException e){
@@ -121,8 +127,8 @@ public class ManagerDB {
         }
         return res;
     }
-    public ArrayList<Integer> getDirectorsOfFilm(int cod){
-        ArrayList<Integer> res = new ArrayList<>();
+    public List<String[]> getDirectorsOfFilm(int cod){
+        List<String[]> res = new ArrayList<>();
         try {
             res = Film.getDirectorList(cod, persistence.getConnection());
         }catch (SQLException e){

@@ -2,15 +2,16 @@ package com.example.progetto_tweb.Manager;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Base64;
 
 public class Actor {
     private int id;
     private String name;
     private Date date_birth;
     private String desc;
-    private byte[] image;
+    private String image;
 
-    public Actor(int id, String name, String desc, Date date_birth, byte[] image) {
+    public Actor(int id, String name, String desc, Date date_birth, String image) {
         this.id = id;
         this.name = name;
         this.desc = desc;
@@ -38,7 +39,7 @@ public class Actor {
         return desc;
     }
 
-    public byte[] getImage() {
+    public String getImage() {
         return image;
     }
 
@@ -57,7 +58,7 @@ public class Actor {
             ps.setString(1, a.getName());
             ps.setString(2, a.getDesc());
             ps.setDate(3, a.getDate_birth());
-            ps.setBytes(4, a.getImage());
+            ps.setBytes(4, Base64.getDecoder().decode(a.getImage()));
             ps.executeQuery();
         }
         conn.close();
@@ -72,7 +73,7 @@ public class Actor {
                         result.getString("name"),
                         result.getString("desc"),
                         result.getDate("date_birth"),
-                        result.getBytes("image"));
+                        Base64.getEncoder().encodeToString(result.getBytes("image")));
             }
         }
         conn.close();
@@ -87,7 +88,7 @@ public class Actor {
             ps.setString(2, a.getName());
             ps.setString(3, a.getDesc());
             ps.setDate(4, a.getDate_birth());
-            ps.setBytes(5, a.getImage());
+            ps.setBytes(5, Base64.getDecoder().decode(a.getImage()));
             ps.setInt(5, a.getId());
             ResultSet result = ps.executeQuery();
             System.out.println(result);
@@ -121,7 +122,7 @@ public class Actor {
                         result.getString("name"),
                         result.getString("description"),
                         result.getDate("date_birth"),
-                        result.getBytes("image")));
+                        Base64.getEncoder().encodeToString(result.getBytes("image"))));
             }
         }
         conn.close();

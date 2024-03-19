@@ -34,7 +34,7 @@ public class HelloServlet extends HttpServlet {
             htmlBuilder.append("<h2>").append(actor.getName()).append("</h2>");
             // Embed image directly in HTML using Base64 encoding
             htmlBuilder.append("<img src=\"data:image/jpeg;base64,");
-            htmlBuilder.append(encodeImageAsBase64(actor.getImage()));
+            htmlBuilder.append(actor.getImage());
             htmlBuilder.append("\"/><br/>");
             htmlBuilder.append("</div>");
         }
@@ -45,12 +45,6 @@ public class HelloServlet extends HttpServlet {
         response.setContentType("text/html");
         response.getWriter().write(htmlBuilder.toString());
     }
-
-    private String encodeImageAsBase64(byte[] imageData) {
-        // Use Base64 encoding to embed image data directly in HTML
-        return java.util.Base64.getEncoder().encodeToString(imageData);
-    }
-
 
     public void destroy() {
 

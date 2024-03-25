@@ -123,7 +123,7 @@ for movie_id in movie_ids:
         #foreach actor inserted bind it to the movie's id
         cast_data = credits_data['cast']
         
-        for actorTmp in cast_data[:20]:
+        for actorTmp in cast_data[:30]:
             #insert actor in db
             actorData = json.loads(requests.get(f'https://api.themoviedb.org/3/person/{actorTmp["id"]}', headers=my_headers).text)
             if actorData['profile_path'] is not None:

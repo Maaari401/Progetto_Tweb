@@ -22,6 +22,9 @@ public class Actor {
 
     }
 
+
+
+
     public int getId() {
         return id;
     }
@@ -71,7 +74,7 @@ public class Actor {
             if (result.next()){
                 actor = new Actor(result.getInt("id"),
                         result.getString("name"),
-                        result.getString("desc"),
+                        result.getString("description"),
                         result.getDate("date_birth"),
                         Base64.getEncoder().encodeToString(result.getBytes("image")));
             }
@@ -79,22 +82,30 @@ public class Actor {
         conn.close();
         return actor;
     }
+    public static String loadImage(int id, Connection conn) throws SQLException {
+        String img = null;
+        try (PreparedStatement ps = conn.prepareStatement("SELECT image from actors where id = ?")){
+            ps.setInt(1, id);
+            ResultSet result = ps.executeQuery();
+            if (result.next()){
+                img = Base64.getEncoder().encodeToString(result.getBytes("image"));
+            }
+        }
+        conn.close();
+        return img;
+    }
 
 
     public static boolean updateActor(Actor a, Connection conn) throws SQLException{
         boolean res = false;
-        try (PreparedStatement ps = conn.prepareStatement("UPDATE actors set id = ?, name = ?, description = ?, date_birth = ?, image = ? where id = ?")){
-            ps.setInt(1, a.getId());
-            ps.setString(2, a.getName());
-            ps.setString(3, a.getDesc());
-            ps.setDate(4, a.getDate_birth());
-            ps.setBytes(5, Base64.getDecoder().decode(a.getImage()));
+        try (PreparedStatement ps = conn.prepareStatement("UPDATE actors set name = ?, description = ?, date_birth = ?, image = ? where id = ?")){
+            ps.setString(1, a.getName());
+            ps.setString(2, a.getDesc());
+            ps.setDate(3, a.getDate_birth());
+            ps.setBytes(4, Base64.getDecoder().decode(a.getImage()));
             ps.setInt(5, a.getId());
-            ResultSet result = ps.executeQuery();
-            System.out.println(result);
-            if (result.next()){
-                res = true;
-            }
+            ps.executeUpdate();
+            res = true;
         }
         conn.close();
         return res;
@@ -122,10 +133,38 @@ public class Actor {
                         result.getString("name"),
                         result.getString("description"),
                         result.getDate("date_birth"),
-                        Base64.getEncoder().encodeToString(result.getBytes("image"))));
+                        null));
             }
         }
         conn.close();
         return arr;
+    }
+
+    public static boolean deleteActor(int id, Connection conn) throws SQLException {
+        boolean res = true;
+        try (PreparedStatement ps = conn.prepareStatement("DELETE from actors where id = ?")){
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        }
+        conn.close();
+        return res;
+    }
+
+    public static boolean deleteActorFromFilm(int id, int cod, Connection conn) throws SQLException{
+        try (PreparedStatement ps = conn.prepareStatement("DELETE from act where id_actor = ? and film_id = ?")){
+            ps.setInt(1, id);
+            ps.setInt(2, cod);
+            ps.executeUpdate();
+        }
+        return true;
+    }
+    public static boolean InsertActorIntoFilm(int id, int cod, String character, Connection conn) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement("INSERT INTO act (id_actor, film_id, character) VALUES (?, ?, ?)")){
+            ps.setInt(1, id);
+            ps.setInt(2, cod);
+            ps.setString(3, character);
+            ps.executeUpdate();
+        }
+        return true;
     }
 }

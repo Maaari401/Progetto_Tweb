@@ -33,6 +33,17 @@ public class ManagerDB {
         }
         return res;
     }
+
+    public String getActorImage(int id){
+        String res = null;
+        try{
+            res = Actor.loadImage(id, persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e);
+        }
+        return res;
+    }
+
     public boolean setNewActor(Actor a){
         try{
             Actor.newActor(a, persistence.getConnection());
@@ -42,6 +53,7 @@ public class ManagerDB {
             return false;
         }
     }
+
     public boolean updateActor(Actor a){
         boolean res = false;
         try{
@@ -90,6 +102,14 @@ public class ManagerDB {
         }
         return res;
     }
+    public String getFilmCover(int cod){
+        try{
+            return Film.loadImage(cod, persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e);
+            return null;
+        }
+    }
     public Map<String, List<String[]>> getCredits(int cod) {
         Boolean var = true;
         Map<String, List<String[]>> res = new HashMap<>();
@@ -109,12 +129,12 @@ public class ManagerDB {
     }
 
 
-    public boolean updateFilm(Film f){
+    public boolean updateFilm(Film f) throws SQLException {
         boolean res = false;
         try{
             res = Film.updateFilm(f, persistence.getConnection());
         }catch (SQLException e){
-            System.out.println(e);
+            throw e;
         }
         return res;
     }
@@ -192,5 +212,75 @@ public class ManagerDB {
         return res;
     }
 
+    public boolean deleteActor(int id){
+        try {
+            return Actor.deleteActor(id, persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e);
+        }
+        return false;
+    }
 
+    public boolean deleteFilm(int cod){
+        try {
+            return Film.deleteFilm(cod, persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e);
+            return false;
+        }
+    }
+
+    public boolean deleteActorFromFilm(int id, int cod){
+        try {
+            return Actor.deleteActorFromFilm(id, cod, persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e);
+            return false;
+        }
+    }
+
+    public boolean InsertActorIntoFilm(int id, int cod, String character){
+        try {
+            return Actor.InsertActorIntoFilm(id, cod, character, persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e);
+            return false;
+        }
+    }
+
+    public String getDirectorImage(int directorId) {
+        String res = null;
+        try{
+            res = Director.loadImage(directorId, persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e);
+        }
+        return res;
+    }
+    public boolean deleteDirector(int id){
+        try {
+            return Director.deleteDirector(id, persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e);
+            return false;
+        }
+    }
+
+    public boolean insertMovieForDirector(int directorId, int movieCode, String role) {
+        try {
+            return Director.InsertDirectorIntoFilm(directorId, movieCode, role, persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e);
+            return false;
+        }
+    }
+
+    public boolean deleteDirectorFromFilm(int id, int cod){
+        try {
+            return Director.deleteDirectorFromMovie(id, cod, persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e);
+            return false;
+        }
+    }
 }

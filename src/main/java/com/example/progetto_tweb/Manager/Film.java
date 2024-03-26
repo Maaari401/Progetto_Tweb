@@ -122,23 +122,29 @@ public class Film {
         return film;
     }
 
-    public static boolean updateFilm(Film f, Connection conn) throws SQLException{
-        boolean res = false;
-        try (PreparedStatement ps = conn.prepareStatement("UPDATE film set cod = ?, name = ?, raning = ?, public_release = ?, description = ?, cover = ? where cod = ?")){
-            ps.setInt(1, f.getCod());
-            ps.setString(2, f.getName());
-            ps.setDouble(3, f.getRanking());
-            ps.setDate(4, f.getPublicRelease());
-            ps.setString(5, f.getDesc());
-            ps.setBytes(6, Base64.getDecoder().decode(f.getCover()));
-            ps.setInt(7, f.getCod());
+    public static String loadImage(int cod, Connection conn) throws SQLException {
+        String img = null;
+        try (PreparedStatement ps = conn.prepareStatement("SELECT cover from film where cod = ?")){
+            ps.setInt(1, cod);
             ResultSet result = ps.executeQuery();
-
-            System.out.println(result.getStatement());
             if (result.next()){
-                res = true;
+                img = Base64.getEncoder().encodeToString(result.getBytes("cover"));
             }
         }
+        conn.close();
+        return img;
+    }
+
+    public static boolean updateFilm(Film f, Connection conn) throws SQLException{
+        boolean res = true;
+        try (PreparedStatement ps = conn.prepareStatement("UPDATE film set name = ?, ranking = ?, public_release = ?, description = ?, cover = ? where cod = ?")){
+            ps.setString(1, f.getName());
+            ps.setDouble(2, f.getRanking());
+            ps.setDate(3, f.getPublicRelease());
+            ps.setString(4, f.getDesc());
+            ps.setBytes(5, Base64.getDecoder().decode(f.getCover()));
+            ps.setInt(6, f.getCod());
+            ps.executeUpdate();        }
         conn.close();
         return res;
     }
@@ -180,12 +186,21 @@ public class Film {
                                 result.getDouble("ranking"),
                                 result.getDate("public_release"),
                                 result.getString("description"),
-                                Base64.getEncoder().encodeToString(result.getBytes("cover"))
-                        )
+                                null)
                 );
             }
         }
         conn.close();
         return arr;
+    }
+
+    public static boolean deleteFilm(int cod, Connection conn) throws SQLException {
+        boolean res = true;
+        try (PreparedStatement ps = conn.prepareStatement("DELETE from film where cod = ?")){
+            ps.setInt(1, cod);
+            ps.executeUpdate();
+        }
+        conn.close();
+        return res;
     }
 }

@@ -2,24 +2,28 @@ package com.example.progetto_tweb.Manager;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Base64;
 
 public class Director {
     private int id;
     private String name;
     private Date date_birth;
-    private String desc;
-    private byte[] image;
+    private String description;
+    private String image;
 
-    public Director(int id, String name, String desc, Date date_birth, byte[] image) {
+    public Director(int id, String name, String description, Date date_birth, String image) {
         this.id = id;
         this.name = name;
-        this.desc = desc;
+        this.description = description;
         this.date_birth = date_birth;
         this.image=image;
     }
     public Director() {
 
     }
+
+
+
 
     public int getId() {
         return id;
@@ -34,11 +38,11 @@ public class Director {
         return date_birth;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getDescription() {
+        return description;
     }
 
-    public byte[] getImage() {
+    public String getImage() {
         return image;
     }
 
@@ -48,59 +52,77 @@ public class Director {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", date_birth=" + date_birth +
-                ", desc='" + desc + '\'' +
+                ", desc='" + description + '\'' +
                 '}';
     }
 
     public static void newDirector(Director d, Connection conn) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement("insert into director (name, description, date_birth, image) values (?,?,?,?)")){
             ps.setString(1, d.getName());
-            ps.setString(2, d.getDesc());
+            ps.setString(2, d.getDescription());
             ps.setDate(3, d.getDate_birth());
-            ps.setBytes(4, d.getImage());
-            ps.executeQuery();
+            ps.setBytes(4, Base64.getDecoder().decode(d.getImage()));
+            ps.executeUpdate();
         }
         conn.close();
     }
     public static Director loadDirector(int id, Connection conn) throws SQLException {
         Director d = null;
-        try (PreparedStatement ps = conn.prepareStatement("SELECT * from actors where id = ?")){
+        try (PreparedStatement ps = conn.prepareStatement("SELECT * from director where id = ?")){
             ps.setInt(1, id);
             ResultSet result = ps.executeQuery();
             if (result.next()){
                 d = new Director(result.getInt("id"),
                         result.getString("name"),
-                        result.getString("desc"),
+                        result.getString("description"),
                         result.getDate("date_birth"),
-                        result.getBytes("image"));
+                        Base64.getEncoder().encodeToString(result.getBytes("image")));
             }
         }
         conn.close();
         return d;
     }
+    public static String loadImage(int id, Connection conn) throws SQLException {
+        String img = null;
+        try (PreparedStatement ps = conn.prepareStatement("SELECT image from director where id = ?")){
+            ps.setInt(1, id);
+            ResultSet result = ps.executeQuery();
+            if (result.next()){
+                img = Base64.getEncoder().encodeToString(result.getBytes("image"));
+            }
+        }
+        conn.close();
+        return img;
+    }
 
 
     public static boolean updateDirector(Director d, Connection conn) throws SQLException{
         boolean res = false;
-        try (PreparedStatement ps = conn.prepareStatement("UPDATE director set id = ?, name = ?, description = ?, date_birth = ?, image = ? where id = ?")){
-            ps.setInt(1, d.getId());
-            ps.setString(2, d.getName());
-            ps.setString(3, d.getDesc());
-            ps.setDate(4, d.getDate_birth());
-            ps.setBytes(5, d.getImage());
+        try (PreparedStatement ps = conn.prepareStatement("UPDATE director set name = ?, description = ?, date_birth = ?, image = ? where id = ?")){
+            ps.setString(1, d.getName());
+            ps.setString(2, d.getDescription());
+            ps.setDate(3, d.getDate_birth());
+            ps.setBytes(4, Base64.getDecoder().decode(d.getImage()));
             ps.setInt(5, d.getId());
-            ResultSet result = ps.executeQuery();
-            System.out.println(result);
-            if (result.next()){
-                res = true;
-            }
+            ps.executeUpdate();
+            res = true;
+        }
+        conn.close();
+        return res;
+    }
+    public static boolean deleteDirector(int id, Connection conn) throws SQLException {
+        boolean res = false;
+        try (PreparedStatement ps = conn.prepareStatement("Delete from director where id = ?")){
+            ps.setInt(1, id);;
+            ps.executeUpdate();
+            res = true;
         }
         conn.close();
         return res;
     }
     public static ArrayList<Integer> getDirectedFilmList(int id, Connection conn) throws SQLException{
         ArrayList<Integer> arr = new ArrayList<Integer>();
-        try (PreparedStatement ps = conn.prepareStatement("SELECT * from direct where director_id = ?")){
+        try (PreparedStatement ps = conn.prepareStatement("SELECT distinct film_id from direct where director_id = ?")){
             ps.setInt(1, id);
             ResultSet result = ps.executeQuery();
             while (result.next()){
@@ -113,17 +135,35 @@ public class Director {
 
     public static ArrayList<Director> getAllDirector(Connection conn) throws SQLException{
         ArrayList<Director> arr = new ArrayList<Director>();
-        try (PreparedStatement ps = conn.prepareStatement("select * from director")){;
+        try (PreparedStatement ps = conn.prepareStatement("select id, name, description, date_birth from director")){;
             ResultSet result = ps.executeQuery();
             while (result.next()){
                 arr.add(new Director(result.getInt("id"),
                         result.getString("name"),
-                        result.getString("surname"),
+                        result.getString("description"),
                         result.getDate("date_birth"),
-                        result.getBytes("image")));
+                        null));
             }
         }
         conn.close();
         return arr;
+    }
+    public static boolean deleteDirectorFromMovie(int id, int cod, Connection conn) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement("DELETE from direct where director_id = ? and film_id = ?")){
+            ps.setInt(1, id);
+            ps.setInt(2, cod);
+            ps.executeUpdate();
+        }
+        return true;
+    }
+
+    public static boolean InsertDirectorIntoFilm(int id, int cod, String role, Connection conn) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement("INSERT INTO direct (film_id, director_id, role) VALUES (?, ?, ?)")){
+            ps.setInt(1, cod);
+            ps.setInt(2, id);
+            ps.setString(3, role);
+            ps.executeUpdate();
+        }
+        return true;
     }
 }

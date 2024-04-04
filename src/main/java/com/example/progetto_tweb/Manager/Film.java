@@ -5,10 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Film {
     private int cod;
@@ -150,7 +148,7 @@ public class Film {
     }
     public static List<String[]> getActorList(int cod, Connection conn) throws SQLException{
         List<String[]> l = new ArrayList<>();
-        try (PreparedStatement ps = conn.prepareStatement("SELECT *  from act where film_id = ?")){
+        try (PreparedStatement ps = conn.prepareStatement("SELECT *  from act where film_id = ? order by order_cast ASC")){
             ps.setInt(1, cod);
             ResultSet result = ps.executeQuery();
             while (result.next()){
@@ -161,18 +159,27 @@ public class Film {
         conn.close();
         return l.isEmpty()? null : l;
     }
-    public static List<String[]> getDirectorList(int cod, Connection conn) throws SQLException {
+    public static Map<String, List<String[]>> getDirectorList(int cod, Connection conn) throws SQLException {
         List<String[]> l = new ArrayList<String[]>();
         try (PreparedStatement ps = conn.prepareStatement("SELECT * from direct where film_id = ?")) {
             ps.setInt(1, cod);
             ResultSet result = ps.executeQuery();
             while (result.next()) {
-                String[] tmp = {""+result.getInt("director_id"), result.getString("role")};
+                String[] tmp = {""+result.getInt("director_id"), result.getString("role"), result.getString("departmant")};
                 l.add(tmp);
             }
 
+            Map<String, List<String[]>> groupedDirectors = new HashMap<>();
+            for (String[] var: l){
+                String department = var[2]; // Assuming department is at index 2 in the array
+                if (!groupedDirectors.containsKey(department)) {
+                    groupedDirectors.put(department, new ArrayList<>());
+                }
+                groupedDirectors.get(department).add(var);
+            }
+
             conn.close();
-            return l.isEmpty()? null : l;
+            return groupedDirectors.isEmpty() ? null : groupedDirectors;
         }
     }
 

@@ -46,13 +46,24 @@ public class FilmServlet extends HttpServlet {
             if(pars.containsKey("cod")){
                 int film_id = Integer.parseInt(pars.get("cod")[0]);
                 if(film_id > 0){
-                    Map<String, List<String[]>> map = ManagerDB.getManager().getCredits(film_id);
-                    System.out.println(map);
-                    if(map != null) out.println(gson.toJson(map));
-                    else response.sendError(HttpServletResponse.SC_NOT_FOUND);
+
+                    Map<String, Object> result = new HashMap<>();
+                    List<String[]> reducedActors = ManagerDB.getManager().getActorOfFilm(film_id);
+                    Map<String, List<String[]>> reducedCrew = new HashMap<>();
+
+                    for (Map.Entry<String, List<String[]>> entry : ManagerDB.getManager().getCrewOfFilm(film_id).entrySet()) {
+                        reducedCrew.put(entry.getKey(), entry.getValue());
+                    }
+
+                    // Populate the result map
+                    result.put("actor", reducedActors);
+                    result.put("crew", reducedCrew);
+
+                    out.println(gson.toJson(result));
+
                 }else response.sendError(HttpServletResponse.SC_NOT_FOUND);
             } else response.sendError(HttpServletResponse.SC_NOT_FOUND);
-        }if (request.getPathInfo().equals("/cover")){
+        }else if (request.getPathInfo().equals("/cover")){
             if(pars.containsKey("cod")){
                 int film_cod = Integer.parseInt(pars.get("cod")[0]);
                 if(film_cod > 0){

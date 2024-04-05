@@ -110,22 +110,22 @@ public class ManagerDB {
             return null;
         }
     }
-    public Map<String, List<String[]>> getCredits(int cod) {
-        Boolean var = true;
-        Map<String, List<String[]>> res = new HashMap<>();
-        List<String[]> l1,l2;
+
+    public List<String[]> getActorOfFilm(int cod){
+        try{
+            return Film.getActorList(cod, persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e);
+            return null;
+        }
+    }
+    public Map<String, List<String[]>> getCrewOfFilm(int cod) {
         try {
-            l1 = Film.getActorList(cod, persistence.getConnection());
-            l2 = Film.getDirectorList(cod, persistence.getConnection());
-            res.put("actors", l1);
-            res.put("directors", l2);
+            return Film.getDirectorList(cod, persistence.getConnection());
         } catch (SQLException e) {
             System.out.println(e);
-            res = null;
-            l1=null;
-            l2=null;
+            return null;
         }
-        return (l1 == null && l2 == null) ? null : res;
     }
 
 
@@ -147,15 +147,7 @@ public class ManagerDB {
         }
         return res;
     }
-    public List<String[]> getDirectorsOfFilm(int cod){
-        List<String[]> res = new ArrayList<>();
-        try {
-            res = Film.getDirectorList(cod, persistence.getConnection());
-        }catch (SQLException e){
-            System.out.println(e);
-        }
-        return res;
-    }
+
     public ArrayList<Film> getAllFilm(){
         ArrayList<Film> res = new ArrayList<>();
         try {

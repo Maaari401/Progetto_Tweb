@@ -4,32 +4,59 @@ import jakarta.servlet.http.HttpSession;
 
 public class LoginService {
     private final static String SESSION_USER_KEY = "user";
+    private static final String SESSION_USER_AUTH = "auth";
     public final static String LOGIN_PATH = "/login";
     public final static String LOGOUT_PATH = "/logout";
 
-    public final static String FAKELOGIN = "***___fake___";
 
     /* Restituisce lo username dell'utente che ha fatto log in in questa sessione
      * o la stringa vuota se un utente siffatto non esiste
+     *
+     * @param session HttpSession contenente le informazioni della sessione
+     * @return String lo username dell'utente loggato, o una stringa vuota se nessun utente è loggato
      */
     public static String getCurrentLogin(HttpSession session) {
-        return LoginService.FAKELOGIN;
+        if (session.getAttribute(SESSION_USER_KEY) == null) return "";
+        return (String) session.getAttribute(SESSION_USER_KEY);
     }
 
     /* Effettua il log in di "username" in questa sessione.
      * Ritorna true se l'operazione ha successo, false altrimenti.
      * L'operazione può fallire se in sessione risulta il log in di un altro utente.
+     *
+     * @param session HttpSession contenente le informazioni della sessione
+     * @param username String l'username dell'utente che si sta loggando
+     * @return boolean true se il log in ha avuto successo, false altrimenti
      */
-    public static boolean doLogIn(HttpSession session, String username) {
-        return true;
+    public static boolean doLogIn(HttpSession session, String username, boolean auth) {
+        if (session.getAttribute(SESSION_USER_KEY) == null) {
+            session.setAttribute(SESSION_USER_KEY, username);
+            session.setAttribute(SESSION_USER_AUTH, auth);
+            session.setMaxInactiveInterval(10*60); // 10 minuti
+            return true;
+        }
+        String loggedUser = (String) session.getAttribute(SESSION_USER_KEY);
+        if (loggedUser.equals(username)) return true;
+        return false;
     }
 
     /* Effettua il log out di "username" in questa sessione.
      * Ritorna true se l'operazione ha successo, false altrimenti.
      * L'operazione può fallire se in sessione risulta il log in di un altro utente.
+     *
+     * @param session HttpSession contenente le informazioni della sessione
+     * @param username String l'username dell'utente che si sta sloggando
+     * @return boolean true se il log out ha avuto successo, false altrimenti
      */
     public static boolean doLogOut(HttpSession session, String username) {
-        return true;
+        if (session.getAttribute(SESSION_USER_KEY) == null) {
+            return true;
+        }
+        if (((String) session.getAttribute(SESSION_USER_KEY)).equals(username)) {
+            session.invalidate();
+            return true;
+        }
+        return false;
     }
 
 }

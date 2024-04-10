@@ -1,4 +1,4 @@
-package tweb.rpgpc.login;
+package com.example.progetto_tweb.login;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -13,7 +13,7 @@ import java.io.IOException;
 public class AuthFilter extends HttpFilter {
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
-        /* if (req.getServletPath().equals(LoginService.LOGIN_PATH) ||
+        if (req.getServletPath().equals(LoginService.LOGIN_PATH) ||
                 req.getServletPath().equals(LoginService.LOGOUT_PATH)) {
             chain.doFilter(req, res);
             return;
@@ -24,7 +24,6 @@ public class AuthFilter extends HttpFilter {
             return;
         }
 
-        res.sendError(HttpServletResponse.SC_UNAUTHORIZED); */
-        chain.doFilter(req, res);
+        res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 }

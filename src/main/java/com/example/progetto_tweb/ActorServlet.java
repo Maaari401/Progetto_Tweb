@@ -64,72 +64,78 @@ public class ActorServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("application/json");
-        PrintWriter out = response.getWriter();
-        if(request.getPathInfo() != null){
-            Actor actor = null;
-            try{
-                BufferedReader in = request.getReader();
-                actor = gson.fromJson(in, Actor.class);
-            }catch(Exception e) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            }
-            if(request.getPathInfo().equals("/newActor")) {
-                try{
-                    ManagerDB.getManager().setNewActor(actor);
-                }catch(Exception e) {
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+        if((boolean) request.getSession().getAttribute("auth")) {
+            response.setContentType("application/json");
+            PrintWriter out = response.getWriter();
+            if (request.getPathInfo() != null) {
+                Actor actor = null;
+                try {
+                    BufferedReader in = request.getReader();
+                    actor = gson.fromJson(in, Actor.class);
+                } catch (Exception e) {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 }
-            }else if(request.getPathInfo().equals("/updateActor")){
-                try{
-                    ManagerDB.getManager().updateActor(actor);
-                }catch(Exception e) {
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-                }
-            }else response.sendError(HttpServletResponse.SC_NOT_FOUND);
-        }else response.sendError(HttpServletResponse.SC_NOT_FOUND);
-        response.setStatus(HttpServletResponse.SC_OK);
+                if (request.getPathInfo().equals("/newActor")) {
+                    try {
+                        ManagerDB.getManager().setNewActor(actor);
+                    } catch (Exception e) {
+                        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+                    }
+                } else if (request.getPathInfo().equals("/updateActor")) {
+                    try {
+                        ManagerDB.getManager().updateActor(actor);
+                    } catch (Exception e) {
+                        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+                    }
+                } else response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            } else response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            response.setStatus(HttpServletResponse.SC_OK);
+        }else response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json");
-        PrintWriter out = response.getWriter();
-        if(request.getPathInfo() != null){
-            if(request.getPathInfo().equals("/remove")){
-                Map<String, String[]> pars = request.getParameterMap();
-                if(pars.containsKey("id") && pars.containsKey("cod")){
-                    int actor_id = Integer.parseInt(pars.get("id")[0]);
-                    int film_cod = Integer.parseInt(pars.get("cod")[0]);
-                    if (film_cod > 0 && actor_id > 0) ManagerDB.getManager().deleteActorFromFilm(actor_id, film_cod);
-                    else response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                }else if(pars.containsKey("id")){
-                    int actorId = Integer.parseInt(pars.get("id")[0]);
-                    if (actorId > 0)  ManagerDB.getManager().deleteActor(actorId);
-                    else response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        if((boolean) request.getSession().getAttribute("auth")) {
+            response.setContentType("application/json");
+            PrintWriter out = response.getWriter();
+            if(request.getPathInfo() != null){
+                if(request.getPathInfo().equals("/remove")){
+                    Map<String, String[]> pars = request.getParameterMap();
+                    if(pars.containsKey("id") && pars.containsKey("cod")){
+                        int actor_id = Integer.parseInt(pars.get("id")[0]);
+                        int film_cod = Integer.parseInt(pars.get("cod")[0]);
+                        if (film_cod > 0 && actor_id > 0) ManagerDB.getManager().deleteActorFromFilm(actor_id, film_cod);
+                        else response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                    }else if(pars.containsKey("id")){
+                        int actorId = Integer.parseInt(pars.get("id")[0]);
+                        if (actorId > 0)  ManagerDB.getManager().deleteActor(actorId);
+                        else response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                    } else response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 } else response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            } else response.sendError(HttpServletResponse.SC_NOT_FOUND);
-        }else response.sendError(HttpServletResponse.SC_NOT_FOUND);
-        response.setStatus(HttpServletResponse.SC_OK);
+            }else response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            response.setStatus(HttpServletResponse.SC_OK);
+        }else response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.setContentType("application/json");
-        PrintWriter out = resp.getWriter();
-        if(req.getPathInfo() != null){
-            if(req.getPathInfo().equals("/insertAIF")){
-                Map<String, String[]> pars = req.getParameterMap();
-                if(pars.containsKey("id") && pars.containsKey("cod") && pars.containsKey("character")){
-                    int actorId = Integer.parseInt(pars.get("id")[0]);
-                    int film_cod = Integer.parseInt(pars.get("cod")[0]);
-                    String character = pars.get("character")[0];
-                    if (actorId > 0 && film_cod > 0 && !character.isBlank())  ManagerDB.getManager().InsertActorIntoFilm(actorId, film_cod, character);
-                    else resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                }else resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-            } else resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-        }else resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-        resp.setStatus(HttpServletResponse.SC_OK);
+        if((boolean) req.getSession().getAttribute("auth")) {
+            resp.setContentType("application/json");
+            PrintWriter out = resp.getWriter();
+            if(req.getPathInfo() != null){
+                if(req.getPathInfo().equals("/insertAIF")){
+                    Map<String, String[]> pars = req.getParameterMap();
+                    if(pars.containsKey("id") && pars.containsKey("cod") && pars.containsKey("character")){
+                        int actorId = Integer.parseInt(pars.get("id")[0]);
+                        int film_cod = Integer.parseInt(pars.get("cod")[0]);
+                        String character = pars.get("character")[0];
+                        if (actorId > 0 && film_cod > 0 && !character.isBlank())  ManagerDB.getManager().InsertActorIntoFilm(actorId, film_cod, character);
+                        else resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                    }else resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+                } else resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            }else resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            resp.setStatus(HttpServletResponse.SC_OK);
+        }else resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
     public void destroy() {

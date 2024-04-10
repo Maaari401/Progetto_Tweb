@@ -78,49 +78,54 @@ public class FilmServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("application/json");
-        PrintWriter out = response.getWriter();
-        if(request.getPathInfo() != null){
-            Film f = null;
-            try{
-                BufferedReader in = request.getReader();
-                f = gson.fromJson(in, Film.class);
-            }catch (Exception e){
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            }
-            if(request.getPathInfo().equals("/newFilm")){
-                try{
-                    ManagerDB.getManager().setNewFilm(f);
-                }catch (SQLException e){
-                    response.sendError(460, "Film già presente nel nostro database");
+        if((boolean) request.getSession().getAttribute("auth")) {
+
+            response.setContentType("application/json");
+            PrintWriter out = response.getWriter();
+            if (request.getPathInfo() != null) {
+                Film f = null;
+                try {
+                    BufferedReader in = request.getReader();
+                    f = gson.fromJson(in, Film.class);
+                } catch (Exception e) {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 }
-            }else if(request.getPathInfo().equals("/updateFilm")){
-                try{
-                    ManagerDB.getManager().updateFilm(f);
-                }catch (SQLException e){
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                }
-            }else response.sendError(HttpServletResponse.SC_NOT_FOUND);
-        }else response.sendError(HttpServletResponse.SC_NOT_FOUND);
-        response.setStatus(HttpServletResponse.SC_OK);
+                if (request.getPathInfo().equals("/newFilm")) {
+                    try {
+                        ManagerDB.getManager().setNewFilm(f);
+                    } catch (SQLException e) {
+                        response.sendError(460, "Film già presente nel nostro database");
+                    }
+                } else if (request.getPathInfo().equals("/updateFilm")) {
+                    try {
+                        ManagerDB.getManager().updateFilm(f);
+                    } catch (SQLException e) {
+                        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                    }
+                } else response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            } else response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            response.setStatus(HttpServletResponse.SC_OK);
+        }else response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("application/json");
-        PrintWriter out = response.getWriter();
-        if(request.getPathInfo() != null) {
-            if (request.getPathInfo().equals("/remove")) {
-                Map<String, String[]> pars = request.getParameterMap();
-                if (pars.containsKey("id")) {
-                    int film_id = Integer.parseInt(pars.get("id")[0]);
-                    if(film_id > 0) {
-                        ManagerDB.getManager().deleteFilm(film_id);
-                    }else response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        if((boolean) request.getSession().getAttribute("auth")) {
+            response.setContentType("application/json");
+            PrintWriter out = response.getWriter();
+            if (request.getPathInfo() != null) {
+                if (request.getPathInfo().equals("/remove")) {
+                    Map<String, String[]> pars = request.getParameterMap();
+                    if (pars.containsKey("id")) {
+                        int film_id = Integer.parseInt(pars.get("id")[0]);
+                        if (film_id > 0) {
+                            ManagerDB.getManager().deleteFilm(film_id);
+                        } else response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                    } else response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 } else response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            } else response.sendError(HttpServletResponse.SC_NOT_FOUND);
-        }
-        response.setStatus(HttpServletResponse.SC_OK);
+            }
+            response.setStatus(HttpServletResponse.SC_OK);
+        }else response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
     public void destroy() {

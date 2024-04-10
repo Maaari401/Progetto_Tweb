@@ -275,4 +275,21 @@ public class ManagerDB {
             return false;
         }
     }
+
+    public boolean validateCredentials(String username, String password) {
+        try {
+            return User.validateCredentials(username, password, persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e);
+            return false;
+        }
+    }
+    public boolean checkAuth(String username, String password) {
+        try {
+            return User.checkAuth(username, password, persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e);
+            return false;
+        }
+    }
 }

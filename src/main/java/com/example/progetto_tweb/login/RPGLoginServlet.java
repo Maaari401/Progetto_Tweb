@@ -1,6 +1,7 @@
 package com.example.progetto_tweb.login;
 
 import com.example.progetto_tweb.Manager.ManagerDB;
+import com.example.progetto_tweb.token.tokenManager;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,8 +13,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "RPGPC-Login-Servlet", urlPatterns = {LoginService.LOGIN_PATH, LoginService.LOGOUT_PATH})
+
+@WebServlet(name = "Login/logout-Servlet", urlPatterns = {"/login", "/logout"})
 public class RPGLoginServlet extends HttpServlet {
+
+    private static final String LOGOUT_PATH = "/logout";
+    private static final String LOGIN_PATH = "/login";
 
     public void init() {
 
@@ -26,24 +31,25 @@ public class RPGLoginServlet extends HttpServlet {
         // GET /logout effettua il logout e restituisce l'esito
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
+        String token = request.getHeader("token");
 
 
-        if (request.getServletPath().equals(LoginService.LOGIN_PATH)) {
+
+        if (request.getServletPath().equals(LOGIN_PATH)) {
             JsonObject result = new JsonObject();
-            String username = LoginService.getCurrentLogin(request.getSession());
             result.addProperty("operation", "status");
-            result.addProperty("username", username);
+            result.addProperty("token", token);
             result.addProperty("success", true);
             result.addProperty("error", false);
             result.addProperty("errorMessage", "");
             out.println(result);
-        } else if (request.getServletPath().equals(LoginService.LOGOUT_PATH)) {
+        } else if (request.getServletPath().equals(LOGOUT_PATH)) {
             JsonObject result = new JsonObject();
-            String username = LoginService.getCurrentLogin(request.getSession());
+            String username = tokenManager.getUsernameFromToken(token);
             if (!username.isEmpty()) {
-                LoginService.doLogOut(request.getSession(), username);
+                tokenManager.doLogOut(username);
                 result.addProperty("operation", "logout");
-                result.addProperty("username", "");
+                result.addProperty("token", "");
                 result.addProperty("success", true);
                 result.addProperty("error", false);
                 result.addProperty("errorMessage", "");
@@ -62,39 +68,26 @@ public class RPGLoginServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // POST accetta solo il path /login
         // per fare /logout si usa GET
-        if (request.getServletPath().equals(LoginService.LOGIN_PATH)) {
+        if (request.getServletPath().equals(LOGIN_PATH)) {
             response.setContentType("application/json");
             BufferedReader in = request.getReader();
             JsonObject loginObject = JsonParser.parseReader(in).getAsJsonObject();
-            String username = loginObject.get("username").getAsString();
-            String previous = LoginService.getCurrentLogin(request.getSession());
-            JsonObject result = new JsonObject();
 
-            if (!previous.isEmpty() && !previous.equals(username)) {
-                result.addProperty("operation", "login");
-                result.addProperty("username", previous);
-                result.addProperty("success", false);
-                result.addProperty("error", true);
-                result.addProperty("errorMessage", "Already logged in as a different user.");
-            } else {
-                String password = loginObject.get("password").getAsString();
-                boolean valid = ManagerDB.getManager().validateCredentials(username, password);
-                if (valid) {
-                    boolean auth = ManagerDB.getManager().checkAuth(username, password);
-                    if (previous.isEmpty()) LoginService.doLogIn(request.getSession(), username, auth);
+            String username = loginObject.get("username").getAsString();
+            String password = loginObject.get("password").getAsString();
+            JsonObject result = new JsonObject();
+            boolean valid = ManagerDB.getManager().validateCredentials(username, password);
+            if (valid) {
+                boolean auth = ManagerDB.getManager().checkAuth(username, password);
+                /*if (previous.isEmpty())*/
+                String token = tokenManager.addToken(username, auth);
+                if(token != null){
                     result.addProperty("operation", "login");
-                    result.addProperty("username", username);
+                    result.addProperty("token", token);
                     result.addProperty("success", true);
                     result.addProperty("error", false);
                     result.addProperty("errorMessage", "");
-                    System.out.println(request.getSession().getAttribute("user"));
-                } else {
-                    result.addProperty("operation", "login");
-                    result.addProperty("username", username);
-                    result.addProperty("success", false);
-                    result.addProperty("error", true);
-                    result.addProperty("errorMessage", "Invalid credentials");
-                }
+                }else response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
             PrintWriter out = response.getWriter();
             out.println(result);

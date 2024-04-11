@@ -87,6 +87,7 @@ public class RPGLoginServlet extends HttpServlet {
                     result.addProperty("success", true);
                     result.addProperty("error", false);
                     result.addProperty("errorMessage", "");
+                    System.out.println(request.getSession().getAttribute("user"));
                 } else {
                     result.addProperty("operation", "login");
                     result.addProperty("username", username);

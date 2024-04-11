@@ -16,6 +16,7 @@ public class LoginService {
      * @return String lo username dell'utente loggato, o una stringa vuota se nessun utente è loggato
      */
     public static String getCurrentLogin(HttpSession session) {
+        System.out.println(session.getAttribute(SESSION_USER_KEY));
         if (session.getAttribute(SESSION_USER_KEY) == null) return "";
         return (String) session.getAttribute(SESSION_USER_KEY);
     }
@@ -32,7 +33,7 @@ public class LoginService {
         if (session.getAttribute(SESSION_USER_KEY) == null) {
             session.setAttribute(SESSION_USER_KEY, username);
             session.setAttribute(SESSION_USER_AUTH, auth);
-            session.setMaxInactiveInterval(10*60); // 10 minuti
+            session.setMaxInactiveInterval(10*6000000); // 10 minuti
             return true;
         }
         String loggedUser = (String) session.getAttribute(SESSION_USER_KEY);

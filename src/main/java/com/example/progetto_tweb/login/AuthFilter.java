@@ -13,16 +13,16 @@ import java.io.IOException;
 public class AuthFilter extends HttpFilter {
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
+
         if (req.getServletPath().equals(LoginService.LOGIN_PATH) ||
                 req.getServletPath().equals(LoginService.LOGOUT_PATH)) {
             chain.doFilter(req, res);
             return;
         }
-
         if (!LoginService.getCurrentLogin(req.getSession()).isEmpty()) {
             chain.doFilter(req, res);
             return;
-        }
+        }else System.out.println("sas");
 
         res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }

@@ -90,7 +90,7 @@ public class ActorServlet extends HttpServlet {
                 } else response.sendError(HttpServletResponse.SC_NOT_FOUND);
             } else response.sendError(HttpServletResponse.SC_NOT_FOUND);
             response.setStatus(HttpServletResponse.SC_OK);
-        }else response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            }else response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
     @Override

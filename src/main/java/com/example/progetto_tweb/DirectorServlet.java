@@ -12,6 +12,8 @@ import com.google.gson.GsonBuilder;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+import com.example.progetto_tweb.token.*;
+
 
 @WebServlet(name = "DirectorServlet", urlPatterns = {"/director", "/director/*"})
 public class DirectorServlet extends HttpServlet {
@@ -63,7 +65,7 @@ public class DirectorServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        if((boolean) request.getSession().getAttribute("auth")) {
+        if(tokenManager.getAuth(tokenManager.getUsernameFromToken(request.getHeader("token").replace("tok $","")))) {
 
             response.setContentType("application/json");
             PrintWriter out = response.getWriter();
@@ -95,7 +97,7 @@ public class DirectorServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if((boolean) request.getSession().getAttribute("auth")) {
+        if(tokenManager.getAuth(tokenManager.getUsernameFromToken(request.getHeader("token").replace("tok $","")))) {
             response.setContentType("application/json");
             PrintWriter out = response.getWriter();
             if (request.getPathInfo() != null) {

@@ -2,13 +2,12 @@ import Login from "./login/Login.tsx";
 import {Films} from "./film/Film.tsx"
 import {useState} from "react";
 
-
 function App(){
-    const [username, setUsername] = useState("")
+    const [logged, setLogged] = useState(false)
     return (
         <>
-            <Login setUsername={setUsername}/>
-            <Films username={{username}}/>
+            <Login logged={logged} setLogged={setLogged}/>
+            {(logged && <Films/>)}
         </>
     )
 }

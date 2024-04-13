@@ -292,4 +292,13 @@ public class ManagerDB {
             return false;
         }
     }
+
+    public void setNewUser(User user) {
+        try{
+            User.newUser(user, persistence.getConnection());
+        }catch (SQLException e){
+            System.out.println(e);
+        }
+    }
+
 }

@@ -1,17 +1,28 @@
-#image-container{
+#image-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 1rem;
     width: 100%;
-    max-width: 1200px;
+    max-width: 1200px; /* Increased max-width for horizontal layout */
     margin: 0 auto;
+    flex-direction: row; /* Display images horizontally */
 }
+
+#image-container .image-item {
+    flex: 1 1 calc(100% / 8 - 1rem); /* Set the width of each image item to (100% / 8) - gap value */
+    box-sizing: border-box;
+    padding: 0 0.5rem; /* Add some padding to each image item */
+}
+
 #image-container img {
-    width: 100%;
+    /* Optional: Adjust dimensions and styling for the images */
+    width: 100%; /* Adjust width as needed */
     height: auto;
     object-fit: cover;
     border-radius: 5px;
+    max-width: 150px; /* Set a maximum width for the images */
+    max-height: 150px; /* Set a maximum height for the images */
 }
 
 #image-container p {

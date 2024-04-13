@@ -15,7 +15,7 @@ import java.io.PrintWriter;
 
 
 @WebServlet(name = "Login/logout-Servlet", urlPatterns = {"/login", "/logout"})
-public class RPGLoginServlet extends HttpServlet {
+public class LoginServlet extends HttpServlet {
 
     private static final String LOGOUT_PATH = "/logout";
     private static final String LOGIN_PATH = "/login";

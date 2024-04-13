@@ -14,13 +14,14 @@ import java.io.IOException;
 public class AuthFilter extends HttpFilter {
     private static final String LOGIN_PATH = "/login";
     private static final String LOGOUT_PATH = "/logout";
+    private static final String SINGUP_PATH = "/singup";
 
 
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
 
         if (req.getServletPath().equals(LOGIN_PATH) ||
-                req.getServletPath().equals(LOGOUT_PATH)) {
+                req.getServletPath().equals(LOGOUT_PATH) || req.getServletPath().equals(SINGUP_PATH)) {
             chain.doFilter(req, res);
             return;
         }

@@ -4,8 +4,19 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Base64;
 
 public class User {
+
+    private String email;
+    private String username;
+    private String pwd;
+
+    public User(String email, String username, String pwd, int id) {
+        this.email = email;
+        this.username = username;
+        this.pwd = pwd;
+    }
 
     public static boolean validateCredentials(String username, String password, Connection conn) throws SQLException {
         boolean result = false;
@@ -31,5 +42,29 @@ public class User {
             }
         }
         return result;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPwd() {
+        return pwd;
+    }
+
+
+    public static void newUser(User user, Connection conn) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement("insert into users (email, username, pwd, auth) values (?,?,?,?)")){
+            ps.setString(1, user.getEmail());
+            ps.setString(2, user.getUsername());
+            ps.setString(3, user.getPwd());
+            ps.setBoolean(4, false);
+            ps.executeUpdate();
+        }
+        conn.close();
     }
 }

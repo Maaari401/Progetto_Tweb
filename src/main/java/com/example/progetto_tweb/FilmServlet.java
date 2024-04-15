@@ -27,10 +27,8 @@ public class FilmServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         Map<String, String[]> pars = request.getParameterMap();
 
-        System.out.println(request.getPathInfo());
 
         if(request.getPathInfo() == null){
-
             if(pars.containsKey("id")){
                 int film_id = Integer.parseInt(pars.get("id")[0]);
                 if(film_id > 0){

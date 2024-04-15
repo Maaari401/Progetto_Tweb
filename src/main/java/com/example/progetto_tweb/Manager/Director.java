@@ -64,7 +64,7 @@ public class Director {
             ps.setBytes(4, Base64.getDecoder().decode(d.getImage()));
             ps.executeUpdate();
         }
-        conn.close();
+        
     }
     public static Director loadDirector(int id, Connection conn) throws SQLException {
         Director d = null;
@@ -79,7 +79,7 @@ public class Director {
                         Base64.getEncoder().encodeToString(result.getBytes("image")));
             }
         }
-        conn.close();
+        
         return d;
     }
     public static String loadImage(int id, Connection conn) throws SQLException {
@@ -91,7 +91,7 @@ public class Director {
                 img = Base64.getEncoder().encodeToString(result.getBytes("image"));
             }
         }
-        conn.close();
+        
         return img;
     }
 
@@ -107,7 +107,7 @@ public class Director {
             ps.executeUpdate();
             res = true;
         }
-        conn.close();
+        
         return res;
     }
     public static boolean deleteDirector(int id, Connection conn) throws SQLException {
@@ -117,7 +117,7 @@ public class Director {
             ps.executeUpdate();
             res = true;
         }
-        conn.close();
+        
         return res;
     }
     public static ArrayList<Integer> getDirectedFilmList(int id, Connection conn) throws SQLException{
@@ -129,7 +129,7 @@ public class Director {
                 arr.add(result.getInt("film_id"));
             }
         }
-        conn.close();
+        
         return arr;
     }
 
@@ -145,7 +145,7 @@ public class Director {
                         null));
             }
         }
-        conn.close();
+        
         return arr;
     }
     public static boolean deleteDirectorFromMovie(int id, int cod, Connection conn) throws SQLException {

@@ -65,6 +65,7 @@ public class User {
             ps.setBoolean(4, false);
             ps.executeUpdate();
         }
-        conn.close();
+        
     }
+
 }

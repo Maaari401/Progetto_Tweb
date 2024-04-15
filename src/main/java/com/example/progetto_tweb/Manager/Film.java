@@ -129,7 +129,6 @@ public class Film {
                 img = Base64.getEncoder().encodeToString(result.getBytes("cover"));
             }
         }
-        
         return img;
     }
 
@@ -197,7 +196,6 @@ public class Film {
                 );
             }
         }
-        
         return arr;
     }
 

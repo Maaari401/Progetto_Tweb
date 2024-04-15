@@ -2,6 +2,7 @@ package com.example.progetto_tweb.Manager;
 
 import com.example.progetto_tweb.db.*;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,8 +27,8 @@ public class ManagerDB {
 
     public Actor getActor(int id){
         Actor res = null;
-        try{
-            res = Actor.loadActor(id, persistence.getConnection());
+        try(Connection conn = persistence.getConnection()){
+            res = Actor.loadActor(id, conn);
         }catch (SQLException e){
             System.out.println(e);
         }
@@ -36,8 +37,8 @@ public class ManagerDB {
 
     public String getActorImage(int id){
         String res = null;
-        try{
-            res = Actor.loadImage(id, persistence.getConnection());
+        try(Connection conn = persistence.getConnection()){
+            res = Actor.loadImage(id, conn);
         }catch (SQLException e){
             System.out.println(e);
         }
@@ -45,8 +46,8 @@ public class ManagerDB {
     }
 
     public boolean setNewActor(Actor a){
-        try{
-            Actor.newActor(a, persistence.getConnection());
+        try(Connection conn = persistence.getConnection()){
+            Actor.newActor(a, conn);
             return true;
         }catch (SQLException e){
             System.out.println(e);
@@ -56,8 +57,8 @@ public class ManagerDB {
 
     public boolean updateActor(Actor a){
         boolean res = false;
-        try{
-            res = Actor.updateActor(a, persistence.getConnection());
+        try(Connection conn = persistence.getConnection()){
+            res = Actor.updateActor(a, conn);
         }catch (SQLException e){
             System.out.println(e);
         }
@@ -66,7 +67,7 @@ public class ManagerDB {
 
     public ArrayList<Actor> getAllActor(){
         ArrayList<Actor> arr = new ArrayList<>();
-        try {
+        try(Connection conn = persistence.getConnection()) {
           arr = Actor.getAllActor(persistence.getConnection());
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -75,8 +76,8 @@ public class ManagerDB {
     }
     public ArrayList<Integer> getFilmListOfActor(int id){
         ArrayList<Integer> arr = new ArrayList<Integer>();
-        try{
-            arr = Actor.getFilmList(id, persistence.getConnection());
+        try(Connection conn = persistence.getConnection()){
+            arr = Actor.getFilmList(id, conn);
         }catch (SQLException e){
             System.out.println(e);
         }
@@ -84,9 +85,9 @@ public class ManagerDB {
     }
 
     public void setNewFilm(Film f) throws SQLException {
-        try{
+        try(Connection conn = persistence.getConnection()){
 
-            Film.newFilm(f, persistence.getConnection());
+            Film.newFilm(f, conn);
             //return true;
         }catch (SQLException e){
             throw e;
@@ -95,16 +96,16 @@ public class ManagerDB {
     }
     public Film getFilm(int cod){
         Film res = null;
-        try{
-            res = Film.loadFilm(cod, persistence.getConnection());
+        try(Connection conn = persistence.getConnection()){
+            res = Film.loadFilm(cod, conn);
         }catch (SQLException e){
             System.out.println(e);
         }
         return res;
     }
     public String getFilmCover(int cod){
-        try{
-            return Film.loadImage(cod, persistence.getConnection());
+        try(Connection conn = persistence.getConnection()){
+            return Film.loadImage(cod, conn);
         }catch (SQLException e){
             System.out.println(e);
             return null;
@@ -112,16 +113,16 @@ public class ManagerDB {
     }
 
     public List<String[]> getActorOfFilm(int cod){
-        try{
-            return Film.getActorList(cod, persistence.getConnection());
+        try(Connection conn = persistence.getConnection()){
+            return Film.getActorList(cod, conn);
         }catch (SQLException e){
             System.out.println(e);
             return null;
         }
     }
     public Map<String, List<String[]>> getCrewOfFilm(int cod) {
-        try {
-            return Film.getDirectorList(cod, persistence.getConnection());
+        try(Connection conn = persistence.getConnection()) {
+            return Film.getDirectorList(cod, conn);
         } catch (SQLException e) {
             System.out.println(e);
             return null;
@@ -131,8 +132,8 @@ public class ManagerDB {
 
     public boolean updateFilm(Film f) throws SQLException {
         boolean res = false;
-        try{
-            res = Film.updateFilm(f, persistence.getConnection());
+        try(Connection conn = persistence.getConnection()){
+            res = Film.updateFilm(f, conn);
         }catch (SQLException e){
             throw e;
         }
@@ -140,8 +141,8 @@ public class ManagerDB {
     }
     public List<String[]> getActorsOfFilm(int cod){
         List<String[]> res = new ArrayList<>();
-        try {
-            res = Film.getActorList(cod, persistence.getConnection());
+        try(Connection conn = persistence.getConnection()) {
+            res = Film.getActorList(cod, conn);
         }catch (SQLException e){
             System.out.println(e);
         }
@@ -150,7 +151,7 @@ public class ManagerDB {
 
     public ArrayList<Film> getAllFilm(){
         ArrayList<Film> res = new ArrayList<>();
-        try {
+        try(Connection conn = persistence.getConnection()) {
             res = Film.getAllFilm(persistence.getConnection());
         }catch (SQLException e){
             System.out.println(e);
@@ -160,16 +161,16 @@ public class ManagerDB {
 
 
     public void setNewDirector(Director d){
-        try{
-            Director.newDirector(d, persistence.getConnection());
+        try(Connection conn = persistence.getConnection()){
+            Director.newDirector(d, conn);
         }catch (SQLException e){
             System.out.println(e);
         }
     }
     public Director getDirector(int id){
         Director res = null;
-        try{
-            res = Director.loadDirector(id, persistence.getConnection());
+        try(Connection conn = persistence.getConnection()){
+            res = Director.loadDirector(id, conn);
         }catch (SQLException e){
             System.out.println(e);
         }
@@ -178,8 +179,8 @@ public class ManagerDB {
 
     public boolean updateDirector(Director d){
         boolean res = false;
-        try{
-            res = Director.updateDirector(d, persistence.getConnection());
+        try(Connection conn = persistence.getConnection()){
+            res = Director.updateDirector(d, conn);
         }catch (SQLException e){
             System.out.println(e);
         }
@@ -187,8 +188,8 @@ public class ManagerDB {
     }
     public ArrayList<Integer> getDirectedFilmList(int id){
         ArrayList<Integer> res = new ArrayList<>();
-        try {
-            res = Director.getDirectedFilmList(id, persistence.getConnection());
+        try(Connection conn = persistence.getConnection()) {
+            res = Director.getDirectedFilmList(id, conn);
         }catch (SQLException e){
             System.out.println(e);
         }
@@ -196,7 +197,7 @@ public class ManagerDB {
     }
     public ArrayList<Director> getAllDirectors(){
         ArrayList<Director> res = new ArrayList<>();
-        try {
+        try(Connection conn = persistence.getConnection()) {
             res = Director.getAllDirector(persistence.getConnection());
         }catch (SQLException e){
             System.out.println(e);
@@ -205,8 +206,8 @@ public class ManagerDB {
     }
 
     public boolean deleteActor(int id){
-        try {
-            return Actor.deleteActor(id, persistence.getConnection());
+        try(Connection conn = persistence.getConnection()) {
+            return Actor.deleteActor(id, conn);
         }catch (SQLException e){
             System.out.println(e);
         }
@@ -214,8 +215,8 @@ public class ManagerDB {
     }
 
     public boolean deleteFilm(int cod){
-        try {
-            return Film.deleteFilm(cod, persistence.getConnection());
+        try(Connection conn = persistence.getConnection()) {
+            return Film.deleteFilm(cod, conn);
         }catch (SQLException e){
             System.out.println(e);
             return false;
@@ -223,8 +224,8 @@ public class ManagerDB {
     }
 
     public boolean deleteActorFromFilm(int id, int cod){
-        try {
-            return Actor.deleteActorFromFilm(id, cod, persistence.getConnection());
+        try(Connection conn = persistence.getConnection()) {
+            return Actor.deleteActorFromFilm(id, cod, conn);
         }catch (SQLException e){
             System.out.println(e);
             return false;
@@ -232,8 +233,8 @@ public class ManagerDB {
     }
 
     public boolean InsertActorIntoFilm(int id, int cod, String character){
-        try {
-            return Actor.InsertActorIntoFilm(id, cod, character, persistence.getConnection());
+        try(Connection conn = persistence.getConnection()) {
+            return Actor.InsertActorIntoFilm(id, cod, character, conn);
         }catch (SQLException e){
             System.out.println(e);
             return false;
@@ -242,16 +243,16 @@ public class ManagerDB {
 
     public String getDirectorImage(int directorId) {
         String res = null;
-        try{
-            res = Director.loadImage(directorId, persistence.getConnection());
+        try(Connection conn = persistence.getConnection()){
+            res = Director.loadImage(directorId, conn);
         }catch (SQLException e){
             System.out.println(e);
         }
         return res;
     }
     public boolean deleteDirector(int id){
-        try {
-            return Director.deleteDirector(id, persistence.getConnection());
+        try(Connection conn = persistence.getConnection()) {
+            return Director.deleteDirector(id, conn);
         }catch (SQLException e){
             System.out.println(e);
             return false;
@@ -259,8 +260,8 @@ public class ManagerDB {
     }
 
     public boolean insertMovieForDirector(int directorId, int movieCode, String role) {
-        try {
-            return Director.InsertDirectorIntoFilm(directorId, movieCode, role, persistence.getConnection());
+        try(Connection conn = persistence.getConnection()) {
+            return Director.InsertDirectorIntoFilm(directorId, movieCode, role, conn);
         }catch (SQLException e){
             System.out.println(e);
             return false;
@@ -268,8 +269,8 @@ public class ManagerDB {
     }
 
     public boolean deleteDirectorFromFilm(int id, int cod){
-        try {
-            return Director.deleteDirectorFromMovie(id, cod, persistence.getConnection());
+        try(Connection conn = persistence.getConnection()) {
+            return Director.deleteDirectorFromMovie(id, cod, conn);
         }catch (SQLException e){
             System.out.println(e);
             return false;
@@ -277,16 +278,16 @@ public class ManagerDB {
     }
 
     public boolean validateCredentials(String username, String password) {
-        try {
-            return User.validateCredentials(username, password, persistence.getConnection());
+        try(Connection conn = persistence.getConnection()) {
+            return User.validateCredentials(username, password, conn);
         }catch (SQLException e){
             System.out.println(e);
             return false;
         }
     }
     public boolean checkAuth(String username, String password) {
-        try {
-            return User.checkAuth(username, password, persistence.getConnection());
+        try(Connection conn = persistence.getConnection()) {
+            return User.checkAuth(username, password, conn);
         }catch (SQLException e){
             System.out.println(e);
             return false;
@@ -294,8 +295,8 @@ public class ManagerDB {
     }
 
     public void setNewUser(User user) {
-        try{
-            User.newUser(user, persistence.getConnection());
+        try(Connection conn = persistence.getConnection()){
+            User.newUser(user, conn);
         }catch (SQLException e){
             System.out.println(e);
         }

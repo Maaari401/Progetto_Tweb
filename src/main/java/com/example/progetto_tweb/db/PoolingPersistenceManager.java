@@ -32,7 +32,6 @@ public class PoolingPersistenceManager {
             config.addDataSourceProperty("dataSourceClassName", "org.postgresql.ds.PGSimpleDataSource");
             config.setMaximumPoolSize(100);
             dataSource = new HikariDataSource(config);
-
         } catch (ClassNotFoundException ex) {
             ex.printStackTrace();
         }

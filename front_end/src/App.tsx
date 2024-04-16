@@ -1,5 +1,5 @@
 import Login from "./login/Login.tsx";
-import {Films} from "./film/Film.tsx"
+import {Films} from "./film/FilmList.tsx"
 import {useState} from "react";
 
 function App(){

@@ -1,27 +1,37 @@
 import {FC, useEffect, useState} from "react";
 import "./films.css"
+import FilmInfo from './FilmInfo.tsx'
 
 interface filmI{
-    cod: number
+    cod: number,
     name: string,
-    rate: number
+    rate: number,
     release: string,
     desc: string,
+}
+interface filmElemI{
+    cod: number,
+    name: string,
+    rate: number,
+    release: string,
+    desc: string,
+    setSelectedFilm: (cod: number) => void
 }
 
 interface imageI{
     image: string
 }
 
+const NO_FILM_SHOW: number = 0;
 
-const Film: FC<filmI> = (props) => {
+const Film: FC<filmElemI> = (props) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [imageSrc, setImageSrc] = useState<string>('');
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/Progetto_Tweb_war/film/cover?cod=${props.cod}`, {
+                const response = await fetch(`http://localhost:8080/Progetto_Tweb/film/cover?cod=${props.cod}`, {
                     method: 'GET',
                     headers: {
                         "token": `tok $${sessionStorage.getItem("token")}`
@@ -37,9 +47,9 @@ const Film: FC<filmI> = (props) => {
         fetchData();
     }, [props.cod]);
     return (
-        <div key={props.cod} onClick={() => console.log("clicked")}>
-            <img key={props.cod} src={imageSrc  } alt="Film Cover" />
-            <span>{props.name}</span>
+        <div key={props.cod} onClick={()=>{props.setSelectedFilm(props.cod)}}>
+            <img key={props.cod} src={imageSrc} alt="FilmList Cover" />
+            <p>{props.name}</p>
         </div>
     );
 };
@@ -50,6 +60,7 @@ export const Films: FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [page, setPage] = useState<number>(1)
     const [filmListElem, setFilmListElem] = useState<JSX.Element[]>([])
+    const [selectedFilm, setSelectedFilm] = useState<number>(NO_FILM_SHOW)
 
     const fetchData = () =>{
         setLoading(true);
@@ -74,12 +85,13 @@ export const Films: FC = () => {
     useEffect(() => {
 
         const elem = films.slice((page-1)*20, (page)*20).map((f) =>
-            <Film key={f.cod}
-                name={f.name}
-                desc={f.desc}
-                release={f.release}
-                rate={f.rate}
-                cod={f.cod}
+            <Film     key={f.cod}
+                      name={f.name}
+                      desc={f.desc}
+                      release={f.release}
+                      rate={f.rate}
+                      cod={f.cod}
+                      setSelectedFilm={setSelectedFilm}
             />
         );
         setFilmListElem(elem)
@@ -93,22 +105,31 @@ export const Films: FC = () => {
             ) : (
                 <>
                 {films.length === 0 && <button onClick={fetchData}> fetchData</button>}
-                    <div id="image-container">{filmListElem}</div>
-                <div style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginTop: '10px'
-                }}>
-                    <button onClick={() => {
-                        if (page != 1) setPage(page - 1)
-                    }}> Previus
-                    </button>
-                    <button onClick={() => {
-                        setPage(page + 1)
-                    }}> Next
-                    </button>
-                </div>
+                    {selectedFilm === NO_FILM_SHOW ? (
+                        <>
+                            <div id="image-container">{filmListElem}</div>
+                            <div style={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    marginTop: '10px'
+                                }}>
+                                <button onClick={() => {
+                                    if (page != 1) setPage(page - 1);
+                                }}> Previus
+                                </button>
+                                <button onClick={() => {
+                                    setPage(page + 1);
+                                }}> Next
+                                </button>
+                            </div>
+                        </>
+                    ) : (
+                            <>
+                                <FilmInfo cod={selectedFilm} setFilmShowed={setSelectedFilm}/>
+                            </>
+                        )}
+
                 </>
             )}
         </div>

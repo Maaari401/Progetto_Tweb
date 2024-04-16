@@ -15,11 +15,11 @@ public class Film {
     private Date publicRelease;
     private String cover;
     private String desc;
-    private ArrayList<Integer> actors = new ArrayList<>();
+    //private ArrayList<Integer> actors = new ArrayList<>();
 
 
 
-    private ArrayList<Integer> directors = new ArrayList<>();
+    //private ArrayList<Integer> directors = new ArrayList<>();
 
     public Film(int cod, String name, double ranking, Date publicRelease, String desc, String image) {
         this.cod = cod;
@@ -57,7 +57,7 @@ public class Film {
         return desc;
     }
 
-    public ArrayList<Integer> getActors() {
+    /*public ArrayList<Integer> getActors() {
         return actors;
     }
 
@@ -71,7 +71,7 @@ public class Film {
 
     public void setDirectors(ArrayList<Integer> directors) {
         this.directors = directors;
-    }
+    }*/
 
     /*
     @Override

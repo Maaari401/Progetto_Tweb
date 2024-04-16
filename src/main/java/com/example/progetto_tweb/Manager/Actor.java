@@ -21,10 +21,6 @@ public class Actor {
     public Actor() {
 
     }
-
-
-
-
     public int getId() {
         return id;
     }
@@ -64,7 +60,7 @@ public class Actor {
             ps.setBytes(4, Base64.getDecoder().decode(a.getImage()));
             ps.executeQuery();
         }
-        conn.close();
+        
     }
     public static Actor loadActor(int id, Connection conn) throws SQLException {
         Actor actor = null;
@@ -79,7 +75,7 @@ public class Actor {
                         Base64.getEncoder().encodeToString(result.getBytes("image")));
             }
         }
-        conn.close();
+        
         return actor;
     }
     public static String loadImage(int id, Connection conn) throws SQLException {
@@ -91,7 +87,7 @@ public class Actor {
                 img = Base64.getEncoder().encodeToString(result.getBytes("image"));
             }
         }
-        conn.close();
+        
         return img;
     }
 
@@ -107,7 +103,7 @@ public class Actor {
             ps.executeUpdate();
             res = true;
         }
-        conn.close();
+        
         return res;
     }
     public static ArrayList<Integer> getFilmList(int id, Connection conn) throws SQLException{
@@ -119,14 +115,14 @@ public class Actor {
                 arr.add(result.getInt("film_id"));
             }
         }
-        conn.close();
+        
         return arr;
     }
 
     public static ArrayList<Actor> getAllActor(Connection conn) throws SQLException{
 
         ArrayList<Actor> arr = new ArrayList<Actor>();
-        try (PreparedStatement ps = conn.prepareStatement("select * from actors")){;
+        try (PreparedStatement ps = conn.prepareStatement("select id, name, date_birth, description from actors")){;
             ResultSet result = ps.executeQuery();
             while (result.next()){
                 arr.add(new Actor(result.getInt("id"),
@@ -136,7 +132,7 @@ public class Actor {
                         null));
             }
         }
-        conn.close();
+        
         return arr;
     }
 
@@ -146,7 +142,7 @@ public class Actor {
             ps.setInt(1, id);
             ps.executeUpdate();
         }
-        conn.close();
+        
         return res;
     }
 

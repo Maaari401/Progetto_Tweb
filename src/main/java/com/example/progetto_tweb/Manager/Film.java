@@ -15,11 +15,11 @@ public class Film {
     private Date publicRelease;
     private String cover;
     private String desc;
-    private ArrayList<Integer> actors = new ArrayList<>();
+    //private ArrayList<Integer> actors = new ArrayList<>();
 
 
 
-    private ArrayList<Integer> directors = new ArrayList<>();
+    //private ArrayList<Integer> directors = new ArrayList<>();
 
     public Film(int cod, String name, double ranking, Date publicRelease, String desc, String image) {
         this.cod = cod;
@@ -57,7 +57,7 @@ public class Film {
         return desc;
     }
 
-    public ArrayList<Integer> getActors() {
+    /*public ArrayList<Integer> getActors() {
         return actors;
     }
 
@@ -71,7 +71,7 @@ public class Film {
 
     public void setDirectors(ArrayList<Integer> directors) {
         this.directors = directors;
-    }
+    }*/
 
     /*
     @Override
@@ -98,7 +98,7 @@ public class Film {
             ps.setBytes(5, Base64.getDecoder().decode(f.getCover()));
             ps.executeUpdate();
         }
-        conn.close();
+        
     }
 
     public static Film loadFilm(int cod, Connection conn) throws SQLException {
@@ -116,7 +116,7 @@ public class Film {
                 );
             }
         }
-        conn.close();
+        
         return film;
     }
 
@@ -129,7 +129,6 @@ public class Film {
                 img = Base64.getEncoder().encodeToString(result.getBytes("cover"));
             }
         }
-        conn.close();
         return img;
     }
 
@@ -143,7 +142,7 @@ public class Film {
             ps.setBytes(5, Base64.getDecoder().decode(f.getCover()));
             ps.setInt(6, f.getCod());
             ps.executeUpdate();        }
-        conn.close();
+        
         return res;
     }
     public static List<String[]> getActorList(int cod, Connection conn) throws SQLException{
@@ -156,7 +155,7 @@ public class Film {
                 l.add(tmp);
             }
         }
-        conn.close();
+        
         return l.isEmpty()? null : l;
     }
     public static Map<String, List<String[]>> getDirectorList(int cod, Connection conn) throws SQLException {
@@ -178,14 +177,14 @@ public class Film {
                 groupedDirectors.get(department).add(var);
             }
 
-            conn.close();
+            
             return groupedDirectors.isEmpty() ? null : groupedDirectors;
         }
     }
 
     public static ArrayList<Film> getAllFilm(Connection conn) throws SQLException{
         ArrayList<Film> arr = new ArrayList<Film>();
-        try (PreparedStatement ps = conn.prepareStatement("SELECT * from film")){
+        try (PreparedStatement ps = conn.prepareStatement("SELECT cod, name, ranking, public_release, description from film")){
             ResultSet result = ps.executeQuery();
             while (result.next()){
                 arr.add(new Film(result.getInt("cod"),
@@ -197,7 +196,6 @@ public class Film {
                 );
             }
         }
-        conn.close();
         return arr;
     }
 
@@ -207,7 +205,7 @@ public class Film {
             ps.setInt(1, cod);
             ps.executeUpdate();
         }
-        conn.close();
+        
         return res;
     }
 }

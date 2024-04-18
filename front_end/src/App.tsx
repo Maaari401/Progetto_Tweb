@@ -1,6 +1,7 @@
 import Login from "./login/Login.tsx";
 import {Films} from "./film/FilmList.tsx"
 import {useState} from "react";
+import './css/App.css'
 
 function App(){
     const [logged, setLogged] = useState(false)

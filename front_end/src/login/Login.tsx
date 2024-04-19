@@ -44,13 +44,13 @@ const Login: FC<logI> = ({logged,setLogged}) => {
                             .then((value) => value.json())
                             .then((data: loginI)=> {
                                 setLogged(true)
-                                //console.log(data)
+                                console.log(data)
                                 sessionStorage.setItem("token", data.token)
                             });
 
                     }}>Login</button>) : (<button className="login-button" onClick={e => {
                         e.preventDefault();
-                        fetch("http://localhost:8080/Progetto_Tweb_war/logout",{
+                        fetch("http://localhost:8080/Progetto_Tweb/logout",{
                             method: 'GET',
                             headers: {
                                 'Content-Type': 'application/json',

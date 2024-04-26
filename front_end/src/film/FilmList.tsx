@@ -64,7 +64,7 @@ export const Films: FC = () => {
 
     const fetchData = () =>{
         setLoading(true);
-        fetch("http://localhost:8080/Progetto_Tweb_war/film", {
+        fetch("http://localhost:8080/Progetto_Tweb/film", {
             method: 'GET',
             headers: {
                 "token" : "tok $"+sessionStorage.getItem("token")
@@ -96,7 +96,6 @@ export const Films: FC = () => {
         );
         setFilmListElem(elem)
     }, [page, films]);
-
 
     return (
         <div id="film-container">

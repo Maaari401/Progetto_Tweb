@@ -30,7 +30,7 @@ public class PoolingPersistenceManager {
             config.setUsername("tweb");
             config.setPassword("tweb");
             config.addDataSourceProperty("dataSourceClassName", "org.postgresql.ds.PGSimpleDataSource");
-            config.setMaximumPoolSize(100);
+            config.setMaximumPoolSize(50);
             dataSource = new HikariDataSource(config);
         } catch (ClassNotFoundException ex) {
             ex.printStackTrace();

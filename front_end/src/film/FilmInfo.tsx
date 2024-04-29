@@ -3,49 +3,84 @@ import './filminfo.css'
 
 interface FilmPropsI {
     cod: number
-    setFilmShowed: (cod: number) => void
+    setView: (value: string) => void
 }
 interface FilmDataI {
     cod: number,
     name: string,
     rate: number,
-    release: string,
+    publicRelease: string,
     cover: string,
     desc: string,
 }
-
+interface CreditsDataI{
+    actors: ActorBaseI[],
+    cast: CastBaseI[]
+}
+interface ActorBaseI{
+    id: number,
+    character: string
+}
+interface CastBaseI{
+    id: number,
+    role: string,
+    departmant: string
+}
 
 const FilmInfo: FC<FilmPropsI> = (props) =>{
-    const [Elem, setElem] = useState<FilmDataI>({cod: 0, desc: "", cover: "", name: "", rate: 0, release: ""});
+    const [FilmInfo, setFilmInfo] = useState<FilmDataI>({cod: 0, desc: "", cover: "", name: "", rate: 0, publicRelease: ""});
+    //const [actorList, setActorList] = useState<JSX.Element[]>()
+
     useEffect(() => {
-        const fetchFilm = async () =>{
-            const response = await fetch('http://localhost:8080/Progetto_Tweb/film?id='+props.cod, {
+
+        const fetchFilmData = async (cod:number) => {
+            const response = await fetch('http://localhost:8080/Progetto_Tweb/film?id=' + cod, {
                 method: 'GET',
                 headers: {
                     "token": `tok $${sessionStorage.getItem("token")}`
                 }
             });
-            const value = (await response.json()) as FilmDataI
+            const value = (await response.json()) as FilmDataI;
+            setFilmInfo(value)
+        }
+        const fetchFilmCast= async (cod:number) => {
+            const response = await fetch('http://localhost:8080/Progetto_Tweb/film/credits?cod=' + cod, {
+                method: 'GET',
+                headers: {
+                    "token": `tok $${sessionStorage.getItem("token")}`
+                }
+            });
+            const value = (await response.json()) as CreditsDataI;
             console.log(value)
-            setElem(value)
-        };
-        fetchFilm();
+        }
+
+
+        fetchFilmData(props.cod)
+        fetchFilmCast(props.cod)
+        //fetchFilmDirector(props.cod)
     }, []);
 
     return (<>
             <div>
-                <div className={'image-container'}> <img className={'centered-image'} src={`data:image/jpeg;base64,${Elem.cover}`}/></div>
-                <p>Movie name: {Elem.name}</p>
-                <p>Description: {Elem.desc}</p>
-                <p>release date: {Elem.release}</p>
+                <div className={'image-container'}><img className={'centered-image'}
+                                                        src={`data:image/jpeg;base64,${FilmInfo.cover}`}/></div>
+                <p>Movie name: {FilmInfo.name}</p>
+                <p>Description: {FilmInfo.desc}</p>
+                <p>release date: {FilmInfo.publicRelease}</p>
+            </div>
+
+            <div className={'actorList'}>
+
             </div>
             <button onClick={() => {
-                props.setFilmShowed(0)
+                props.setView("films")
             }
-            }>BACK</button>
+            }>BACK
+            </button>
 
         </>
     )
 };
+
 
 export default FilmInfo;

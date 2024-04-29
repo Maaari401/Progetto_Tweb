@@ -46,9 +46,10 @@ const SingUp: FC<SingUpProps> = ({setPage}: SingUpProps) => {
                                     "pwd": password
                                 }),
                             })
-                                .then((value) => value.json())
-                                .then((data) => {
-                                    console.log(data)
+                                .then((response) => {
+                                    console.log(response.status)
+                                    if(response.status === 200) setPage('login')
+                                    else console.error("ERROR")
                                 })
                                 .catch((e) => {console.error(e)})
                         }else {

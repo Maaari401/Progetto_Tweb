@@ -6,7 +6,7 @@ interface loginI {
     operation: string;
     token: string;
     success: boolean;
-    error: boolean;
+    auth: boolean;
     errorMessage: string;
 }
 
@@ -49,6 +49,7 @@ const Login: FC<logI> = ({ logged, setLogged, setPage }) => {
                                 setLogged(true)
                                 console.log(data)
                                 sessionStorage.setItem("token", data.token)
+                                sessionStorage.setItem("role", String(data.auth))
                             });
 
                     }}>Login

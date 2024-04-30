@@ -20,3 +20,11 @@
 .actor_container{
     text-align: center; /* Center-align text within the div */
 }
+
+.directorList img {
+    height: 100px;
+    width: auto;
+}
+.director_container{
+    text-align: center; /* Center-align text within the div */
+}

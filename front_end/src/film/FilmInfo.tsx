@@ -1,51 +1,236 @@
 import {FC, useEffect, useState} from "react";
 import './filminfo.css'
+import React from "react";
+import CastMemberInfo from "../cast/CastMemberInfo.tsx";
 
 interface FilmPropsI {
     cod: number
-    setFilmShowed: (cod: number) => void
+    setView: (value: string) => void
 }
 interface FilmDataI {
     cod: number,
     name: string,
     rate: number,
-    release: string,
+    publicRelease: string,
     cover: string,
     desc: string,
 }
 
 
+interface CreditsDataI{
+    actor: ActorBaseI[],
+    crew: CrewDataI[]
+}
+interface ActorBaseI{
+    id: number,
+    character: string
+}
+interface CrewDataI {
+    [department: string]: CastBaseI[];
+}
+
+interface CastBaseI{
+    id: number,
+    role: string,
+    department: string
+}
+interface MemberI{
+    id: number,
+    name: string,
+    date_birth: string,
+    desc: string,
+    image: string
+}
+interface infoPageI{
+    id: number,
+    section: string
+}
 const FilmInfo: FC<FilmPropsI> = (props) =>{
-    const [Elem, setElem] = useState<FilmDataI>({cod: 0, desc: "", cover: "", name: "", rate: 0, release: ""});
+    const [FilmInfo, setFilmInfo] = useState<FilmDataI>({cod: 0, desc: "", cover: "", name: "", rate: 0, publicRelease: ""});
+    const [ActorList, setActorList] = useState<JSX.Element[]>()
+    const [DirectorList, setDirectorList] = useState<Record<string, JSX.Element[]>>()
+    const [isLoading, setIsLoading] = useState(true)
+    const [infoPage, setInfoPage] = useState<infoPageI>({'id': -1,'section':''})
+
     useEffect(() => {
-        const fetchFilm = async () =>{
-            const response = await fetch('http://localhost:8080/Progetto_Tweb/film?id='+props.cod, {
+        const fetchFilmData = async (cod:number) => {
+            const response = await fetch('http://localhost:8080/Progetto_Tweb/film?id=' + cod, {
                 method: 'GET',
                 headers: {
                     "token": `tok $${sessionStorage.getItem("token")}`
                 }
             });
-            const value = (await response.json()) as FilmDataI
-            console.log(value)
-            setElem(value)
+            const value = (await response.json()) as FilmDataI;
+            setFilmInfo(value)
+        }
+        const CastInfo = async (cod: number) => {
+            const response = await fetch('http://localhost:8080/Progetto_Tweb/film/credits?cod=' + cod, {
+                method: 'GET',
+                headers: {
+                    "token": `tok $${sessionStorage.getItem("token")}`
+                }
+            });
+            return await response.json();
+        }
+
+        const fetchFilmActors = async (cod: number) =>{
+            const value: CreditsDataI = await CastInfo(cod);
+            const actorPromises: Promise<JSX.Element>[] = value.actor.map((a) => {
+                return fetch('http://localhost:8080/Progetto_Tweb/actor?id=' + a[0], {
+                    method: 'GET',
+                    headers: {
+                        "token": `tok $${sessionStorage.getItem("token")}`
+                    }
+                })
+                    .then(response => response.json())
+                    .then((value: MemberI) => {
+                        return (
+                            <>
+                                <div className={"actor_container"} key={a[0]} onClick={() => {
+                                    //code to show actor's info
+                                    setInfoPage({
+                                        'id': a[0],
+                                        'section': 'actor'
+                                    })
+                                }}>
+                                    <img src={`data:image/jpeg;base64,${value.image}`}/>
+                                    <p>{value.name} <br/><b>as</b> <br/>{a[1]}</p>
+                                </div>
+                            </>
+                        );
+                    });
+            });
+
+            Promise.all(actorPromises)
+                .then(ActorElist => {
+                    setActorList(ActorElist);
+                })
+                .catch((error) => {
+                    console.error("Error fetching actors:", error);
+                });
+        }
+
+        const fetchFilmDirectors = async (cod: number) => {
+            try {
+                const value: CreditsDataI = await CastInfo(cod); // Assuming CastInfo is a function that fetches credits data
+
+                const directorPromisesByDepartment: Record<string, Promise<JSX.Element>[]> = {};
+
+                // Iterate over the departments and their crew members
+                for (const department in value.crew) {
+                    const crewList = value.crew[department];
+                    directorPromisesByDepartment[department] = crewList.map((directorData: string[]) => {
+                        return fetchDirectorDetails(directorData);
+                    });
+                }
+
+                // Resolve promises for each department separately
+                const directorListsByDepartment: Record<string, JSX.Element[]> = {};
+                for (const department in directorPromisesByDepartment) {
+                    directorListsByDepartment[department] = await Promise.all(directorPromisesByDepartment[department]);
+                }
+                console.log(directorListsByDepartment)
+                // Set director lists for each department
+                setDirectorList(directorListsByDepartment);
+                setIsLoading(false);
+            } catch (error) {
+                console.error("Error fetching credits data:", error);
+            }
         };
-        fetchFilm();
+
+        const fetchDirectorDetails = async (directorData: string[]): Promise<JSX.Element> => {
+            try {
+                const response = await fetch(`http://localhost:8080/Progetto_Tweb/director?id=${directorData[0]}`, {
+                    method: 'GET',
+                    headers: {
+                        "token": `tok $${sessionStorage.getItem("token")}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch director details: HTTP status ${response.status}`);
+                }
+
+                const directorDetails: MemberI = await response.json();
+
+                return (
+                    <>
+                        <div className="director_container" key={directorData[0]} onClick={()=>{
+                            //code to show info of actor or director
+                            setInfoPage({
+                                'id': directorDetails.id,
+                                'section': 'director'
+                            })
+                        }} >
+                            <img src={`data:image/jpeg;base64,${directorDetails.image}`} alt="Director" />
+                            <p>
+                                {directorDetails.name}
+                                <br /><b>as</b> <br />
+                                {directorData[2]} {/* Accessing role from the JSON structure */}
+                                <br /><b>in</b>
+                                {directorData[1]} {/* Accessing department from the JSON structure */}
+                            </p>
+                        </div>
+                    </>
+                );
+            } catch (error) {
+                console.error("Error fetching director details:", error);
+                return (
+                    <>
+                        <div key={directorData[0]}>
+                            <p>Error Fetching</p>
+                        </div>
+
+                    </>
+                ); // Return null for failed promises
+            }
+        };
+
+        fetchFilmData(props.cod)
+        fetchFilmActors(props.cod)
+        fetchFilmDirectors(props.cod)
     }, []);
 
-    return (<>
+    return infoPage.id === -1 && infoPage.section === '' ? (<>
             <div>
-                <div className={'image-container'}> <img className={'centered-image'} src={`data:image/jpeg;base64,${Elem.cover}`}/></div>
-                <p>Movie name: {Elem.name}</p>
-                <p>Description: {Elem.desc}</p>
-                <p>release date: {Elem.release}</p>
+                <div className={'image-container'}><img className={'centered-image'}
+                                                        src={`data:image/jpeg;base64,${FilmInfo.cover}`}/></div>
+                <p>Movie name: {FilmInfo.name}</p>
+                <p>Description: {FilmInfo.desc}</p>
+                <p>release date: {FilmInfo.publicRelease}</p>
             </div>
-            <button onClick={() => {
-                props.setFilmShowed(0)
-            }
-            }>BACK</button>
+            <div className={'actorList'}>
+                Actor list:<br/>
+                {ActorList}
+            </div>
+            <div className={'directorList'}>
+                <br/>
+                {isLoading ? ( // Conditionally render loading state
+                        <p> Director List is Loading...</p>
+                    ) : (
+                    <>
+                        <div className={'directorList'}>
+                            Director list:<br/>
+                            {Object.entries(DirectorList).map(([department, directorList]) => (
+                                <div key={department}>
+                                    <h2>{department}</h2>
+                                    {directorList.map((director, index) => (
+                                        <React.Fragment key={index}>
+                                            {director}
+                                        </React.Fragment>
+                                    ))}
+                                </div>
+                            ))}
+                        </div>
+                    </>
+                )}
+            </div>
 
-        </>
+
+    </>) : (
+            <CastMemberInfo id={infoPage.id} section={infoPage.section} setBack={setInfoPage}/>
     )
 };
+
 
 export default FilmInfo;

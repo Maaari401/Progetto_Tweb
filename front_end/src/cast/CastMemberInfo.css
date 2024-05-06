@@ -1,0 +1,13 @@
+.image-container {
+    display: inline;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Set height to full viewport height */
+}
+
+.centered-image {s
+    width: 30%; /* Set width to 60% of the container */
+    /* Optional: Adjust height to maintain aspect ratio */
+    height: auto;
+    /* Optional: Add additional styling (e.g., border, box-shadow, etc.) */
+}

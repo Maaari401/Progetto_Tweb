@@ -1,0 +1,29 @@
+.selection-menu {
+    background-color: #0099cc;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 300px;
+    margin: 0 auto;
+    list-style: none;
+    padding: 0;
+}
+
+.selection-menu li {
+    margin: 0 5px;
+}
+
+.selection-menu a {
+    color: #fff;
+    text-decoration: none;
+    padding: 5px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.Active  {
+    background-color: #fff;
+    color: #0099cc;
+}

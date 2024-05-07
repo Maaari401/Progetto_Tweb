@@ -14,15 +14,15 @@ const Form: FC<logI> = ({logged,setLogged}) => {
     const [page, setPage] = useState("login")
 
     return (
-        <>
-            <div className={"FormContainer"}>
-                {page === "login" ? (
-                        <Login logged={logged} setLogged={setLogged} setPage={setPage}/>
-                    ) : (
-                        <SingUp setPage={setPage}/>
-                    )}
-            </div>
-        </>
+
+        <div className="form-container">
+            <h1>FakerBoxD</h1>
+            {page === "login" ? (
+                    <Login logged={logged} setLogged={setLogged} setPage={setPage}/>
+                ) : (
+                    <SingUp setPage={setPage}/>
+                )}
+        </div>
     )
 }
 export default Form;

@@ -60,7 +60,7 @@ const Login: FC<logI> = ({ logged, setLogged, setPage }) => {
             <p>Not yet registered?</p>
             <button className="login-button" onClick={() => {
                 setPage("singup")
-            }}>SingUp
+            }}>Sign Up
             </button>
         </div>
     )

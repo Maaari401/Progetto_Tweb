@@ -21,9 +21,11 @@ function App(){
             {(logged &&
                 <>
                     <TopBar setLogged={setLogged} view={view} setView={setView}/>
-                    {view === "films" && <Films setView={setView}/>}
-                    {view === "user" && <UserPage/>}
-                    {view.startsWith('film?') && <FilmInfo cod={parseInt(view.split('?')[1])} setView={setView}/>}
+                    {/*<div className="page-container">*/}
+                        {view === "films" && <Films setView={setView}/>}
+                        {view === "user" && <UserPage/>}
+                        {view.startsWith('film?') && <FilmInfo cod={parseInt(view.split('?')[1])} setView={setView}/>}
+                    {/*</div>*/}
                 </>
                 )}
         </>

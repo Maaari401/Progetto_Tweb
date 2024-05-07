@@ -1,13 +1,92 @@
+#film-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.previous-next-page {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5em;
+    margin-bottom: 1em;
+    width: 70%;
+}
+
+.previous-next-page p {
+    display: flex;
+    /*justify-content: center;*/
+    vertical-align: center;
+    color: white;
+    margin: 0;
+}
+
+.previous-next-page img {
+    max-width: 24px;
+    width: 24px;
+    height: 24px;
+    max-height: 24px;
+    filter: brightness(0) invert(1);
+    transition: filter 0.3s ease;
+}
+
+.previous-next-page img:hover {
+    filter: none;
+    background-color: white;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, filter 0.4s ease;
+    cursor: pointer;
+}
+
+.previous-next-page > button {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+}
+
 #image-container {
     display: flex;
     flex-wrap: wrap;
+    flex-direction: row; /* Display images horizontally */
     justify-content: center;
     gap: 1rem;
     width: 100%;
     max-width: 1200px; /* Increased max-width for horizontal layout */
-    margin: 0 auto;
-    flex-direction: row; /* Display images horizontally */
+    /*margin: 0 auto;*/
+    /*margin-top: 4em;*/
 }
+
+.entry-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 15%;
+    height: 50%;
+}
+
+.poster {
+    transition: box-shadow 0.3s ease;
+}
+
+.poster:hover {
+    cursor: pointer;
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.5);
+}
+
+/*.entry-container p {*/
+/*    color: white;*/
+/*    font-family: arial;*/
+/*    padding-top: 1em;*/
+/*}*/
+
+/*.poster {*/
+/*    !*max-width: 100%; !* Ensure image doesn't exceed the width of its container *!*!*/
+/*    height: auto; !* Allow the height to adjust proportionally based on the width *!*/
+/*    object-fit: cover;*/
+/*}*/
 
 #image-container .image-item {
     flex: 1 1 calc(100% / 8 - 1rem); /* Set the width of each image item to (100% / 8) - gap value */
@@ -21,12 +100,15 @@
     height: auto;
     object-fit: cover;
     border-radius: 5px;
-    max-width: 150px; /* Set a maximum width for the images */
-    max-height: 150px; /* Set a maximum height for the images */
+    max-width: 120px; /* Set a maximum width for the images */
+    /*max-height: 0px; !* Set a maximum height for the images *!*/
 }
 
 #image-container p {
     margin: 0.5rem 0;
     font-size: 0.9rem;
     text-align: center;
+    color: white;
+    font-family: arial;
+    padding-top: 1em;
 }

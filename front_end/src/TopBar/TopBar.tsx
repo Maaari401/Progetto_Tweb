@@ -14,24 +14,25 @@ interface loginI {
     errorMessage: string;
 }
 export const TopBar: FC<TopBarPropsI> = ({ setLogged, view, setView }) => {
-    return (<section className="topbar">
-        <h1>FakerBoxd</h1>
-        <nav className="topmenu">
-            {view === "films" ? (
-                    <div className="user" onClick={() => {setView("user")}}>
-                        <img src={'src/assets/user.png'}/>
+    return (
+        <section className="topbar">
+            <h1>FakerBoxD</h1>
+            <nav className="topmenu">
+                {view === "films" ? (
+                    <div className="user-button" onClick={() => {setView("user")}}>
+                        <img id="home" className="icon" src="src/assets/user-solid.svg" alt="Profile"
+                             title={'Profile'}/>
                     </div>
                 ) : (
-                <div className="home" onClick={() => {
-                    setView("films")
-                }}>
-                    <img src={'src/assets/home.png'}/>
-                </div>
-            )
-            }
+                    <div className="home-button" onClick={() => {
+                        setView("films")
+                    }}>
+                        <img id="home" className="icon" src="src/assets/house-solid.svg" alt="Home" title={'Home'}/>
+                        {/*<svg id="home" src={'src/assets/house-solid.svg'}/>*/}
+                    </div>
+                )}
 
-
-            <div className="logout pulsante" onClick={(e) => {
+                <div className="logout-button" onClick={(e) => {
                     e.preventDefault();
                     fetch("http://localhost:8080/Progetto_Tweb/logout", {
                         method: 'GET',
@@ -46,8 +47,10 @@ export const TopBar: FC<TopBarPropsI> = ({ setLogged, view, setView }) => {
                             console.log(data);
                             sessionStorage.removeItem('token');
                         });
-                }}>Logout
+                }}>
+                    <img id="home" className="icon" src="src/assets/right-from-bracket-solid.svg" alt="Logout"
+                         title={'Logout'}/>
                 </div>
-        </nav>
-    </section>);
+            </nav>
+        </section>);
 }

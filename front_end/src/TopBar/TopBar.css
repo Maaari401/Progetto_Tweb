@@ -1,40 +1,51 @@
 .topbar {
     grid-area: topbar;
-    background-color: #7bb1e3;
+    background-color: #1f262e;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-left: 30px;
-    padding-right: 20px;
-    color: #4A7D7E;
+    /*padding-left: 30px;*/
+    /*padding-right: 30px;*/
+    /*color: #29333d;*/
     margin-bottom: 10px;
 }
 
 .topbar h1 {
     font-size: 2rem;
-    margin: 0;
+    margin-left: 10%;
+    color: white;
 }
 
 .topmenu {
     display: flex;
+    margin-right: 10%;
 }
 
 .topmenu > div {
-    background-color: #AFCAC6;
+    /*background-color: #AFCAC6;*/
     border-radius: 5px;
-    margin-right: 5px;
+    margin-left: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .topmenu .icon {
-    width: 40px;
-    height: 40px;
+    /*width: 40px;*/
+    /*height: 40px;*/
+    filter: brightness(0) invert(1);
+    transition: filter 0.3s ease;
+}
+.topmenu .icon:hover {
+    filter: none;
+    background-color: white;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, filter 0.4s ease;
+    cursor: pointer;
 }
 
 .topmenu .pulsante:hover {
-    background-color: #dfc7ff;
+    background-color: white;
 }
 
 .topmenu > div > img {

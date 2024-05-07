@@ -18,7 +18,7 @@ const SingUp: FC<SingUpProps> = ({setPage}: SingUpProps) => {
     return (
         <div className="login-container">
             <form>
-                <input className="username" type="text" placeholder="email" onChange={(e) => setEmail(e.target.value)}
+                <input className="username" type="text" placeholder="Email" onChange={(e) => setEmail(e.target.value)}
                        required/>
                 <br/>
                 <input className="username" type="text" placeholder="Username" onChange={(e) => setUsr(e.target.value)}
@@ -27,7 +27,7 @@ const SingUp: FC<SingUpProps> = ({setPage}: SingUpProps) => {
                 <input className="password" type="password" placeholder="Password"
                        onChange={(e) => setPwd1(e.target.value)} required/>
                 <br/>
-                <input className="password" type="password" placeholder="Repeat Password"
+                <input className="password" type="password" placeholder="Repeat password"
                        onChange={(e) => setPwd2(e.target.value)} required/>
                 <br/>
                 <div className="login-buttons-container">
@@ -53,9 +53,9 @@ const SingUp: FC<SingUpProps> = ({setPage}: SingUpProps) => {
                                 })
                                 .catch((e) => {console.error(e)})
                         }else {
-                            console.log("Error password dismatch")
+                            console.log("Error password mismatch")
                         }
-                    }}>Sign up
+                    }}>Sign Up
                     </button>
                 </div>
             </form>

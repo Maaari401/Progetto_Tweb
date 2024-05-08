@@ -5,11 +5,17 @@ import {TopBar} from "./TopBar/TopBar.tsx";
 import {UserPage} from "./userSection/UserPage.tsx"
 import FilmInfo from "./film/FilmInfo.tsx";
 import './css/App.css'
+import CastMemberInfo from "./cast/CastMemberInfo.tsx";
+import FilmModify from "./film/FilmModify.tsx";
+
+interface ViewI {
+    view: string,
+    preView: string
+}
 
 function App(){
     const [logged, setLogged] = useState(false)
-    const [view, setView] = useState("films")
-
+    const [view, setView] = useState<ViewI>({'view':'films','preView':'films'})
 
     useEffect(() => {
         if(sessionStorage.getItem("token") !== null && sessionStorage.getItem('token') !== undefined) setLogged(true)
@@ -21,11 +27,12 @@ function App(){
             {(logged &&
                 <>
                     <TopBar setLogged={setLogged} view={view} setView={setView}/>
-                    {/*<div className="page-container">*/}
-                        {view === "films" && <Films setView={setView}/>}
-                        {view === "user" && <UserPage/>}
-                        {view.startsWith('film?') && <FilmInfo cod={parseInt(view.split('?')[1])} setView={setView}/>}
-                    {/*</div>*/}
+                    {view.view === "films" && <Films setView={setView} view={view}/>}
+                    {view.view === "user" && <UserPage/>}
+                    {view.view.startsWith('film?') && <FilmInfo cod={parseInt(view.view.split('?')[1])} setView={setView} view={view}/>}
+                    {view.view.startsWith('actor?') && <CastMemberInfo id={parseInt(view.view.split('?')[1])} section={'actor'} setView={setView} view={view}/>}
+                    {view.view.startsWith('director?') && <CastMemberInfo id={parseInt(view.view.split('?')[1])} section={'director'} setView={setView} view={view}/>}
+                    {view.view.startsWith('modify-Film') && <FilmModify cod={parseInt(view.view.split('?')[1])} setView={setView} view={view}/>}
                 </>
                 )}
         </>

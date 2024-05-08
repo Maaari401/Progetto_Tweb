@@ -14,11 +14,17 @@
         rate: number,
         release: string,
         desc: string,
-        setView: (cod: string) => void
+
+        setView: (cod: ViewI) => void,
+        view: ViewI
     }
 
     interface imageI{
         image: string
+    }
+    interface ViewI {
+        view: string,
+        preView: string
     }
 
     const FILM_FOR_Page: number = 18;
@@ -46,20 +52,32 @@
             fetchData();
         }, [props.cod]);
         return (
-            <div className={'entry-container'} key={props.cod}>
-                <img className={'poster'} key={props.cod} src={imageSrc} alt="FilmList Cover"
-                     onClick={()=>{props.setView('film?'+props.cod)}}/>
-                <p>{props.name}</p>
-            </div>
+            <>
+                <div>
+                     <div className={'entry-container'} key={props.cod}>
+                        <img className={'poster'} key={props.cod} src={imageSrc} alt="FilmList Cover"
+                            onClick={()=>{props.setView('film?'+props.cod)}}/>
+                        <p>{props.name}</p>
+                      </div>
+                    {sessionStorage.getItem('role') === 'true' ?
+                        (<img src={'src/assets/icons8-matita-50.png'}
+                                 style={{width: '15px', height: 'auto'}} onClick={() => {
+                                /* TODO ADD ONCLICK EVENT TO MODIFY VALUES*/
+                                props.setView({'view': 'modify-Film?' + props.cod, 'preView': props.view.view})
+                            }}/>):(<></>)
+                    }
+                </div>
+            </>
         );
     };
 
 
     interface FilmsProps {
-        setView: (value: string) => void
+        setView: (value: ViewI) => void
+        view: ViewI
     }
 
-    export const Films: FC<FilmsProps> = ({setView}: FilmsProps) => {
+    export const Films: FC<FilmsProps> = (props: FilmsProps) => {
         const [films, setFilms] = useState<filmI[]>([]);
         const [loading, setLoading] = useState<boolean>(false);
         const [page, setPage] = useState<number>(1);
@@ -97,12 +115,12 @@
                       release={f.release}
                       rate={f.rate}
                       cod={f.cod}
-                      setView={setView}
+                      setView={props.setView}
+                      view={props.view}
                 />
             );
             setFilmListElem(elem);
         }, [page, films]);
-
         return (
             <div id="film-container">
                 {loading ? (

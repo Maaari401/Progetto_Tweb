@@ -2,9 +2,14 @@ import {FC, useEffect, useState} from "react";
 import './filminfo.css'
 import React from "react";
 
+interface ViewI {
+    view: string,
+    preView: string
+}
 interface FilmPropsI {
-    cod: number
-    setView: (value: string) => void
+    cod: number,
+    setView: (value: ViewI) => void,
+    view: ViewI
 }
 interface FilmDataI {
     cod: number,
@@ -15,6 +20,30 @@ interface FilmDataI {
     desc: string,
 }
 
+interface CreditsDataI{
+    actor: ActorBaseI[],
+    crew: CrewDataI[]
+}
+interface ActorBaseI{
+    id: number,
+    character: string
+}
+interface CrewDataI {
+    [department: string]: CastBaseI[];
+}
+
+interface CastBaseI{
+    id: number,
+    role: string,
+    department: string
+}
+interface MemberI{
+    id: number,
+    name: string,
+    date_birth: string,
+    desc: string,
+    image: string
+}
 
 interface CreditsDataI{
     actor: ActorBaseI[],
@@ -48,7 +77,6 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
 
 
     useEffect(() => {
-
         const fetchFilmData = async (cod:number) => {
             const response = await fetch('http://localhost:8080/Progetto_Tweb/film?id=' + cod, {
                 method: 'GET',
@@ -56,48 +84,10 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                     "token": `tok $${sessionStorage.getItem("token")}`
                 }
             });
+
             const value = (await response.json()) as FilmDataI;
             setFilmInfo(value)
         }
-        /*const fetchFilmCast= async (cod:number) => {
-            const response = await fetch('http://localhost:8080/Progetto_Tweb/film/credits?cod=' + cod, {
-                method: 'GET',
-                headers: {
-                    "token": `tok $${sessionStorage.getItem("token")}`
-                }
-            });
-            const value = (await response.json()) as CreditsDataI;
-            console.log(value)
-            const actorPromises: Promise<JSX.Element>[] = value.actors.map((a) => {
-                return fetch('http://localhost:8080/Progetto_Tweb/actor?id=' + a.id, {
-                    method: 'GET',
-                    headers: {
-                        "token": `tok $${sessionStorage.getItem("token")}`
-                    }
-                })
-                    .then(response => response.json())
-                    .then((value: MemberI) => {
-                        return (
-                            <>
-                                <img src={`data:image/jpeg;base64,${value.image}`}/>
-                                <p>{value.name} <b>as</b> {a.character}</p>
-                            </>
-                        );
-                    });
-            });
-            console.log(actorPromises)
-
-            Promise.all(actorPromises)
-                .then(ActorElist => {
-                    console.log(ActorElist);
-                    setActorList(ActorElist);
-                })
-                .catch((e) => {
-                   console.error(e)
-                });
-
-
-        }*/
         const CastInfo = async (cod: number) => {
             const response = await fetch('http://localhost:8080/Progetto_Tweb/film/credits?cod=' + cod, {
                 method: 'GET',
@@ -121,7 +111,10 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                     .then((value: MemberI) => {
                         return (
                             <>
-                                <div className={"actor_container"} key={a[0]}>
+                                <div className={"actor_container"} key={a[0]} onClick={() => {
+                                    //code to show actor's info
+                                    props.setView({'view':'actor?'+value.id, 'preView':props.view.view})
+                                }}>
                                     <img src={`data:image/jpeg;base64,${value.image}`}/>
                                     <p>{value.name} <br/><b>as</b> <br/>{a[1]}</p>
                                 </div>
@@ -158,7 +151,6 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                 for (const department in directorPromisesByDepartment) {
                     directorListsByDepartment[department] = await Promise.all(directorPromisesByDepartment[department]);
                 }
-                console.log(directorListsByDepartment)
                 // Set director lists for each department
                 setDirectorList(directorListsByDepartment);
                 setIsLoading(false);
@@ -184,7 +176,11 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
 
                 return (
                     <>
-                        <div className="director_container" key={directorData[0]}>
+                        <div className="director_container" key={directorData[0]} onClick={()=>{
+                            //code to show info of actor or director
+                            props.setView({'view':'director?'+directorDetails.id, 'preView':props.view.view})
+
+                        }} >
                             <img src={`data:image/jpeg;base64,${directorDetails.image}`} alt="Director" />
                             <p>
                                 {directorDetails.name}
@@ -216,6 +212,9 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
 
     return <>
             <div>
+                <button onClick={()=>{
+                    props.setView({'view':props.view.preView, 'preView':props.view.view})
+                }}>Back</button><br/>
                 <div className={'image-container'}><img className={'centered-image'}
                                                         src={`data:image/jpeg;base64,${FilmInfo.cover}`}/></div>
                 <p>Movie name: {FilmInfo.name}</p>
@@ -248,12 +247,6 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                     </>
                 )}
             </div>
-        <button onClick={() => {
-            props.setView("films")
-        }
-        }>BACK
-        </button>
-
     </>
 };
 

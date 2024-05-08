@@ -9,7 +9,6 @@
 .form-container p {
     color: white;
 }
-
 .login-container {
     display: flex;
     flex-direction: column;
@@ -28,6 +27,7 @@
     padding: 8px;
     outline: none;
 }
+
 
 /*.login-buttons-container {*/
 /*    display: flex;*/
@@ -53,4 +53,3 @@
 .signup-button:hover {
     background-color: #45a049;
 }
-

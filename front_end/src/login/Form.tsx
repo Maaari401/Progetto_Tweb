@@ -14,7 +14,6 @@ const Form: FC<logI> = ({logged,setLogged}) => {
     const [page, setPage] = useState("login")
 
     return (
-
         <div className="form-container">
             <h1>FakerBoxD</h1>
             {page === "login" ? (

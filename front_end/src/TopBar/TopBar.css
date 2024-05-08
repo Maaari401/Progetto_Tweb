@@ -14,6 +14,7 @@
     font-size: 2rem;
     margin-left: 10%;
     color: white;
+
 }
 
 .topmenu {
@@ -25,10 +26,8 @@
     /*background-color: #AFCAC6;*/
     border-radius: 5px;
     margin-left: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
+
 
 .topmenu .icon {
     /*width: 40px;*/

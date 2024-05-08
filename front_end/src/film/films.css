@@ -112,3 +112,8 @@
     font-family: arial;
     padding-top: 1em;
 }
+
+.pencil img{
+    width: 10px;
+    height: auto;
+}

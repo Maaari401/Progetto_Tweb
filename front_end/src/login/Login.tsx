@@ -16,7 +16,7 @@ interface logI {
     setPage: (value: string) => void
 }
 
-const Login: FC<logI> = ({ logged, setLogged, setPage }) => {
+const Login: FC<logI> = (props) => {
     const [usr, setUsr] = useState("");
     const [pwd, setPwd] = useState("");
 
@@ -48,9 +48,9 @@ const Login: FC<logI> = ({ logged, setLogged, setPage }) => {
                                 if(data.success) {
                                     sessionStorage.setItem("token", data.token)
                                     sessionStorage.setItem("role", String(data.auth))
-                                    setLogged(true)
+                                    props.setLogged(true)
                                 }else{
-                                    setLogged(false)
+                                    props.setLogged(false)
                                     const successMessage = document.getElementById('return-status');
                                     if (successMessage) {
                                         successMessage.innerText = `${data.errorMessage}`;
@@ -66,7 +66,7 @@ const Login: FC<logI> = ({ logged, setLogged, setPage }) => {
             <p style={{color: 'red'}} id='return-status'></p>
             <p>Not yet registered?</p>
             <button className="login-button" onClick={() => {
-                setPage("singup")
+                props.setPage("singup")
             }}>Sign Up
             </button>
         </div>

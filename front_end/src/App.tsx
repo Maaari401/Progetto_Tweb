@@ -26,7 +26,6 @@ function App(){
             {(!logged && <Form logged={logged} setLogged={setLogged}/>)}
             {(logged &&
                 <>
-
                     <TopBar setLogged={setLogged} view={view} setView={setView}/>
                     {view.view === "films" && <Films setView={setView} view={view}/>}
                     {view.view === "user" && <UserPage/>}

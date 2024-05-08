@@ -14,6 +14,7 @@
         rate: number,
         release: string,
         desc: string,
+
         setView: (cod: ViewI) => void,
         view: ViewI
     }
@@ -26,7 +27,7 @@
         preView: string
     }
 
-    const FILM_FOR_Page: number = 15;
+    const FILM_FOR_Page: number = 18;
 
     const Film: FC<filmElemI> = (props) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -53,10 +54,11 @@
         return (
             <>
                 <div>
-                    <div key={props.cod} onClick={()=>{props.setView({'view':'film?'+props.cod, 'preView':props.view.view})}}>
-                        <img key={props.cod} src={imageSrc} alt="FilmList Cover" />
+                     <div className={'entry-container'} key={props.cod}>
+                        <img className={'poster'} key={props.cod} src={imageSrc} alt="FilmList Cover"
+                            onClick={()=>{props.setView('film?'+props.cod)}}/>
                         <p>{props.name}</p>
-                    </div>
+                      </div>
                     {sessionStorage.getItem('role') === 'true' ?
                         (<img src={'src/assets/icons8-matita-50.png'}
                                  style={{width: '15px', height: 'auto'}} onClick={() => {
@@ -119,34 +121,31 @@
             );
             setFilmListElem(elem);
         }, [page, films]);
-
         return (
             <div id="film-container">
                 {loading ? (
                     <p>Loading...</p>
                 ) : (
                     <>
-                        <div id="image-container">{filmListElem}</div>
-                        <div style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            marginTop: '10px'
-                        }}>
-
+                        <div className={'previous-next-page'}>
                             <button onClick={() => {
                                 setPage(page - 1);
-                            }} disabled={page === 1}> Previous
+                            }} style={{visibility: page=== 1 ? 'hidden' : 'visible'}} disabled={page === 1}>
+                                <img id='previous' className='icon' src='src/assets/arrow-left-solid.svg'
+                                     title={'Previous page'}/>
                             </button>
-
+                            <p>{page}/{films.length}</p>
                             <button onClick={() => {
                                 setPage(page + 1);
-                            }} disabled={page === Math.ceil(films.length / FILM_FOR_Page)}>
-                                Next
+                            }} style={{visibility: page=== Math.ceil(films.length / FILM_FOR_Page) ? 'hidden' : 'visible'}}
+                                disabled={page === Math.ceil(films.length / FILM_FOR_Page)}>
+                                <img id='previous' className='icon' src='src/assets/arrow-right-solid.svg'
+                                title={'Next page'}/>
                             </button>
                         </div>
+                        <div id="image-container">{filmListElem}</div>
                     </>
                 )}
-            </div>
+            </div> // forse films.length non fa una bella impressione a linea 118?
         );
     };

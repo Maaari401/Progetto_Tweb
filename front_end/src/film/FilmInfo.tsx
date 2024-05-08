@@ -45,11 +45,36 @@ interface MemberI{
     image: string
 }
 
+interface CreditsDataI{
+    actor: ActorBaseI[],
+    crew: CrewDataI[]
+}
+interface ActorBaseI{
+    id: number,
+    character: string
+}
+interface CrewDataI {
+    [department: string]: CastBaseI[];
+}
+
+interface CastBaseI{
+    id: number,
+    role: string,
+    department: string
+}
+interface MemberI{
+    id: number,
+    name: string,
+    date_birth: string,
+    desc: string,
+    image: string
+}
 const FilmInfo: FC<FilmPropsI> = (props) =>{
     const [FilmInfo, setFilmInfo] = useState<FilmDataI>({cod: 0, desc: "", cover: "", name: "", rate: 0, publicRelease: ""});
     const [ActorList, setActorList] = useState<JSX.Element[]>()
     const [DirectorList, setDirectorList] = useState<Record<string, JSX.Element[]>>()
     const [isLoading, setIsLoading] = useState(true)
+
 
     useEffect(() => {
         const fetchFilmData = async (cod:number) => {
@@ -59,6 +84,7 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                     "token": `tok $${sessionStorage.getItem("token")}`
                 }
             });
+
             const value = (await response.json()) as FilmDataI;
             setFilmInfo(value)
         }
@@ -125,7 +151,6 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                 for (const department in directorPromisesByDepartment) {
                     directorListsByDepartment[department] = await Promise.all(directorPromisesByDepartment[department]);
                 }
-                //console.log(directorListsByDepartment)
                 // Set director lists for each department
                 setDirectorList(directorListsByDepartment);
                 setIsLoading(false);
@@ -222,8 +247,6 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                     </>
                 )}
             </div>
-
-
     </>
 };
 

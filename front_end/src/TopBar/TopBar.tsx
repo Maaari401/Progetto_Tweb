@@ -19,21 +19,22 @@ interface loginI {
     errorMessage: string;
 }
 
+
 export const TopBar: FC<TopBarPropsI> = ({ setLogged, view, setView }) => {
     return (
         <section className="topbar">
-        <h1>FakerBoxd</h1>
+        <h1>FakerBoxD</h1>
         <nav className="topmenu">
             <Search setView={setView} view={view}/>
             {view.view === "films" ? (
-                    <div className="user" onClick={() => {setView({'view':'user','preView':view.view})}}>
-                        <img src={'src/assets/user.png'}/>
+                    <div className="user-button" onClick={() => {setView({'view':'user','preView':view.view})}}>
+                        <img id="home" className="icon" alt="Profile" src={'src/assets/user-solid.svg'} title={'Profile'}/>
                     </div>
                 ) : (
-                <div className="home" onClick={() => {
+                <div className="home-button" onClick={() => {
                     setView({'view':'films','preView':'user'})
                 }}>
-                    <img src={'src/assets/home.png'}/>
+                    <img id="home" className="icon" src="src/assets/house-solid.svg" alt="Home" title={'Home'}/>
                 </div>
             )
             }
@@ -56,7 +57,9 @@ export const TopBar: FC<TopBarPropsI> = ({ setLogged, view, setView }) => {
                             sessionStorage.removeItem('token')
                             setLogged(false);
                         })
-                }}>Logout
+                }}>
+                <img id="home" className="icon" src="src/assets/right-from-bracket-solid.svg" alt="Logout"
+                         title={'Logout'}/>
                 </div>
         </nav>
     </section>);

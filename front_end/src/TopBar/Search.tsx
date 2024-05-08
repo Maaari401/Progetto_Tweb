@@ -100,9 +100,7 @@ const Search: FC<searchProps> = (props: searchProps) => {
                 {renderData && ( // Conditionally render data
                     <ul>
                         {contentData.filter(item =>
-                                item.name.toLowerCase().startsWith(searchContentData.toLowerCase()) ||
                                 item.name.toLowerCase().startsWith(searchContentData.toLowerCase())
-                            //(`${person.firstName} ${person.lastName}`).toLowerCase().startsWith(searchContentData.toLowerCase())
                         ).map((item, index) => <li key={index} onClick={()=>{
                             console.log('setView('+item.typo +'?' + item.id+')')
                             props.setView({'view':item.typo +'?' + item.id, 'preView':props.view.view})

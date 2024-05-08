@@ -48,6 +48,7 @@ const Login: FC<logI> = (props) => {
                                 if(data.success) {
                                     sessionStorage.setItem("token", data.token)
                                     sessionStorage.setItem("role", String(data.auth))
+                                    sessionStorage.setItem('id', data.errorMessage)
                                     props.setLogged(true)
                                 }else{
                                     props.setLogged(false)
@@ -57,7 +58,6 @@ const Login: FC<logI> = (props) => {
                                     }
                                 }
                             });
-
                     }}>Login
                     </button>
 

@@ -18,14 +18,14 @@ public class User {
         this.pwd = pwd;
     }
 
-    public static boolean validateCredentials(String username, String password, Connection conn) throws SQLException {
-        boolean result = false;
-        try (PreparedStatement st = conn.prepareStatement("SELECT * FROM users WHERE username = ? AND pwd = ?");) {
+    public static int validateCredentials(String username, String password, Connection conn) throws SQLException {
+        int result = -1;
+        try (PreparedStatement st = conn.prepareStatement("SELECT id FROM users WHERE username = ? AND pwd = ?");) {
             st.setString(1, username);
             st.setString(2, password);
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
-                result = true;
+                result = rs.getInt(1);
             }
         }
         return result;

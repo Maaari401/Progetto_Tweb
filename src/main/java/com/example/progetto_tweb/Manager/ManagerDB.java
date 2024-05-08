@@ -277,12 +277,12 @@ public class ManagerDB {
         }
     }
 
-    public boolean validateCredentials(String username, String password) {
+    public int validateCredentials(String username, String password) {
         try(Connection conn = persistence.getConnection()) {
             return User.validateCredentials(username, password, conn);
         }catch (SQLException e){
             System.out.println(e);
-            return false;
+            return -1;
         }
     }
     public boolean checkAuth(String username, String password) {

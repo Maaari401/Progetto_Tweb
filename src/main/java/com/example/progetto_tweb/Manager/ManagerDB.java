@@ -125,7 +125,7 @@ public class ManagerDB {
             return Film.getDirectorList(cod, conn);
         } catch (SQLException e) {
             System.out.println(e);
-            return new HashMap<String, List<String[]>>();
+            return null;
         }
     }
 

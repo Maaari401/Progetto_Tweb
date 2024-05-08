@@ -20,7 +20,6 @@ const Login: FC<logI> = ({ logged, setLogged, setPage }) => {
     const [usr, setUsr] = useState("");
     const [pwd, setPwd] = useState("");
 
-    console.log(logged)
     return (
         <div className="login-container">
             <form>
@@ -46,10 +45,17 @@ const Login: FC<logI> = ({ logged, setLogged, setPage }) => {
                         })
                             .then((value) => value.json())
                             .then((data: loginI) => {
-                                setLogged(true)
-                                console.log(data)
-                                sessionStorage.setItem("token", data.token)
-                                sessionStorage.setItem("role", String(data.auth))
+                                if(data.success) {
+                                    sessionStorage.setItem("token", data.token)
+                                    sessionStorage.setItem("role", String(data.auth))
+                                    setLogged(true)
+                                }else{
+                                    setLogged(false)
+                                    const successMessage = document.getElementById('return-status');
+                                    if (successMessage) {
+                                        successMessage.innerText = `${data.errorMessage}`;
+                                    }
+                                }
                             });
 
                     }}>Login
@@ -57,6 +63,7 @@ const Login: FC<logI> = ({ logged, setLogged, setPage }) => {
 
                 </div>
             </form>
+            <p style={{color: 'red'}} id='return-status'></p>
             <p>Not yet registered?</p>
             <button className="login-button" onClick={() => {
                 setPage("singup")

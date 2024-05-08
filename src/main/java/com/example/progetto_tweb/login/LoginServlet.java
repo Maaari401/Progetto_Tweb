@@ -88,6 +88,12 @@ public class LoginServlet extends HttpServlet {
                     result.addProperty("auth", auth);
                     result.addProperty("errorMessage", "");
                 }else response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            }else{
+                result.addProperty("operation", "login");
+                result.addProperty("token", "Nope dude");
+                result.addProperty("success", false);
+                result.addProperty("auth", "error");
+                result.addProperty("errorMessage", "Invalid Credentials");
             }
             PrintWriter out = response.getWriter();
             out.println(result);

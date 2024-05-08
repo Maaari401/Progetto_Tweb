@@ -1,11 +1,15 @@
 import {FC, useEffect, useState} from "react";
 import './filminfo.css'
 import React from "react";
-import CastMemberInfo from "../cast/CastMemberInfo.tsx";
 
+interface ViewI {
+    view: string,
+    preView: string
+}
 interface FilmPropsI {
-    cod: number
-    setView: (value: string) => void
+    cod: number,
+    setView: (value: ViewI) => void,
+    view: ViewI
 }
 interface FilmDataI {
     cod: number,
@@ -15,7 +19,6 @@ interface FilmDataI {
     cover: string,
     desc: string,
 }
-
 
 interface CreditsDataI{
     actor: ActorBaseI[],
@@ -41,16 +44,12 @@ interface MemberI{
     desc: string,
     image: string
 }
-interface infoPageI{
-    id: number,
-    section: string
-}
+
 const FilmInfo: FC<FilmPropsI> = (props) =>{
     const [FilmInfo, setFilmInfo] = useState<FilmDataI>({cod: 0, desc: "", cover: "", name: "", rate: 0, publicRelease: ""});
     const [ActorList, setActorList] = useState<JSX.Element[]>()
     const [DirectorList, setDirectorList] = useState<Record<string, JSX.Element[]>>()
     const [isLoading, setIsLoading] = useState(true)
-    const [infoPage, setInfoPage] = useState<infoPageI>({'id': -1,'section':''})
 
     useEffect(() => {
         const fetchFilmData = async (cod:number) => {
@@ -88,10 +87,7 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                             <>
                                 <div className={"actor_container"} key={a[0]} onClick={() => {
                                     //code to show actor's info
-                                    setInfoPage({
-                                        'id': a[0],
-                                        'section': 'actor'
-                                    })
+                                    props.setView({'view':'actor?'+value.id, 'preView':props.view.view})
                                 }}>
                                     <img src={`data:image/jpeg;base64,${value.image}`}/>
                                     <p>{value.name} <br/><b>as</b> <br/>{a[1]}</p>
@@ -129,7 +125,7 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                 for (const department in directorPromisesByDepartment) {
                     directorListsByDepartment[department] = await Promise.all(directorPromisesByDepartment[department]);
                 }
-                console.log(directorListsByDepartment)
+                //console.log(directorListsByDepartment)
                 // Set director lists for each department
                 setDirectorList(directorListsByDepartment);
                 setIsLoading(false);
@@ -157,10 +153,8 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                     <>
                         <div className="director_container" key={directorData[0]} onClick={()=>{
                             //code to show info of actor or director
-                            setInfoPage({
-                                'id': directorDetails.id,
-                                'section': 'director'
-                            })
+                            props.setView({'view':'director?'+directorDetails.id, 'preView':props.view.view})
+
                         }} >
                             <img src={`data:image/jpeg;base64,${directorDetails.image}`} alt="Director" />
                             <p>
@@ -191,8 +185,11 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
         fetchFilmDirectors(props.cod)
     }, []);
 
-    return infoPage.id === -1 && infoPage.section === '' ? (<>
+    return <>
             <div>
+                <button onClick={()=>{
+                    props.setView({'view':props.view.preView, 'preView':props.view.view})
+                }}>Back</button><br/>
                 <div className={'image-container'}><img className={'centered-image'}
                                                         src={`data:image/jpeg;base64,${FilmInfo.cover}`}/></div>
                 <p>Movie name: {FilmInfo.name}</p>
@@ -227,9 +224,7 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
             </div>
 
 
-    </>) : (
-            <CastMemberInfo id={infoPage.id} section={infoPage.section} setBack={setInfoPage}/>
-    )
+    </>
 };
 
 

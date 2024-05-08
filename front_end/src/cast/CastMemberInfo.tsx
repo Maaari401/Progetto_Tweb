@@ -1,22 +1,18 @@
 import {FC, useEffect, useState} from "react";
 import './CastMemberInfo.css'
-interface infoPageI{
-    id: number,
-    section: string
+
+interface ViewI {
+    view: string,
+    preView: string
 }
+
 interface castMemberInfoPropsI{
     id: number,
     section: string,
-    setBack: (value: infoPageI) => void
+    setView: (value: ViewI) => void,
+    view: ViewI
 }
 interface MemberInfoI{
-    id: number,
-    name: string,
-    date_birth: string,
-    desc: string,
-    image: string
-}
-interface MemberI{
     id: number,
     name: string,
     date_birth: string,
@@ -32,11 +28,10 @@ interface FilmI{
     desc: string,
 }
 
-const CastMemberInfo: FC<castMemberInfoPropsI> = (data: castMemberInfoPropsI) => {
+const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) => {
 
     const [memberInfo, setMemberInfo] = useState<MemberInfoI>()
     const [filmList, setfilmList] = useState<JSX.Element[]>()
-
     useEffect(() => {
         const fetchFilmDataActor = async (cod:number) => {
             const response = await fetch('http://localhost:8080/Progetto_Tweb/actor?id=' + cod, {
@@ -83,7 +78,9 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (data: castMemberInfoPropsI) =>
                 .then(films => {
                     const tmp = films.map((filmo => {
                         return <>
-                            <div className={'image-container'} onClick={() => {console.log('filmo.cod'+filmo.cod)
+                            <div className={'image-container'} onClick={() => {
+                                props.setView({'view': 'film?'+filmo.cod, 'preView':props.view.view})
+                                //console.log('filmo.cod'+filmo.cod)
                                 }}>
                                 <img src={`data:image/jpeg;base64,${filmo.cover}`} className={'centered-image'}/>
                                 <p>{filmo.name} - {filmo.publicRelease}</p>
@@ -93,20 +90,20 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (data: castMemberInfoPropsI) =>
                     setfilmList(tmp)
                 })
         }
-        if (data.section === 'actor') {
-            fetchFilmDataActor(data.id)
-            FilmList(data.id, 'actor/credits')
+        if (props.section === 'actor') {
+            fetchFilmDataActor(props.id)
+            FilmList(props.id, 'actor/credits')
         } else {
-            fetchFilmDataDirector(data.id);
-            FilmList(data.id, 'director/movies')
+            fetchFilmDataDirector(props.id);
+            FilmList(props.id, 'director/movies')
         }
 
 
     }, []);
-    return memberInfo !== undefined ?(
+    return memberInfo !== undefined ? (
         <>
             <button onClick={()=> {
-                data.setBack({'id': -1,'section':''})
+                props.setView({'view':props.view.preView, 'preView':props.view.view})
             }}>BACK</button><br/>
             <div className={'image-container'}>
                 <img src={`data:image/jpeg;base64,${memberInfo.image}`} className={'centered-image'} alt={memberInfo.name+'cover'}/>

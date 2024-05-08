@@ -23,3 +23,8 @@
     display: inline;
     width: 200px;
 }
+
+.typo span{
+    text-align: right;
+    color: dimgrey;
+}

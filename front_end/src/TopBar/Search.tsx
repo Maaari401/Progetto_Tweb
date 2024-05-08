@@ -1,4 +1,5 @@
-import { ChangeEventHandler, useEffect, useState } from "react";
+import {ChangeEventHandler, FC, useEffect, useState} from "react";
+
 import styles from "./Search.module.css";
 import SearchBar from "./Searchbar";
 import { FilmI } from "../data/datas.ts";
@@ -15,14 +16,22 @@ interface SearchData {
     name: string,
     typo: string
 }
-
+interface ViewI {
+    view: string,
+    preView: string
+}
+interface searchProps{
+    setView: (value: ViewI) => void,
+    view: ViewI
+}
 const MIN_INPUT_LENTH: number =  3
 
 
-const Search = () => {
+const Search: FC<searchProps> = (props: searchProps) => {
     const [contentData, setContentData] = useState<SearchData[]>([]);
     const [searchContentData, setSearchContentData] = useState<string>('');
     const [searchDataErr, setSearchDataErr] = useState<boolean>(false);
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -94,7 +103,10 @@ const Search = () => {
                                 item.name.toLowerCase().startsWith(searchContentData.toLowerCase()) ||
                                 item.name.toLowerCase().startsWith(searchContentData.toLowerCase())
                             //(`${person.firstName} ${person.lastName}`).toLowerCase().startsWith(searchContentData.toLowerCase())
-                        ).map((item, index) => <li key={index}>{item.name} \t {item.typo}</li>)
+                        ).map((item, index) => <li key={index} onClick={()=>{
+                            console.log('setView('+item.typo +'?' + item.id+')')
+                            props.setView({'view':item.typo +'?' + item.id, 'preView':props.view.view})
+                        }}>{item.name} <span className={styles.typo}>{item.typo}</span></li>)
                         }
                     </ul>
                 )}

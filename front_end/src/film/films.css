@@ -30,3 +30,8 @@
     font-size: 0.9rem;
     text-align: center;
 }
+
+.pencil img{
+    width: 10px;
+    height: auto;
+}

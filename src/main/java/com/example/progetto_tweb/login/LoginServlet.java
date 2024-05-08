@@ -85,7 +85,7 @@ public class LoginServlet extends HttpServlet {
                     result.addProperty("operation", "login");
                     result.addProperty("token", token);
                     result.addProperty("success", true);
-                    result.addProperty("error", false);
+                    result.addProperty("auth", auth);
                     result.addProperty("errorMessage", "");
                 }else response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }

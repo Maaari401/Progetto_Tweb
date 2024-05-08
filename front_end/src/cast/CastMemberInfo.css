@@ -5,7 +5,7 @@
     height: 100vh; /* Set height to full viewport height */
 }
 
-.centered-image {s
+.centered-image {
     width: 30%; /* Set width to 60% of the container */
     /* Optional: Adjust height to maintain aspect ratio */
     height: auto;

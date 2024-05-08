@@ -2,10 +2,14 @@ import "./TopBar.css";
 import {FC} from "react";
 import Search from "./Search.tsx";
 
+interface ViewI {
+    view: string,
+    preView: string
+}
 interface TopBarPropsI {
     setLogged: (value: boolean) => void,
-    view: string,
-    setView: (value: string) => void
+    view: ViewI,
+    setView: (value: ViewI) => void
 }
 interface loginI {
     operation: string;
@@ -20,14 +24,14 @@ export const TopBar: FC<TopBarPropsI> = ({ setLogged, view, setView }) => {
         <section className="topbar">
         <h1>FakerBoxd</h1>
         <nav className="topmenu">
-            <Search/>
-            {view === "films" ? (
-                    <div className="user" onClick={() => {setView("user")}}>
+            <Search setView={setView} view={view}/>
+            {view.view === "films" ? (
+                    <div className="user" onClick={() => {setView({'view':'user','preView':view.view})}}>
                         <img src={'src/assets/user.png'}/>
                     </div>
                 ) : (
                 <div className="home" onClick={() => {
-                    setView("films")
+                    setView({'view':'films','preView':'user'})
                 }}>
                     <img src={'src/assets/home.png'}/>
                 </div>
@@ -46,10 +50,12 @@ export const TopBar: FC<TopBarPropsI> = ({ setLogged, view, setView }) => {
                     })
                         .then((value) => value.json())
                         .then((data: loginI) => {
+                            console.log(data)
+                        }).catch((e)=>console.error(e))
+                        .finally(()=> {
+                            sessionStorage.removeItem('token')
                             setLogged(false);
-                            console.log(data);
-                            sessionStorage.removeItem('token');
-                        });
+                        })
                 }}>Logout
                 </div>
         </nav>

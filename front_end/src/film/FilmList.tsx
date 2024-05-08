@@ -56,7 +56,7 @@
                 <div>
                      <div className={'entry-container'} key={props.cod}>
                         <img className={'poster'} key={props.cod} src={imageSrc} alt="FilmList Cover"
-                            onClick={()=>{props.setView('film?'+props.cod)}}/>
+                            onClick={()=>{props.setView({'view':'film?'+props.cod, 'preView':props.view.view})}}/>
                         <p>{props.name}</p>
                       </div>
                     {sessionStorage.getItem('role') === 'true' ?

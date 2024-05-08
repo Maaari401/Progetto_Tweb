@@ -7,9 +7,8 @@ html, body {
 #root {
     background-color: #263340;
     background-image: linear-gradient(0deg,#263340 80%,#2f4d6a);
-    width: 100%;
-    height: 100%;
     position: absolute;
+    width: 100%;
     top: 0;
     left: 0;
     background-attachment: fixed;

@@ -53,7 +53,7 @@
         }, [props.cod]);
         return (
             <>
-                <div>
+
                      <div className={'entry-container'} key={props.cod}>
                         <img className={'poster'} key={props.cod} src={imageSrc} alt="FilmList Cover"
                             onClick={()=>{props.setView({'view':'film?'+props.cod, 'preView':props.view.view})}}/>
@@ -62,11 +62,9 @@
                     {sessionStorage.getItem('role') === 'true' ?
                         (<img src={'src/assets/icons8-matita-50.png'}
                                  style={{width: '15px', height: 'auto'}} onClick={() => {
-                                /* TODO ADD ONCLICK EVENT TO MODIFY VALUES*/
                                 props.setView({'view': 'modify-Film?' + props.cod, 'preView': props.view.view})
                             }}/>):(<></>)
                     }
-                </div>
             </>
         );
     };
@@ -134,7 +132,7 @@
                                 <img id='previous' className='icon' src='src/assets/arrow-left-solid.svg'
                                      title={'Previous page'}/>
                             </button>
-                            <p>{page}/{films.length}</p>
+                            <p>{page}/{Math.floor(films.length / FILM_FOR_Page)}</p>
                             <button onClick={() => {
                                 setPage(page + 1);
                             }} style={{visibility: page=== Math.ceil(films.length / FILM_FOR_Page) ? 'hidden' : 'visible'}}

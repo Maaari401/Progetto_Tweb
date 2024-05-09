@@ -1,6 +1,6 @@
 import {ChangeEventHandler, FC, useEffect, useState} from "react";
 
-import styles from "./Search.module.css";
+import "./Search.css";
 import SearchBar from "./Searchbar";
 import { FilmI } from "../data/datas.ts";
 
@@ -88,14 +88,14 @@ const Search: FC<searchProps> = (props: searchProps) => {
     const renderData = searchContentData.length >= MIN_INPUT_LENTH && !searchDataErr;
 
     return (
-        <div className={styles.searchHolder}>
+        <div className={'search-container'}>
             <SearchBar
                 value={searchContentData}
                 placeholder={`Search by name`}
                 searchHandler={searchHandler}
             />
 
-            <div className={styles.searchData}>
+            <div className={'search-data'}>
                 {searchDataErr && <h1 className={'errorMsg'}>Error loading data, please check URL or console for more details!</h1>}
                 {renderData && ( // Conditionally render data
                     <ul>
@@ -106,7 +106,7 @@ const Search: FC<searchProps> = (props: searchProps) => {
                         ).map((item, index) => <li key={index} onClick={()=>{
                             console.log('setView('+item.typo +'?' + item.id+')')
                             props.setView({'view':item.typo +'?' + item.id, 'preView':props.view.view})
-                        }}>{item.name} <span className={styles.typo}>{item.typo}</span></li>)
+                        }}>{item.name} <span className={'typo'}>{item.typo}</span></li>)
                         }
                     </ul>
                 )}

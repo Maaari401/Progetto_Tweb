@@ -74,7 +74,21 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
     const [ActorList, setActorList] = useState<JSX.Element[]>()
     const [DirectorList, setDirectorList] = useState<Record<string, JSX.Element[]>>()
     const [isLoading, setIsLoading] = useState(true)
+    const [hoverWatch, setHoverWatch] = useState(false);
+    const [hoverLike, setHoverLike] = useState(false);
 
+    const handleWatchMouseEnter = () => {
+        setHoverWatch(true);
+    };
+    const handleWatchMouseLeave = () => {
+        setHoverWatch(false);
+    };
+    const handleLikeMouseEnter = () => {
+        setHoverLike(true);
+    };
+    const handleLikeMouseLeave = () => {
+        setHoverLike(false);
+    };
 
     useEffect(() => {
         const fetchFilmData = async (cod:number) => {
@@ -111,11 +125,11 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                     .then((value: MemberI) => {
                         return (
                             <>
-                                <div className={"actor_container"} key={a[0]} onClick={() => {
-                                    //code to show actor's info
-                                    props.setView({'view':'actor?'+value.id, 'preView':props.view.view})
-                                }}>
-                                    <img src={`data:image/jpeg;base64,${value.image}`}/>
+                                <div className={"actor_container"} key={a[0]}>
+                                    <img src={`data:image/jpeg;base64,${value.image}`} onClick={() => {
+                                        //code to show actor's info
+                                        props.setView({'view':'actor?'+value.id, 'preView':props.view.view})
+                                    }}/>
                                     <p>{value.name} <br/><b>as</b> <br/>{a[1]}</p>
                                 </div>
                             </>
@@ -176,12 +190,12 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
 
                 return (
                     <>
-                        <div className="director_container" key={directorData[0]} onClick={()=>{
-                            //code to show info of actor or director
-                            props.setView({'view':'director?'+directorDetails.id, 'preView':props.view.view})
-
-                        }} >
-                            <img src={`data:image/jpeg;base64,${directorDetails.image}`} alt="Director" />
+                        <div className="director_container" key={directorData[0]}>
+                            <img src={`data:image/jpeg;base64,${directorDetails.image}`} alt="Director"
+                                 onClick={()=>{
+                                 props.setView({'view':'director?'+directorDetails.id, 'preView':props.view.view})
+                                //code to show info of actor or director
+                            }}/>
                             <p>
                                 {directorDetails.name}
                                 <br /><b>as</b> <br />
@@ -211,41 +225,67 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
     }, []);
 
     return <>
-            <div>
-                <button onClick={()=>{
-                    props.setView({'view':props.view.preView, 'preView':props.view.view})
-                }}>Back</button><br/>
-                <div className={'image-container'}><img className={'centered-image'}
-                                                        src={`data:image/jpeg;base64,${FilmInfo.cover}`}/></div>
-                <p>Movie name: {FilmInfo.name}</p>
-                <p>Description: {FilmInfo.desc}</p>
-                <p>release date: {FilmInfo.publicRelease}</p>
-            </div>
-            <div className={'actorList'}>
-                Actor list:<br/>
-                {ActorList}
-            </div>
-            <div className={'directorList'}>
-                <br/>
-                {isLoading ? ( // Conditionally render loading state
-                        <p> Director List is Loading...</p>
-                    ) : (
-                    <>
-                        <div className={'directorList'}>
-                            Director list:<br/>
-                            {Object.entries(DirectorList).map(([department, directorList]) => (
-                                <div key={department}>
-                                    <h2>{department}</h2>
-                                    {directorList.map((director, index) => (
-                                        <React.Fragment key={index}>
-                                            {director}
-                                        </React.Fragment>
-                                    ))}
-                                </div>
-                            ))}
+            <div className={'film-info-container'}>
+                <div className={'previous-page'}>
+                    <button onClick={() => {
+                        props.setView({'view': props.view.preView, 'preView': props.view.view})
+                    }}>
+                        <img className='icon' src='src/assets/arrow-left-solid.svg'
+                             title={'Go back'}/>
+                    </button>
+                </div>
+                <div className={'main-info'}><img className={'big-poster'}
+                                                        src={`data:image/jpeg;base64,${FilmInfo.cover}`}/>
+                    <div className={'details'}>
+                        <p id={'title'}>{FilmInfo.name}</p>
+                        <p id={'year'}>{FilmInfo.publicRelease}</p>
+                        <p id={'plot'}>{FilmInfo.desc}</p>
+                        <div className={'watch-like-edit'}>
+                            <img id={'watch'} className={'interact'}
+                                 src={hoverWatch ? 'src/assets/green-eye-solid.svg' : 'src/assets/eye-regular.svg'}
+                                 onMouseEnter={handleWatchMouseEnter}
+                                 onMouseLeave={handleWatchMouseLeave}
+                            />
+                            <img id={'like'} className={'interact'}
+                                 src={hoverLike ? 'src/assets/red-heart-solid.svg' : 'src/assets/heart-regular.svg'}
+                                 onMouseEnter={handleLikeMouseEnter}
+                                 onMouseLeave={handleLikeMouseLeave}
+                            />
+                            {sessionStorage.getItem('role') === 'true' ?
+                                (<img id={'edit'} src={'src/assets/pen-solid.svg'}
+                                  onClick={() => {
+                                    props.setView({'view': 'modify-Film?' + props.cod, 'preView': props.view.view})
+                                }}/>):(<></>)
+                            }
                         </div>
-                    </>
-                )}
+                    </div>
+                </div>
+                <div className={'actorList'}>
+                    Actor list:<br/>
+                    {ActorList}
+                </div>
+                <div className={'directorList'}>
+                    <br/>
+                    {isLoading ? ( // Conditionally render loading state
+                            <p> Director List is Loading...</p>
+                        ) : (
+                        <>
+                            <div className={'directorList'}>
+                                Director list:<br/>
+                                {Object.entries(DirectorList).map(([department, directorList]) => (
+                                    <div key={department}>
+                                        <h2>{department}</h2>
+                                        {directorList.map((director, index) => (
+                                            <React.Fragment key={index}>
+                                                {director}
+                                            </React.Fragment>
+                                        ))}
+                                    </div>
+                                ))}
+                            </div>
+                        </>
+                    )}
+                </div>
             </div>
     </>
 };

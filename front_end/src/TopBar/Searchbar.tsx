@@ -1,5 +1,5 @@
 import { ChangeEventHandler } from "react";
-import styles from "./Searchbar.module.css"
+import "./Searchbar.css"
 
 interface searchTerm {
     value: string,
@@ -9,12 +9,11 @@ interface searchTerm {
 const SearchBar = (props: searchTerm) => {
     return (
         <input
-            className={styles.searchBar}
+            className={'search-bar'}
             type="search"
             placeholder={props.placeholder}
             value={props.value}
             onChange={props.searchHandler}>
-
         </input>
     )
 }

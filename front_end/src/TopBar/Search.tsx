@@ -46,19 +46,23 @@ const Search: FC<searchProps> = (props: searchProps) => {
                     let allData: SearchData[] = [];
 
                     for (let i = 0; i < urls.length; i++) {
-                        const response = await fetch(urls[i], {
-                            method: 'GET',
-                            headers: {
-                                "token": `tok $${sessionStorage.getItem("token")}`
-                            }
-                        });
-                        const data = await response.json();
+                            const response = await fetch(urls[i], {
+                                method: 'GET',
+                                headers: {
+                                    "token": `tok $${sessionStorage.getItem("token")}`
+                                }
+                            });
+                            const data = await response.json();
 
-                        if (i === 0) {
-                            allData = [...allData, ...data.map((item: FilmI) => ({ id: item.cod, name: item.name, typo: 'film' }))];
-                        } else {
-                            allData = [...allData, ...data.map((item: MemberI) => ({ id: item.id, name: item.name, typo: i === 1 ? 'actor' : 'director' }))];
-                        }
+                            if (i === 0) {
+                                allData = [...allData, ...data.map((item: FilmI) => ({ id: item.cod, name: item.name, typo: 'film' }))];
+                            } else {
+                                allData = [...allData, ...data.map((item: MemberI) => ({
+                                    id: item.id,
+                                    name: item.name,
+                                    typo: i === 1 ? 'actor' : 'director'
+                                }))];
+                            }
                     }
 
                     return allData;

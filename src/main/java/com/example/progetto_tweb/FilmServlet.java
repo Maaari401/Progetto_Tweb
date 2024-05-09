@@ -94,7 +94,8 @@ public class FilmServlet extends HttpServlet {
                 }
                 if (request.getPathInfo().equals("/newFilm")) {
                     try {
-                        ManagerDB.getManager().setNewFilm(f);
+                        int cod_newFilm = ManagerDB.getManager().setNewFilm(f);
+                        out.println("{\"id\": " + cod_newFilm + "}");
                     } catch (SQLException e) {
                         response.sendError(460, "Film già presente nel nostro database");
                     }

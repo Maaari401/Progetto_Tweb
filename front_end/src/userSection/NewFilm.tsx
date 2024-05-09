@@ -1,5 +1,9 @@
 import './userPage.css'
-import {ChangeEvent, useState} from "react";
+import React, {ChangeEvent, useState} from "react";
+
+interface retStatus {
+    id: number
+}
 
 export const NewFilm = () => {
 
@@ -8,6 +12,7 @@ export const NewFilm = () => {
     const [filmDate, setFilmDate] = useState('');
     const [filmRatio, setFilmRatio] = useState('');
     const [textareaInput, setTextareaInput] = useState('');
+    const [codFilm, setCodFilm] = useState(-1)
 
     const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
         const file: File | undefined = event.target.files?.[0];
@@ -25,7 +30,7 @@ export const NewFilm = () => {
         setImage(''); // Clear the uploaded image
     };
 
-    const handleQuery = (e) => {
+    const handleQuery = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
         fetch('http://localhost:8080/Progetto_Tweb/film/newFilm',{
             method: 'POST',
@@ -39,24 +44,35 @@ export const NewFilm = () => {
                 "desc": textareaInput,
                 "cover": image
             })
-        }).then(data => console.log(data.status))
+        }).then(data => data.json())
+            .then((data: retStatus) => {
+                console.log(data)
+                setCodFilm(data.id)
+            });
     };
 
     return (
         <div className="formNew">
-            <input id="FilmImage" type="file" accept="image/*" onChange={e => handleImageChange(e)} required/><br />
+            <p>{codFilm}</p>
+            <input id="FilmImage" type="file" accept="image/*" onChange={e => handleImageChange(e)} required/><br/>
             {image !== '' && (
                 <div>
-                    <img src={`data:image/jpeg;base64,${image}`} alt="Uploaded" style={{ maxWidth: '200px' }} />
+                    <img src={`data:image/jpeg;base64,${image}`} alt="Uploaded" style={{maxWidth: '200px'}}/>
                     <button onClick={handleUndoUpload}>Undo Upload</button>
                 </div>
             )}
-            <input id="FilmName" type="text" value={filmName} onChange={(e) => setFilmName(e.target.value)} placeholder={'Name of the Film'} required/><br />
-            <input id="FilmDate" type="date" value={filmDate} onChange={(e) => setFilmDate(e.target.value)} placeholder={'Release Date of the Film'} required/><br />
-            <input id="FilmRatio" type="number" value={filmRatio} onChange={(e) => setFilmRatio(e.target.value)} placeholder={'Ratio'} min={0} max={5} required/><br />
-            <textarea value={textareaInput} onChange={(e) => setTextareaInput(e.target.value)} placeholder={'Description of the Film'} required/><br />
-            <button onClick={e=>handleQuery(e)}>Query</button>
+            <input id="FilmName" type="text" value={filmName} onChange={(e) => setFilmName(e.target.value)}
+                   placeholder={'Name of the Film'} required/><br/>
+            <input id="FilmDate" type="date" value={filmDate} onChange={(e) => setFilmDate(e.target.value)}
+                   placeholder={'Release Date of the Film'} required/><br/>
+            <input id="FilmRatio" type="number" value={filmRatio} onChange={(e) => setFilmRatio(e.target.value)}
+                   placeholder={'Ratio'} min={0} max={5} required/><br/>
+            <textarea value={textareaInput} onChange={(e) => setTextareaInput(e.target.value)}
+                      placeholder={'Description of the Film'} required/><br/>
+            <button onClick={e => handleQuery(e)}>Query</button>
         </div>
+
+
     );
 
 }

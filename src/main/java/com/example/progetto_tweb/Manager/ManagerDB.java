@@ -5,7 +5,6 @@ import com.example.progetto_tweb.db.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -84,14 +83,12 @@ public class ManagerDB {
         return arr;
     }
 
-    public void setNewFilm(Film f) throws SQLException {
+    public int setNewFilm(Film f) throws SQLException {
         try(Connection conn = persistence.getConnection()){
-
-            Film.newFilm(f, conn);
-            //return true;
+            int cod = Film.newFilm(f, conn);
+            return cod;
         }catch (SQLException e){
             throw e;
-            //return false;
         }
     }
     public Film getFilm(int cod){

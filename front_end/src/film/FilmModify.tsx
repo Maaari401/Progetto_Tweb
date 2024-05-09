@@ -1,7 +1,6 @@
 import {ChangeEvent, FC, useEffect, useState} from "react";
 import './filminfo.css'
 import React from "react";
-import filmInfo from "./FilmInfo.tsx";
 
 interface ViewI {
     view: string,

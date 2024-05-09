@@ -1,6 +1,7 @@
 import './userPage.css'
 import {useState} from "react";
-import {NewFilm} from './NewFilm.tsx'
+import {NewFilm} from '../insertNew/NewFilm.tsx'
+import {NewMember} from "../insertNew/NewMember.tsx";
 
 export const UserPage = () => {
     const [option, setOption] = useState("")
@@ -44,6 +45,9 @@ export const UserPage = () => {
             </div>
             <div className={'values'}>
                 {option === 'newFilm' && <NewFilm/>}
+                {option === 'newActor' && <NewMember member={'actor'}/>}
+                {option === 'newDirector' && <NewMember member={'director'}/>}
+
             </div>
         </>
     )

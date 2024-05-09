@@ -1,5 +1,6 @@
-import './userPage.css'
+import '../userSection/userPage.css'
 import React, {ChangeEvent, useState} from "react";
+import Search from "./searchBar/Search.tsx";
 
 interface retStatus {
     id: number
@@ -12,8 +13,10 @@ export const NewFilm = () => {
     const [filmDate, setFilmDate] = useState('');
     const [filmRatio, setFilmRatio] = useState('');
     const [textareaInput, setTextareaInput] = useState('');
-    const [codFilm, setCodFilm] = useState(-1)
+    const [codFilm, setCodFilm] = useState(586)
 
+    const [codMember, setCodMember] = useState(-1)
+    const [character, setCharacter] = useState('')
     const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
         const file: File | undefined = event.target.files?.[0];
         if (file !== undefined) {
@@ -70,6 +73,36 @@ export const NewFilm = () => {
             <textarea value={textareaInput} onChange={(e) => setTextareaInput(e.target.value)}
                       placeholder={'Description of the Film'} required/><br/>
             <button onClick={e => handleQuery(e)}>Query</button>
+            {codFilm != -1 && <>
+                <p>Cerca l'attore/direttore che vuoi mettere</p>
+                <Search idMain={codFilm} values={[false, true, true]} setCodMember={setCodMember}/>
+
+                {codMember !== -1 &&
+                    <div>
+                    <p>Inserisci il nome del personaggio nel film</p>
+                    <input type={'text'} onChange={e => setCharacter(e.target.value)}/>
+                    <button onClick={()=>{
+                        console.log('hai aggiunto'+character)
+                        /*Query per aggiungere il valore*/
+                        fetch('http://localhost:8080/Progetto_Tweb/actor/insertAIF?id='+codMember+'&cod='+codFilm+'&character='+character,{
+                            method: 'PUT',
+                            headers: {
+                                "token": `tok $${sessionStorage.getItem("token")}`
+                            },
+                            body: JSON.stringify({
+                                "id": codFilm,
+                                "cod": codMember,
+                                "character": character
+                            })
+                        }).then(data => {
+                            console.log(data.status)
+                            console.log(data.text())
+                        });
+                    }}>ADD</button>
+                    </div>
+                }
+
+            </>}
         </div>
 
 

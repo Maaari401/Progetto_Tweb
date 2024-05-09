@@ -44,13 +44,13 @@ public class ManagerDB {
         return res;
     }
 
-    public boolean setNewActor(Actor a){
+    public int setNewActor(Actor a){
         try(Connection conn = persistence.getConnection()){
-            Actor.newActor(a, conn);
-            return true;
+            int aId = Actor.newActor(a, conn);
+            return aId;
         }catch (SQLException e){
             System.out.println(e);
-            return false;
+            return -1;
         }
     }
 
@@ -119,7 +119,9 @@ public class ManagerDB {
     }
     public Map<String, List<String[]>> getCrewOfFilm(int cod) {
         try(Connection conn = persistence.getConnection()) {
-            return Film.getDirectorList(cod, conn);
+            Map<String, List<String[]>> tmp = Film.getDirectorList(cod, conn);
+            System.out.println(tmp);
+            return tmp;
         } catch (SQLException e) {
             System.out.println(e);
             return null;

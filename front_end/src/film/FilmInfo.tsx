@@ -123,14 +123,15 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                 })
                     .then(response => response.json())
                     .then((value: MemberI) => {
+                        const imageSrc = value.image ? `data:image/jpeg;base64,${value.image}` : 'src/assets/'; // why not working?
                         return (
                             <>
-                                <div className={"actor_container"} key={a[0]}>
-                                    <img src={`data:image/jpeg;base64,${value.image}`} onClick={() => {
+                                <div className={"actor-container"} key={a[0]}>
+                                    <img src={imageSrc} onClick={() => {
                                         //code to show actor's info
                                         props.setView({'view':'actor?'+value.id, 'preView':props.view.view})
-                                    }}/>
-                                    <p>{value.name} <br/><b>as</b> <br/>{a[1]}</p>
+                                    }} alt='Actor'/>
+                                    <p><b>{value.name}</b> <br/>as<br/><b>{a[1]}</b></p>
                                 </div>
                             </>
                         );
@@ -190,18 +191,18 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
 
                 return (
                     <>
-                        <div className="director_container" key={directorData[0]}>
+                        <div className="director-container" key={directorData[0]}>
                             <img src={`data:image/jpeg;base64,${directorDetails.image}`} alt="Director"
                                  onClick={()=>{
                                  props.setView({'view':'director?'+directorDetails.id, 'preView':props.view.view})
                                 //code to show info of actor or director
                             }}/>
                             <p>
-                                {directorDetails.name}
-                                <br /><b>as</b> <br />
-                                {directorData[2]} {/* Accessing role from the JSON structure */}
-                                <br /><b>in</b>
-                                {directorData[1]} {/* Accessing department from the JSON structure */}
+                                <b>{directorDetails.name}</b>
+                                <br/>as<br/>
+                                <b>{directorData[1]}</b> {/* Accessing role from the JSON structure */}
+                                {/*<br/>in<br/>*/}
+                                {/*<b>{directorData[2]}</b> /!* Accessing department from the JSON structure *!/*/}
                             </p>
                         </div>
                     </>
@@ -234,8 +235,8 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                              title={'Go back'}/>
                     </button>
                 </div>
-                <div className={'main-info'}><img className={'big-poster'}
-                                                        src={`data:image/jpeg;base64,${FilmInfo.cover}`}/>
+                <div className={'main-info'}>
+                    <img className={'big-poster'} src={`data:image/jpeg;base64,${FilmInfo.cover}`}/>
                     <div className={'details'}>
                         <p id={'title'}>{FilmInfo.name}</p>
                         <p id={'year'}>{FilmInfo.publicRelease}</p>
@@ -260,29 +261,33 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                         </div>
                     </div>
                 </div>
-                <div className={'actorList'}>
-                    Actor list:<br/>
-                    {ActorList}
+                <div className={'cast-box'}>
+                    <p id={'cast'}>Cast</p>
+                    <div className={'actor-list'}>
+                        {ActorList}
+                    </div>
                 </div>
-                <div className={'directorList'}>
-                    <br/>
+                <div className={'film-crew-box'}>
                     {isLoading ? ( // Conditionally render loading state
                             <p> Director List is Loading...</p>
                         ) : (
                         <>
-                            <div className={'directorList'}>
-                                Director list:<br/>
+                            {/*<div className={'directorList'}>*/}
+                                <p id={'crew'}>Film crew</p>
                                 {Object.entries(DirectorList).map(([department, directorList]) => (
-                                    <div key={department}>
-                                        <h2>{department}</h2>
-                                        {directorList.map((director, index) => (
-                                            <React.Fragment key={index}>
-                                                {director}
-                                            </React.Fragment>
-                                        ))}
+                                    <div className={'department'} key={department}>
+                                        <hr/>
+                                        <p className={'department-name'}>{department}</p>
+                                        <div className={'department-list'}>
+                                            {directorList.map((director, index) => (
+                                                <React.Fragment key={index}>
+                                                    {director}
+                                                </React.Fragment>
+                                            ))}
+                                        </div>
                                     </div>
                                 ))}
-                            </div>
+                            {/*</div>*/}
                         </>
                     )}
                 </div>

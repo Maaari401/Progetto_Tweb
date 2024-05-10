@@ -59,12 +59,12 @@
                             onClick={()=>{props.setView({'view':'film?'+props.cod, 'preView':props.view.view})}}/>
                         <p>{props.name}</p>
                       </div>
-                    {sessionStorage.getItem('role') === 'true' ?
-                        (<img src={'src/assets/icons8-matita-50.png'}
-                                 style={{width: '15px', height: 'auto'}} onClick={() => {
-                                props.setView({'view': 'modify-Film?' + props.cod, 'preView': props.view.view})
-                            }}/>):(<></>)
-                    }
+                    {/*{sessionStorage.getItem('role') === 'true' ?*/}
+                    {/*    (<img src={'src/assets/icons8-matita-50.png'}*/}
+                    {/*             style={{width: '15px', height: 'auto'}} onClick={() => {*/}
+                    {/*            props.setView({'view': 'modify-Film?' + props.cod, 'preView': props.view.view})*/}
+                    {/*        }}/>):(<></>)*/}
+                    {/*}*/}
             </>
         );
     };

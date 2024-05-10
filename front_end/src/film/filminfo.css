@@ -77,7 +77,6 @@
 
 #watch, #like {
     margin: 0 4em;
-    filter: brightness(0) invert(1);
     width: 48px;
     height: 48px;
 }
@@ -97,8 +96,9 @@ p {
 }
 
 #title {
-    font-size: 3em;
+    font-size: 4em;
     margin-top: 0;
+    text-align: center;
 }
 
 #plot {
@@ -114,19 +114,93 @@ p {
     filter: none;
 }
 
-.actorList img {
-    height: 100px;
-    width: auto;
-}
-.actor_container{
-    text-align: center; /* Center-align text within the div */
+.cast-box, .film-crew-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    max-width: 70%;
+    border: 3px solid white;
+    border-radius: 15px;
+    margin-bottom: 1em;
 }
 
-.directorList img {
-    height: 100px;
-    width: auto;
+#cast, #crew {
+    font-size: 3em;
+    text-align: center;
 }
-.director_container{
-    text-align: center; /* Center-align text within the div */
+
+.actor-list, .department-list {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+    padding: 0;
+    /*max-width: 70%; !*which would be 1350-ish px on FullHD*! !*1200px was last version*!*/
 }
+
+.actor-list img, .department-list img {
+    width: 100%; /* Adjust width as needed */
+    height: auto;
+    object-fit: cover;
+    border-radius: 5px;
+    max-width: 120px;
+    transition: box-shadow 0.3s ease;
+}
+
+/*.actor-list img:before, .department-list img:before {*/
+/*    !*width: 100%;*!*/
+/*    !*height: auto;*!*/
+/*    !*object-fit: cover;*!*/
+/*    !*content: "";*!*/
+/*    !*display: block;*!*/
+/*    background-image: url('../assets/profile-placeholder-cropped.png');*/
+/*    !*background-size: cover; !* Adjust as needed *!*!*/
+/*}*/
+
+.actor-list img:hover, .department-list img:hover {
+    cursor: pointer;
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.5);
+}
+
+.actor-container, .director-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 15%;
+    height: 50%;
+}
+
+.actor-container p {
+    padding: 0 10px;
+}
+
+.film-crew-box h2 {
+    color: white;
+    text-align: center;
+}
+
+.department-name {
+    text-align: center;
+    font-size: 2em;
+}
+
+/*.actorList img {*/
+/*    height: 100px;*/
+/*    width: auto;*/
+/*}*/
+/*.actor-container{*/
+/*    text-align: center;*/
+/*}*/
+
+/*.directorList img {*/
+/*    height: 100px;*/
+/*    width: auto;*/
+/*}*/
+/*.director-container{*/
+/*    text-align: center; !* Center-align text within the div *!*/
+/*}*/
 

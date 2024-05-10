@@ -59,9 +59,8 @@ public class FilmServlet extends HttpServlet {
                         result.put("crew", reducedCrew);
                         out.println(gson.toJson(result));
                     }else{
-                        List<Integer> l = new ArrayList<>();
                         result.put("actor", reducedActors);
-                        result.put("crew", l);
+                        result.put("crew", reducedCrew);
                         out.println(gson.toJson(result));
                     }
 

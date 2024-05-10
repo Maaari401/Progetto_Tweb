@@ -300,5 +300,19 @@ public class ManagerDB {
             System.out.println(e);
         }
     }
+    public void setWatched(int uId, int filmId){
+        try(Connection conn = persistence.getConnection()){
+            User.setWached(uId, filmId, conn);
+        }catch (SQLException e){
+            System.out.println(e);
+        }
+    }
+    public void setLiked(int uId, int filmId, boolean like){
+        try(Connection conn = persistence.getConnection()){
+            User.setLiked(uId, filmId, like, conn);
+        }catch (SQLException e){
+            System.out.println(e);
+        }
+    }
 
 }

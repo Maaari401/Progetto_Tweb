@@ -44,6 +44,7 @@ public class User {
         return result;
     }
 
+
     public String getEmail() {
         return email;
     }
@@ -66,6 +67,23 @@ public class User {
             ps.executeUpdate();
         }
         
+    }
+
+    public static void setWached(int uId, int filmId, Connection conn) throws SQLException{
+        try (PreparedStatement ps = conn.prepareStatement("insert into watched (user_id, film_id) values (?,?)")){
+            ps.setInt(1, uId);
+            ps.setInt(2, filmId);
+            ps.executeUpdate();
+        }
+    }
+
+    public static void setLiked(int uId, int filmId, boolean like, Connection conn) throws SQLException{
+        try (PreparedStatement ps = conn.prepareStatement("UPDATE watched SET liked = ? WHERE film_id = ? AND user_id = ?")){
+            ps.setBoolean(1, like);
+            ps.setInt(2, filmId);
+            ps.setInt(3, uId);
+            ps.executeUpdate();
+        }
     }
 
 }

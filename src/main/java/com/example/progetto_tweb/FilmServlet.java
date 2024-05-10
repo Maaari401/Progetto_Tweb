@@ -49,9 +49,9 @@ public class FilmServlet extends HttpServlet {
                     Map<String, Object> result = new HashMap<>();
                     List<String[]> reducedActors = ManagerDB.getManager().getActorOfFilm(film_id);
                     Map<String, List<String[]>> reducedCrew = new HashMap<>();
-                    Set<Map.Entry<String, List<String[]>>> a = ManagerDB.getManager().getCrewOfFilm(film_id).entrySet();
+                    Map<String, List<String[]>> a = ManagerDB.getManager().getCrewOfFilm(film_id);
                     if(a != null){
-                        for (Map.Entry<String, List<String[]>> entry : a) {
+                        for (Map.Entry<String, List<String[]>> entry : a.entrySet()) {
                             reducedCrew.put(entry.getKey(), entry.getValue());
                         }
                         // Populate the result map
@@ -59,7 +59,9 @@ public class FilmServlet extends HttpServlet {
                         result.put("crew", reducedCrew);
                         out.println(gson.toJson(result));
                     }else{
-                        out.println("empty");
+                        result.put("actor", reducedActors);
+                        result.put("crew", reducedCrew);
+                        out.println(gson.toJson(result));
                     }
 
 
@@ -94,7 +96,8 @@ public class FilmServlet extends HttpServlet {
                 }
                 if (request.getPathInfo().equals("/newFilm")) {
                     try {
-                        ManagerDB.getManager().setNewFilm(f);
+                        int cod_newFilm = ManagerDB.getManager().setNewFilm(f);
+                        out.println("{\"id\": " + cod_newFilm + "}");
                     } catch (SQLException e) {
                         response.sendError(460, "Film già presente nel nostro database");
                     }

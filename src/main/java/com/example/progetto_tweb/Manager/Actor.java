@@ -52,15 +52,17 @@ public class Actor {
                 '}';
     }
 
-    public static void newActor(Actor a, Connection conn) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement("insert into actors (name, description, date_birth, image) values (?,?,?,?)")){
+    public static int newActor(Actor a, Connection conn) throws SQLException {
+        int aId = -1;
+        try (PreparedStatement ps = conn.prepareStatement("insert into actors (name, description, date_birth, image) values (?,?,?,?) RETURNING id")){
             ps.setString(1, a.getName());
             ps.setString(2, a.getDesc());
             ps.setDate(3, a.getDate_birth());
             ps.setBytes(4, Base64.getDecoder().decode(a.getImage()));
-            ps.executeQuery();
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) aId = rs.getInt(1);
         }
-        
+        return aId;
     }
     public static Actor loadActor(int id, Connection conn) throws SQLException {
         Actor actor = null;

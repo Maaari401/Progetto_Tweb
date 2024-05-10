@@ -1,14 +1,10 @@
 import './userPage.css'
-import {useEffect, useState} from "react";
+import {useState} from "react";
+import {NewFilm} from '../insertNew/NewFilm.tsx'
+import {NewMember} from "../insertNew/NewMember.tsx";
 
 export const UserPage = () => {
     const [option, setOption] = useState("")
-    const [FilmToShow, setFilmToShow] = useState<JSX.Element[]>()
-
-    useEffect(() => {
-        console.log("value->"+option)
-        setFilmToShow(undefined)
-    }, [option]);
 
     return (
         <>
@@ -48,7 +44,10 @@ export const UserPage = () => {
                 </ul>
             </div>
             <div className={'values'}>
-                <p>{FilmToShow}</p>
+                {option === 'newFilm' && <NewFilm/>}
+                {option === 'newActor' && <NewMember member={'actor'}/>}
+                {option === 'newDirector' && <NewMember member={'director'}/>}
+
             </div>
         </>
     )

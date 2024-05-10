@@ -78,7 +78,8 @@ public class ActorServlet extends HttpServlet {
                 }
                 if (request.getPathInfo().equals("/newActor")) {
                     try {
-                        ManagerDB.getManager().setNewActor(actor);
+                        int aId = ManagerDB.getManager().setNewActor(actor);
+                        out.println("{\"id\": " + aId + "}");
                     } catch (Exception e) {
                         response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
                     }
@@ -120,7 +121,6 @@ public class ActorServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        if((boolean) req.getSession().getAttribute("auth")) {
             resp.setContentType("application/json");
             PrintWriter out = resp.getWriter();
             if(req.getPathInfo() != null){
@@ -136,7 +136,6 @@ public class ActorServlet extends HttpServlet {
                 } else resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             }else resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             resp.setStatus(HttpServletResponse.SC_OK);
-        }else resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
     public void destroy() {

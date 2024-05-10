@@ -1,7 +1,6 @@
-import {FC, useEffect, useState} from "react";
+import {ChangeEvent, FC, useEffect, useState} from "react";
 import './filminfo.css'
 import React from "react";
-import filmInfo from "./FilmInfo.tsx";
 
 interface ViewI {
     view: string,
@@ -205,17 +204,16 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
 
         return `${year}-${month}-${day}`;
     }
-    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        let base64String: string = '';
-        if (file) {
+    const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const file: File | undefined = event.target.files?.[0];
+        if (file !== undefined) {
             const reader = new FileReader();
-            reader.onload = () => {
-                base64String = reader.result as string;
+            reader.onloadend = () => {
+                const base64String = reader.result?.toString().split(",")[1]; // Extract only the Base64 string
+                setFilmImg(base64String || ''); // Store Base64 string in state
             };
             reader.readAsDataURL(file);
         }
-        setFilmImg(base64String);
     };
 
 

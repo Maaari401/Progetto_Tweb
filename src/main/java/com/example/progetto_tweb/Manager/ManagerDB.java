@@ -5,7 +5,6 @@ import com.example.progetto_tweb.db.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,13 +44,13 @@ public class ManagerDB {
         return res;
     }
 
-    public boolean setNewActor(Actor a){
+    public int setNewActor(Actor a){
         try(Connection conn = persistence.getConnection()){
-            Actor.newActor(a, conn);
-            return true;
+            int aId = Actor.newActor(a, conn);
+            return aId;
         }catch (SQLException e){
             System.out.println(e);
-            return false;
+            return -1;
         }
     }
 
@@ -84,14 +83,12 @@ public class ManagerDB {
         return arr;
     }
 
-    public void setNewFilm(Film f) throws SQLException {
+    public int setNewFilm(Film f) throws SQLException {
         try(Connection conn = persistence.getConnection()){
-
-            Film.newFilm(f, conn);
-            //return true;
+            int cod = Film.newFilm(f, conn);
+            return cod;
         }catch (SQLException e){
             throw e;
-            //return false;
         }
     }
     public Film getFilm(int cod){
@@ -122,7 +119,9 @@ public class ManagerDB {
     }
     public Map<String, List<String[]>> getCrewOfFilm(int cod) {
         try(Connection conn = persistence.getConnection()) {
-            return Film.getDirectorList(cod, conn);
+            Map<String, List<String[]>> tmp = Film.getDirectorList(cod, conn);
+            System.out.println(tmp);
+            return tmp;
         } catch (SQLException e) {
             System.out.println(e);
             return null;
@@ -277,12 +276,12 @@ public class ManagerDB {
         }
     }
 
-    public boolean validateCredentials(String username, String password) {
+    public int validateCredentials(String username, String password) {
         try(Connection conn = persistence.getConnection()) {
             return User.validateCredentials(username, password, conn);
         }catch (SQLException e){
             System.out.println(e);
-            return false;
+            return -1;
         }
     }
     public boolean checkAuth(String username, String password) {
@@ -297,6 +296,20 @@ public class ManagerDB {
     public void setNewUser(User user) {
         try(Connection conn = persistence.getConnection()){
             User.newUser(user, conn);
+        }catch (SQLException e){
+            System.out.println(e);
+        }
+    }
+    public void setWatched(int uId, int filmId){
+        try(Connection conn = persistence.getConnection()){
+            User.setWached(uId, filmId, conn);
+        }catch (SQLException e){
+            System.out.println(e);
+        }
+    }
+    public void setLiked(int uId, int filmId, boolean like){
+        try(Connection conn = persistence.getConnection()){
+            User.setLiked(uId, filmId, like, conn);
         }catch (SQLException e){
             System.out.println(e);
         }

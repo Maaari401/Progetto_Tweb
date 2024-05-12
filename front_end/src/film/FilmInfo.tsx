@@ -123,7 +123,7 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                 })
                     .then(response => response.json())
                     .then((value: MemberI) => {
-                        const imageSrc = value.image ? `data:image/jpeg;base64,${value.image}` : 'src/assets/'; // why not working?
+                        const imageSrc = value.image ? `data:image/jpeg;base64,${value.image}` : 'src/assets/profile-placeholder-cropped.png'; // why not working?
                         return (
                             <>
                                 <div className={"actor-container"} key={a[0]}>
@@ -272,7 +272,6 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                             <p> Director List is Loading...</p>
                         ) : (
                         <>
-                            {/*<div className={'directorList'}>*/}
                                 <p id={'crew'}>Film crew</p>
                                 {Object.entries(DirectorList).map(([department, directorList]) => (
                                     <div className={'department'} key={department}>
@@ -287,7 +286,6 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                                         </div>
                                     </div>
                                 ))}
-                            {/*</div>*/}
                         </>
                     )}
                 </div>

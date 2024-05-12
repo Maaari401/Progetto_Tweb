@@ -40,7 +40,7 @@
     cursor: pointer;
 }
 
-.main-info {
+.main-info, .edit-main-info {
     display: flex;
     flex-direction: row;
     /*justify-content: center;*/
@@ -58,12 +58,17 @@
     border-radius: 8px;
 }
 
-.details {
+.details, .edit-details {
     display:flex;
     flex-direction:column;
     justify-content:space-between;
     align-items: center;
     padding: 2rem;
+    width: 100%;
+}
+
+form.edit-details {
+    height: 100%
 }
 
 .watch-like-edit {
@@ -75,7 +80,7 @@
     /*margin: 0 8em 8em;*/
 }
 
-#watch, #like {
+#watch, #like, #save-edits {
     margin: 0 4em;
     width: 48px;
     height: 48px;
@@ -87,7 +92,7 @@
     height: 48px;
 }
 
-.watch-like-edit img:hover {
+.watch-like-edit img:hover, #save-edits:hover {
     cursor: pointer;
 }
 
@@ -101,13 +106,42 @@ p {
     text-align: center;
 }
 
+#edit-title {
+    font-size: 4em;
+    margin-top: 0;
+    text-align: center;
+    border-radius: 8px;
+    border: none;
+}
+
 #plot {
     margin: 3em 10% auto;
     font-family: Arial;
 }
 
+#edit-plot {
+    width: 60%;
+    height: 20%;
+    border-radius: 5px;
+    border: none;
+}
+
 #year {
     font-family: Arial;
+}
+
+#edit-year {
+    border-radius: 5px;
+    border:none;
+}
+
+#edit-poster {
+    border-radius: 5px;
+    color: white;
+}
+
+#save-edits {
+
 }
 
 #watch:hover,#like:hover {
@@ -188,18 +222,10 @@ p {
     font-size: 2em;
 }
 
-/*.actorList img {*/
-/*    height: 100px;*/
-/*    width: auto;*/
-/*}*/
 /*.actor-container{*/
 /*    text-align: center;*/
 /*}*/
 
-/*.directorList img {*/
-/*    height: 100px;*/
-/*    width: auto;*/
-/*}*/
 /*.director-container{*/
 /*    text-align: center; !* Center-align text within the div *!*/
 /*}*/

@@ -46,6 +46,10 @@ interface MemberI{
     desc: string,
     image: string
 }
+interface memberToDelete{
+    id: number,
+    section: string //actor || director
+}
 
 const FilmInfo: FC<FilmPropsI> = (props) =>{
     const [FilmInfo, setFilmInfo] = useState<FilmDataI>({cod: 0, desc: "", cover: "", name: "", rate: 0, publicRelease: ""});
@@ -54,6 +58,9 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
     const [isLoading, setIsLoading] = useState(true)
     const [hoverSave, setHoverSave] = useState(false);
     const [showRemovalConfirmation, setShowRemovalConfirmation] = useState(false);
+    const [selectedMember, setSelectedMember] = useState<memberToDelete>({'id':-1,'section':'null'})
+
+
     const handleSaveMouseEnter = () => {
         setHoverSave(true);
     };
@@ -66,6 +73,7 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
     const [filmDesc, setFilmDesc] = useState(FilmInfo.desc);
     const [filmDate, setFilmDate] = useState(FilmInfo.publicRelease);
     const [filmImg, setFilmImg] = useState('')
+
 
     const [Result, setResult] = useState<boolean>(false);
     
@@ -109,7 +117,11 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                         return (
                             <>
                                 <div className={"actor-container"} key={a[0]}>
-                                    <img src={imageSrc} onClick={() => setShowRemovalConfirmation(true)} alt='Actor'/>
+                                    <img src={imageSrc} onClick={() => {
+                                        setSelectedMember({'id': value.id, 'section': 'actor'});
+                                        setShowRemovalConfirmation(true)
+                                    }
+                                    } alt='Actor'/>
                                     <p><b>{value.name}</b> <br/>as<br/><b>{a[1]}</b></p>
                                 </div>
                             </>
@@ -303,7 +315,9 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                     {ActorList}
                 </div>
             </div>
-            {showRemovalConfirmation && <ConfirmDelete onCancel={() => {setShowRemovalConfirmation(false);}}/>}
+            {showRemovalConfirmation &&
+                selectedMember.id !== -1 &&
+                selectedMember.section !== 'null' && <ConfirmDelete filmId={props.cod} selectedMember={selectedMember} onCancel={() => {setShowRemovalConfirmation(false);}}/>}
             <div className={'film-crew-box'}>
                 {isLoading ? ( // Conditionally render loading state
                     <p> Director List is Loading...</p>

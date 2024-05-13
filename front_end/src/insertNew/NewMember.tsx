@@ -118,7 +118,7 @@ export const NewMember: FC<NewMemberPropsI> = (props) => {
                                         "token": `tok $${sessionStorage.getItem("token")}`
                                     }
                                 }).then(data => {
-                                    if(data.status === 200) setResult(true);
+                                    if(data.status === 200) //setResult(true);
                                     else setResult(false);
                                 }).catch(()=>setResult(false));
                             }}>ADD

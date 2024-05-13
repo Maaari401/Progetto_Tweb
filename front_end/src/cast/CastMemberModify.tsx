@@ -16,13 +16,13 @@ interface MemberInfoI{
     id: number,
     name: string,
     date_birth: string,
-    desc: string,
+    description: string,
     image: string
 }
 
 const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) => {
 
-    const [memberInfo, setMemberInfo] = useState<MemberInfoI>({id: 0, desc: "", image: "", name: "",  date_birth: ""})
+    const [memberInfo, setMemberInfo] = useState<MemberInfoI>({id: 0, description: "", image: "", name: "",  date_birth: ""})
 
     const [memberName, setMemberName] = useState("")
     const [memberDesc, setMemberDesc] = useState("")
@@ -42,7 +42,7 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
             });
             const value = (await response.json()) as MemberInfoI;
             setMemberName(value.name);
-            setMemberDesc(value.desc);
+            setMemberDesc(value.description);
             setMemberDate(value.date_birth);
             setMemberImg(value.image);
             setMemberInfo(value)
@@ -57,7 +57,7 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
             });
             const value = (await response.json()) as MemberInfoI;
             setMemberName(value.name);
-            setMemberDesc(value.desc);
+            setMemberDesc(value.description);
             setMemberDate(value.date_birth);
             setMemberImg(value.image);
             setMemberInfo(value);
@@ -146,7 +146,7 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
                             "id": memberInfo.id,
                             "name": memberName,
                             "date_birth": memberDate,
-                            "desc": memberDesc,
+                            "description": memberDesc,
                             "image": memberImg
                         })
                     }).then(response => {

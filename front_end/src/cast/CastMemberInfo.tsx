@@ -16,7 +16,7 @@ interface MemberInfoI{
     id: number,
     name: string,
     date_birth: string,
-    desc: string,
+    description: string,
     image: string
 }
 interface FilmI{
@@ -117,7 +117,7 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
                     <div className={'bio-info-container'}>
                         <p id={'name'}>{memberInfo.name}</p>
                         <p id={'birth-date'}>Born {memberInfo.date_birth}</p>
-                        <p id={'bio'}>{memberInfo.desc}</p>
+                        <p id={'bio'}>{memberInfo.description}</p>
                       {sessionStorage.getItem('role') === "true" &&
                 (<>
                     <button onClick={() => props.setView({

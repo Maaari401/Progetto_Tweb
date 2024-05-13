@@ -1,4 +1,5 @@
 import {FC} from "react";
+import './ConfirmDelete.css'
 
 interface memberToDelete{
     id: number,
@@ -21,7 +22,8 @@ const ConfirmDelete: FC<ConfirmDeletePropsI> = (props) => {
                 onClick={(e) => {
                     if (e.target === e.currentTarget) props.onCancel();
                 }}>
-        <div>
+        <div className={'confirm-deletion'}>
+            <p>Are you sure you want to remove the selected member from the film personnel?</p>
             <button onClick={handleDelete}>
                 Confirm
             </button>

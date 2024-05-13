@@ -84,7 +84,7 @@ export const NewFilm = () => {
                 <Search idMain={codFilm} values={[false, true, true]} setCodMember={setCodMember}/>
 
                 {codMember.id !== -1 && (
-                    codMember.section == 'actor' ? (
+                    codMember.section === 'actor' ? (
                         <div>
                             <p>Inserisci il nome del personaggio nel film</p>
                             <input type={'text'} onChange={e => setCharacter(e.target.value)}/>

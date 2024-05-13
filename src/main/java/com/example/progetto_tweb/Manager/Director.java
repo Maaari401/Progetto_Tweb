@@ -59,14 +59,17 @@ public class Director {
                 '}';
     }
 
-    public static void newDirector(Director d, Connection conn) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement("insert into director (name, description, date_birth, image) values (?,?,?,?)")){
+    public static int newDirector(Director d, Connection conn) throws SQLException {
+        int dId =-1;
+        try (PreparedStatement ps = conn.prepareStatement("insert into director (name, description, date_birth, image) values (?,?,?,?) returning id")){
             ps.setString(1, d.getName());
             ps.setString(2, d.getDescription());
             ps.setDate(3, strToDate(d.getDate_birth()));
             ps.setBytes(4, Base64.getDecoder().decode(d.getImage()));
-            ps.executeUpdate();
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) dId = rs.getInt(1);
         }
+        return dId;
         
     }
     public static Director loadDirector(int id, Connection conn) throws SQLException {

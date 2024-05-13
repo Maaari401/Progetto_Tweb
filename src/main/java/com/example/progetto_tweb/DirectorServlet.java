@@ -79,7 +79,8 @@ public class DirectorServlet extends HttpServlet {
                 }
                 if(request.getPathInfo().equals("/newDirector")) {
                     try{
-                        ManagerDB.getManager().setNewDirector(director);
+                        int ret = ManagerDB.getManager().setNewDirector(director);
+                        out.println("{\"id\": " + ret + "}");
                     }catch(Exception e) {
                         response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
                     }

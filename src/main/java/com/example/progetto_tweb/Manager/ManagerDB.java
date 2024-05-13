@@ -159,11 +159,12 @@ public class ManagerDB {
     }
 
 
-    public void setNewDirector(Director d){
+    public int setNewDirector(Director d){
         try(Connection conn = persistence.getConnection()){
-            Director.newDirector(d, conn);
+            return Director.newDirector(d, conn);
         }catch (SQLException e){
             System.out.println(e);
+            return -1;
         }
     }
     public Director getDirector(int id){

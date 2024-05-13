@@ -46,10 +46,8 @@ export default App
 
 /*
 
-    TODO:
+    TODO of mari:
     - remove a member from a film (class pane)
     - add the search bar to add member to film
     - film list viewed and watched
-
-
  */

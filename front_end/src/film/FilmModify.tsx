@@ -67,7 +67,7 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
     const [filmDate, setFilmDate] = useState(FilmInfo.publicRelease);
     const [filmImg, setFilmImg] = useState('')
 
-    const [Result, setResult] = useState<boolean>(null);
+    const [Result, setResult] = useState<boolean>(false);
     
     useEffect(() => {
         const fetchFilmData = async (cod:number) => {
@@ -78,10 +78,11 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                 }
             });
             const value = (await response.json()) as FilmDataI;
-            setFilmInfo(value)
-            setFilmName(value.name)
-            setFilmDate(value.publicRelease)
-            setFilmDesc(value.desc)
+            setFilmImg(value.cover);
+            setFilmName(value.name);
+            setFilmDate(value.publicRelease);
+            setFilmDesc(value.desc);
+            setFilmInfo(value);
         }
         const CastInfo = async (cod: number) => {
             const response = await fetch('http://localhost:8080/Progetto_Tweb/film/credits?cod=' + cod, {
@@ -223,6 +224,11 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
             reader.readAsDataURL(file);
         }
     };
+    const handleUndoUpload = (e:React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        setFilmImg(''); // Clear the uploaded image
+    };
+
 
 
     return <>

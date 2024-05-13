@@ -80,6 +80,7 @@ form.edit-details {
     /*margin: 0 8em 8em;*/
 }
 
+
 #watch, #like, #save-edits {
     margin: 0 4em;
     width: 48px;
@@ -229,4 +230,3 @@ p {
 /*.director-container{*/
 /*    text-align: center; !* Center-align text within the div *!*/
 /*}*/
-

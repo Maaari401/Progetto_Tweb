@@ -79,7 +79,8 @@ public class DirectorServlet extends HttpServlet {
                 }
                 if(request.getPathInfo().equals("/newDirector")) {
                     try{
-                        ManagerDB.getManager().setNewDirector(director);
+                        int ret = ManagerDB.getManager().setNewDirector(director);
+                        out.println("{\"id\": " + ret + "}");
                     }catch(Exception e) {
                         response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
                     }
@@ -122,19 +123,20 @@ public class DirectorServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        if((boolean) req.getSession().getAttribute("auth")) {
+        if(tokenManager.getAuth(tokenManager.getUsernameFromToken(req.getHeader("token").replace("tok $","")))) {
 
             resp.setContentType("application/json");
             PrintWriter out = resp.getWriter();
             if (req.getPathInfo() != null) {
                 if (req.getPathInfo().equals("/insertDIF")) {
                     Map<String, String[]> pars = req.getParameterMap();
-                    if (pars.containsKey("id") && pars.containsKey("cod") && pars.containsKey("role")) {
+                    if (pars.containsKey("id") && pars.containsKey("cod") && pars.containsKey("role") && pars.containsKey("dep")) {
                         int directorId = Integer.parseInt(pars.get("id")[0]);
                         int movieCode = Integer.parseInt(pars.get("cod")[0]);
                         String role = pars.get("role")[0];
+                        String dep = pars.get("dep")[0];
                         if (directorId > 0 && movieCode > 0)
-                            ManagerDB.getManager().insertMovieForDirector(directorId, movieCode, role);
+                            ManagerDB.getManager().insertMovieForDirector(directorId, movieCode, role, dep);
                         else resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
                     } else resp.sendError(HttpServletResponse.SC_NOT_FOUND);
                 } else resp.sendError(HttpServletResponse.SC_NOT_FOUND);

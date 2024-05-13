@@ -16,10 +16,14 @@ interface SearchData {
     name: string,
     typo: string
 }
+interface searchBarReturn{
+    id: number,
+    section: string
+}
 interface searchProps{
     idMain: number,
     values: boolean[],
-    setCodMember: (value: (((prevState: number) => number) | number)) => void
+    setCodMember: (value: searchBarReturn) => void
 }
 
 
@@ -188,7 +192,7 @@ return (
                     {contentData.filter(item =>
                             item.name.toLowerCase().startsWith(searchContentData.toLowerCase())
                     ).map((item, index) => <li key={index} onClick={()=>{
-                        props.setCodMember(item.id);
+                        props.setCodMember({'id':item.id, 'section':item.typo});
                     }}>{item.name} <span className={styles.typo}>{item.typo}</span></li>)
                     }
                 </ul>

@@ -77,6 +77,26 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
     const [hoverWatch, setHoverWatch] = useState(false);
     const [hoverLike, setHoverLike] = useState(false);
 
+    const [watched, setWatched] = useState(false);
+    const [liked, setLiked] = useState(false)
+
+    useEffect(() => {
+        /*check if the film is liked by the user at first*/
+        fetch('http://localhost:8080/Progetto_Tweb/user/watched?film_id='+props.cod
+            +'&user_id='+sessionStorage.getItem('id'), {
+            method: 'GET',
+            headers: {
+                "token": `tok $${sessionStorage.getItem("token")}`
+            }})
+            .then(response => response.json())
+            .then((data: boolean[])=>{
+                setWatched(data[0]);
+                setLiked(data[1]);
+            })
+            .catch(e => console.error(e))
+    }, [liked, watched]);
+
+    
     const handleWatchMouseEnter = () => {
         setHoverWatch(true);
     };
@@ -126,6 +146,7 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                         const imageSrc = value.image !== 'bnVsbA==' ? `data:image/jpeg;base64,${value.image}` : 'src/assets/profile-placeholder-cropped.png'; // why not working?
                         return (
                             <>
+
                                 <div className={"actor-container"} key={a[0]}>
                                     <img src={imageSrc} onClick={() => {
                                         //code to show actor's info
@@ -149,10 +170,11 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
 
         const fetchFilmDirectors = async (cod: number) => {
             try {
-                const value: CreditsDataI = await CastInfo(cod);
+                const value: CreditsDataI = await CastInfo(cod); // Assuming CastInfo is a function that fetches credits data
 
                 const directorPromisesByDepartment: Record<string, Promise<JSX.Element>[]> = {};
 
+                // Iterate over the departments and their crew members
                 for (const department in value.crew) {
                     const crewList = value.crew[department];
                     directorPromisesByDepartment[department] = crewList.map((directorData: string[]) => {
@@ -232,6 +254,7 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                              title={'Go back'}/>
                     </button>
                 </div>
+
                 <div className={'main-info'}>
                     <img className={'big-poster'} src={`data:image/jpeg;base64,${FilmInfo.cover}`}/>
                     <div className={'details'}>
@@ -239,21 +262,107 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                         <p id={'year'}>{FilmInfo.publicRelease}</p>
                         <p id={'plot'}>{FilmInfo.desc}</p>
                         <div className={'watch-like-edit'}>
-                            <img id={'watch'} className={'interact'}
-                                 src={hoverWatch ? 'src/assets/green-eye-solid.svg' : 'src/assets/eye-regular.svg'}
-                                 onMouseEnter={handleWatchMouseEnter}
-                                 onMouseLeave={handleWatchMouseLeave}
-                            />
-                            <img id={'like'} className={'interact'}
-                                 src={hoverLike ? 'src/assets/red-heart-solid.svg' : 'src/assets/heart-regular.svg'}
-                                 onMouseEnter={handleLikeMouseEnter}
-                                 onMouseLeave={handleLikeMouseLeave}
-                            />
+                            <>
+                                {watched ? (
+                                    <img
+                                        id="watch"
+                                        className="interact"
+                                        src={hoverWatch ? 'src/assets/eye-regular.svg' : 'src/assets/green-eye-solid.svg'}
+                                        onClick={() => {
+                                            fetch('http://localhost:8080/Progetto_Tweb/user/remWatched?film_id='+props.cod
+                                                +'&user_id='+sessionStorage.getItem('id'), {
+                                                method: 'PUT',
+                                                headers: {
+                                                    "token": `tok $${sessionStorage.getItem("token")}`
+                                                }})
+                                                .then(response =>{
+                                                    if(response.status === 200){
+                                                        setWatched(!watched);
+                                                    }else{
+                                                        alert('ERROR!!!')
+                                                    }
+                                                }).catch(e => console.error(e))
+                                        }}
+                                        onMouseEnter={handleWatchMouseEnter}
+                                        onMouseLeave={handleWatchMouseLeave}
+
+                                    />
+                                ) : (
+                                    <img
+                                        id="watch"
+                                        className="interact"
+                                        src={hoverWatch ? 'src/assets/green-eye-solid.svg' : 'src/assets/eye-regular.svg'}
+                                        onMouseEnter={handleWatchMouseEnter}
+                                        onMouseLeave={handleWatchMouseLeave}
+                                        onClick={() => {
+                                            fetch('http://localhost:8080/Progetto_Tweb/user/watched?film_id='+props.cod
+                                                +'&user_id='+sessionStorage.getItem('id'), {
+                                                method: 'PUT',
+                                                headers: {
+                                                    "token": `tok $${sessionStorage.getItem("token")}`
+                                                }})
+                                                .then(response =>{
+                                                    if(response.status === 200){
+                                                        setWatched(!watched);
+                                                    }else{
+                                                        alert('ERROR!!!')
+                                                    }
+                                                }).catch(e => console.error(e))
+                                        }}
+                                    />
+                                )}
+                                {liked ? (<img
+                                    id="like"
+                                    className="interact"
+                                    src={hoverLike ? 'src/assets/heart-regular.svg' : 'src/assets/red-heart-solid.svg'}
+                                    onMouseEnter={handleLikeMouseEnter}
+                                    onMouseLeave={handleLikeMouseLeave}
+                                    onClick={()=>{
+                                        fetch('http://localhost:8080/Progetto_Tweb/user/like?film_id='+props.cod
+                                            +'&user_id='+sessionStorage.getItem('id')+'&like='+false, {
+                                            method: 'PUT',
+                                            headers: {
+                                                "token": `tok $${sessionStorage.getItem("token")}`
+                                            }})
+                                            .then(response =>{
+                                                if(response.status === 200){
+                                                    setLiked(!liked);
+                                                }else{
+                                                    alert('ERROR!!!')
+                                                }
+                                            }).catch(e => console.error(e))
+                                    }}
+                                />): (<img
+                                    id="like"
+                                    className="interact"
+                                    src={hoverLike ? 'src/assets/red-heart-solid.svg' : 'src/assets/heart-regular.svg'}
+                                    onMouseEnter={handleLikeMouseEnter}
+                                    onMouseLeave={handleLikeMouseLeave}
+                                    onClick={()=>{
+                                        fetch('http://localhost:8080/Progetto_Tweb/user/like?film_id='+props.cod
+                                            +'&user_id='+sessionStorage.getItem('id')+'&like='+true, {
+                                            method: 'PUT',
+                                            headers: {
+                                                "token": `tok $${sessionStorage.getItem("token")}`
+                                            }})
+                                            .then(response =>{
+                                                if(response.status === 200){
+                                                    setLiked(!liked);
+                                                }else{
+                                                    alert('ERROR!!!')
+                                                }
+                                            }).catch(e => console.error(e))
+                                    }}
+                                />)}
+                            </>
                             {sessionStorage.getItem('role') === 'true' ?
                                 (<img id={'edit'} src={'src/assets/pen-solid.svg'}
-                                  onClick={() => {
-                                    props.setView({'view': 'modify-Film?' + props.cod, 'preView': props.view.view})
-                                }}/>):(<></>)
+                                      onClick={() => {
+                                          props.setView({
+                                              'view': 'modify-Film?' + props.cod,
+                                              'preView': props.view.view
+                                          })
+                                      }}/>) : (<></>)
                             }
                         </div>
                     </div>

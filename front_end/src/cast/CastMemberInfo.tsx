@@ -118,6 +118,15 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
                         <p id={'name'}>{memberInfo.name}</p>
                         <p id={'birth-date'}>Born {memberInfo.date_birth}</p>
                         <p id={'bio'}>{memberInfo.desc}</p>
+                      {sessionStorage.getItem('role') === "true" &&
+                (<>
+                    <button onClick={() => props.setView({
+                        'view': 'modify-member-' + props.section + '?' + props.id,
+                        'preView': props.view.view
+                    })}>Modify
+                    </button>
+                    <br/>
+                </>)}
                     </div>
                 </div>
                 <div className={'filmography'}>
@@ -129,7 +138,7 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
             </div>
         </>
 
-    ):(
+    ) : (
         <p>500 server error</p>
     )
 }

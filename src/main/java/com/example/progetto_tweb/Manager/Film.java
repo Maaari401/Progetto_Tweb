@@ -5,22 +5,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Film {
     private int cod;
     private String name;
     private double ranking;
-    private Date publicRelease;
+    private String publicRelease;
     private String cover;
     private String desc;
-    //private ArrayList<Integer> actors = new ArrayList<>();
 
-
-
-    //private ArrayList<Integer> directors = new ArrayList<>();
-
-    public Film(int cod, String name, double ranking, Date publicRelease, String desc, String image) {
+    public Film(int cod, String name, double ranking, String publicRelease, String desc, String image) {
         this.cod = cod;
         this.name = name;
         this.ranking = ranking;
@@ -44,7 +41,7 @@ public class Film {
         return ranking;
     }
 
-    public Date getPublicRelease() {
+    public String getPublicRelease() {
         return publicRelease;
     }
 
@@ -56,44 +53,13 @@ public class Film {
         return desc;
     }
 
-    /*public ArrayList<Integer> getActors() {
-        return actors;
-    }
-
-    public ArrayList<Integer> getDirectors() {
-        return directors;
-    }
-
-    public void setActors(ArrayList<Integer> actors) {
-        this.actors = actors;
-    }
-
-    public void setDirectors(ArrayList<Integer> directors) {
-        this.directors = directors;
-    }*/
-
-    /*
-    @Override
-    public String toString() {
-        return "Film{" +
-                "cod=" + cod +
-                ", name='" + name + '\'' +
-                ", ranking=" + ranking +
-                ", publicRelease=" + publicRelease +
-                ", desc='" + desc + '\'' +
-                '}';
-    }*/
-    @Override
-    public String toString() {
-        return "Film{cod=" + cod +"}";
-    }
 
     public static int newFilm(Film f, Connection conn) throws SQLException {
         int a = -1;
         try (PreparedStatement ps = conn.prepareStatement("insert into film (name, ranking, public_release, description, cover) values (?,?,?,?,?) RETURNING cod ")){
             ps.setString(1, f.getName());
             ps.setDouble(2, f.getRanking());
-            ps.setDate(3, f.getPublicRelease());
+            ps.setDate(3, strToDate(f.getPublicRelease()));
             ps.setString(4, f.getDesc());
             ps.setBytes(5, Base64.getDecoder().decode(f.getCover()));
             ResultSet rs = ps.executeQuery();
@@ -111,7 +77,7 @@ public class Film {
                 film = new Film(result.getInt("cod"),
                         result.getString("name"),
                         result.getDouble("ranking"),
-                        result.getDate("public_release"),
+                        dateToStr(result.getDate("public_release")),
                         result.getString("description"),
                         Base64.getEncoder().encodeToString(result.getBytes("cover"))
                 );
@@ -138,7 +104,7 @@ public class Film {
         try (PreparedStatement ps = conn.prepareStatement("UPDATE film set name = ?, ranking = ?, public_release = ?, description = ?, cover = ? where cod = ?")){
             ps.setString(1, f.getName());
             ps.setDouble(2, f.getRanking());
-            ps.setDate(3, f.getPublicRelease());
+            ps.setDate(3, strToDate(f.getPublicRelease()));
             ps.setString(4, f.getDesc());
             ps.setBytes(5, Base64.getDecoder().decode(f.getCover()));
             ps.setInt(6, f.getCod());
@@ -191,7 +157,7 @@ public class Film {
                 arr.add(new Film(result.getInt("cod"),
                                 result.getString("name"),
                                 result.getDouble("ranking"),
-                                result.getDate("public_release"),
+                                dateToStr(result.getDate("public_release")),
                                 result.getString("description"),
                                 null)
                 );
@@ -208,5 +174,20 @@ public class Film {
         }
         
         return res;
+    }
+
+    private static Date strToDate(String inputString){
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        try {
+            java.util.Date utilDate = formatter.parse(inputString);
+            return new Date(utilDate.getTime());
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+    private static String dateToStr(Date date){
+        if(date == null) return "";
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        return formatter.format(date);
     }
 }

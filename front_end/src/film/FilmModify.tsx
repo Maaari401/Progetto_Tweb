@@ -57,7 +57,7 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
     const [filmDate, setFilmDate] = useState(FilmInfo.publicRelease);
     const [filmImg, setFilmImg] = useState('')
 
-    const [Result, setResult] = useState<boolean>(null);
+    const [Result, setResult] = useState<boolean>(false);
     
     useEffect(() => {
         const fetchFilmData = async (cod:number) => {
@@ -68,10 +68,11 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                 }
             });
             const value = (await response.json()) as FilmDataI;
-            setFilmInfo(value)
-            setFilmName(value.name)
-            setFilmDate(value.publicRelease)
-            setFilmDesc(value.desc)
+            setFilmImg(value.cover);
+            setFilmName(value.name);
+            setFilmDate(value.publicRelease);
+            setFilmDesc(value.desc);
+            setFilmInfo(value);
         }
         const CastInfo = async (cod: number) => {
             const response = await fetch('http://localhost:8080/Progetto_Tweb/film/credits?cod=' + cod, {
@@ -215,6 +216,11 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
             reader.readAsDataURL(file);
         }
     };
+    const handleUndoUpload = (e:React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        setFilmImg(''); // Clear the uploaded image
+    };
+
 
 
     return <>
@@ -224,21 +230,23 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
         props.setView({'view':props.view.preView, 'preView':props.view.view})
     }}>Back</button><br/>
             <form>
-                <div className={'image-container'}>
-                    <img className={'centered-image'} src={`data:image/jpeg;base64,${FilmInfo.cover}`}/>
-                </div><br/>
+                {filmImg === '' ? (
+                    <span>Cover of the film: <input type={"file"} accept="image/*"
+                                                    onChange={e => handleImageChange(e)}/></span>
+                ) : (
+                    <div>
+                        <img src={`data:image/jpeg;base64,${filmImg}`} alt="Uploaded" style={{maxWidth: '200px'}}/>
+                        <button onClick={(event) => handleUndoUpload(event)}>Undo Upload</button>
+                    </div>
+                )}<br/>
                 <span>name: <input type={'label'} value={filmName}
                                    onChange={e => setFilmName(e.target.value)}/></span><br/>
                 <span>Description: <textarea value={filmDesc}
                                              onChange={e => setFilmDesc(e.target.value)}/></span><br/>
                 <span>release date: <input type={'date'} value={convertDate(filmDate)}
-                                           onChange={e => setFilmDate(e.target.value.toString)}/></span><br/>
-                <span>Cover of the film: <input type={"file"} accept="image/*" onChange={e => handleImageChange(e)}/></span>
+                                           onChange={e => setFilmDate(e.target.value.toString())}/></span><br/>
                 <button onClick={(e) => {
                     e.preventDefault();
-                    if(filmImg === ''){
-                        setFilmImg(FilmInfo.cover);
-                    }
                     fetch('http://localhost:8080/Progetto_Tweb/film/updateFilm',{
                         method: 'POST',
                         headers: {

@@ -45,6 +45,8 @@ public class User {
     }
 
 
+
+
     public String getEmail() {
         return email;
     }
@@ -78,12 +80,57 @@ public class User {
     }
 
     public static void setLiked(int uId, int filmId, boolean like, Connection conn) throws SQLException{
-        try (PreparedStatement ps = conn.prepareStatement("UPDATE watched SET liked = ? WHERE film_id = ? AND user_id = ?")){
-            ps.setBoolean(1, like);
-            ps.setInt(2, filmId);
-            ps.setInt(3, uId);
+
+        try (PreparedStatement ps = conn.prepareStatement("SELECT liked FROM watched where film_id = ? AND user_id = ?")){
+            ps.setInt(1, filmId);
+            ps.setInt(2, uId);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                try (PreparedStatement ps2 = conn.prepareStatement("UPDATE watched SET liked = ? WHERE film_id = ? AND user_id = ?")){
+                    ps2.setBoolean(1, like);
+                    ps2.setInt(2, filmId);
+                    ps2.setInt(3, uId);
+                    ps2.executeUpdate();
+                }
+            }else{
+                try{
+                    conn.setAutoCommit(false);
+                    setWached(uId, filmId, conn);
+                    PreparedStatement ps2 = conn.prepareStatement("UPDATE watched SET liked = ? WHERE film_id = ? AND user_id = ?");
+                    ps2.setBoolean(1, like);
+                    ps2.setInt(2, filmId);
+                    ps2.setInt(3, uId);
+                    ps2.executeUpdate();
+
+                    conn.commit();
+                }catch (Exception e){
+                    conn.rollback();
+                }
+
+            }
+        }
+
+    }
+    public static void remWached(int uId, int filmId, Connection conn) throws SQLException{
+        try (PreparedStatement ps = conn.prepareStatement("DELETE FROM watched where film_id = ? AND user_id = ?")){
+            ps.setInt(1, filmId);
+            ps.setInt(2, uId);
             ps.executeUpdate();
         }
+    }
+
+    public static boolean[] checkValues(int uId, int filmId, Connection conn) throws SQLException {
+        boolean[] res = {false, false};
+        try (PreparedStatement ps = conn.prepareStatement("SELECT liked FROM watched where film_id = ? AND user_id = ?")){
+            ps.setInt(1, filmId);
+            ps.setInt(2, uId);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                res[0] = true;
+                res[1] = rs.getBoolean(1);
+            }
+        }
+        return res;
     }
 
 }

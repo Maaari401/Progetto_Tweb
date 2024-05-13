@@ -258,9 +258,9 @@ public class ManagerDB {
         }
     }
 
-    public boolean insertMovieForDirector(int directorId, int movieCode, String role) {
+    public boolean insertMovieForDirector(int directorId, int movieCode, String dep, String role) {
         try(Connection conn = persistence.getConnection()) {
-            return Director.InsertDirectorIntoFilm(directorId, movieCode, role, conn);
+            return Director.InsertDirectorIntoFilm(directorId, movieCode, role, dep, conn);
         }catch (SQLException e){
             System.out.println(e);
             return false;
@@ -314,5 +314,19 @@ public class ManagerDB {
             System.out.println(e);
         }
     }
-
+    public void remWatched(int uId, int filmId){
+        try(Connection conn = persistence.getConnection()){
+            User.remWached(uId, filmId, conn);
+        }catch (SQLException e){
+            System.out.println(e);
+        }
+    }
+    public boolean[] checkWatchValues(int uId, int filmId){
+        try(Connection conn = persistence.getConnection()){
+            return User.checkValues(uId, filmId, conn);
+        }catch (SQLException e){
+            System.out.println(e);
+            return new boolean[]{false, false};
+        }
+    }
 }

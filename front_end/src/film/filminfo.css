@@ -1,17 +1,119 @@
-.image-container {
-    display: inline;
-    justify-content: center;
+.film-info-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-wrap: wrap;
     align-items: center;
-    height: 100vh; /* Set height to full viewport height */
+    /*width: 100%;*/
+    /*max-width: 70%;*/
 }
 
-.centered-image {
-    width: 30%; /* Set width to 60% of the container */
-    /* Optional: Adjust height to maintain aspect ratio */
+.previous-page {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5em;
+    margin-bottom: 1em;
+    width: 70%;
+}
+
+.previous-page > button {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+}
+
+.previous-page img {
+    max-width: 24px;
+    width: 24px;
+    height: 24px;
+    max-height: 24px;
+    filter: brightness(0) invert(1);
+    transition: filter 0.3s ease;
+}
+
+.previous-page img:hover {
+    filter: none;
+    background-color: white;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, filter 0.4s ease;
+    cursor: pointer;
+}
+
+.main-info {
+    display: flex;
+    flex-direction: row;
+    /*justify-content: center;*/
+    /*flex-wrap: wrap;*/
+    /*align-content: stretch;*/
+    width: 100%;
+    max-width: 70%;
+    margin-top: 0.5em;
+    margin-bottom: 1em;
+}
+
+.big-poster {
+    width: 35%;
     height: auto;
-    /* Optional: Add additional styling (e.g., border, box-shadow, etc.) */
+    border-radius: 8px;
 }
 
+.details {
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    align-items: center;
+    padding: 2rem;
+}
+
+.watch-like-edit {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-bottom: 8em;
+    width: 60%;
+    /*margin: 0 8em 8em;*/
+}
+
+#watch, #like {
+    margin: 0 4em;
+    filter: brightness(0) invert(1);
+    width: 48px;
+    height: 48px;
+}
+
+#edit {
+    margin: 0 4em;
+    width: 48px;
+    height: 48px;
+}
+
+.watch-like-edit img:hover {
+    cursor: pointer;
+}
+
+p {
+    color: white;
+}
+
+#title {
+    font-size: 3em;
+    margin-top: 0;
+    text-align: center;
+}
+
+#plot {
+    margin: 3em 10% auto;
+    font-family: Arial;
+}
+
+#year {
+    font-family: Arial;
+}
+
+#watch:hover,#like:hover {
+    filter: none;
+}
 
 .actorList img {
     height: 100px;
@@ -28,3 +130,4 @@
 .director_container{
     text-align: center; /* Center-align text within the div */
 }
+

@@ -7,6 +7,7 @@ import FilmInfo from "./film/FilmInfo.tsx";
 import './css/App.css'
 import CastMemberInfo from "./cast/CastMemberInfo.tsx";
 import FilmModify from "./film/FilmModify.tsx";
+import CastMemberModify from "./cast/CastMemberModify.tsx";
 
 interface ViewI {
     view: string,
@@ -33,6 +34,7 @@ function App(){
                     {view.view.startsWith('actor?') && <CastMemberInfo id={parseInt(view.view.split('?')[1])} section={'actor'} setView={setView} view={view}/>}
                     {view.view.startsWith('director?') && <CastMemberInfo id={parseInt(view.view.split('?')[1])} section={'director'} setView={setView} view={view}/>}
                     {view.view.startsWith('modify-Film') && <FilmModify cod={parseInt(view.view.split('?')[1])} setView={setView} view={view}/>}
+                    {view.view.startsWith('modify-member') && <CastMemberModify  id={parseInt(view.view.split('?')[1])} section={view.view.includes('actor') ? 'actor':'director'} setView={setView} view={view}/>}
                 </>
                 )}
         </>
@@ -40,3 +42,14 @@ function App(){
 }
 
 export default App
+
+
+/*
+
+    TODO:
+    - remove a member from a film (class pane)
+    - add the search bar to add member to film
+    - film list viewed and watched
+
+
+ */

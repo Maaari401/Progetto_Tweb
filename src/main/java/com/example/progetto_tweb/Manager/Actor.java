@@ -1,17 +1,21 @@
 package com.example.progetto_tweb.Manager;
 
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class Actor {
     private int id;
     private String name;
-    private Date date_birth;
+    private String date_birth;
     private String desc;
     private String image;
 
-    public Actor(int id, String name, String desc, Date date_birth, String image) {
+    public Actor(int id, String name, String desc, String date_birth, String image) {
         this.id = id;
         this.name = name;
         this.desc = desc;
@@ -30,7 +34,7 @@ public class Actor {
     }
 
 
-    public Date getDate_birth() {
+    public String getDate_birth() {
         return date_birth;
     }
 
@@ -57,7 +61,7 @@ public class Actor {
         try (PreparedStatement ps = conn.prepareStatement("insert into actors (name, description, date_birth, image) values (?,?,?,?) RETURNING id")){
             ps.setString(1, a.getName());
             ps.setString(2, a.getDesc());
-            ps.setDate(3, a.getDate_birth());
+            ps.setDate(3, strToDate(a.getDate_birth()));
             ps.setBytes(4, Base64.getDecoder().decode(a.getImage()));
             ResultSet rs = ps.executeQuery();
             if(rs.next()) aId = rs.getInt(1);
@@ -73,7 +77,7 @@ public class Actor {
                 actor = new Actor(result.getInt("id"),
                         result.getString("name"),
                         result.getString("description"),
-                        result.getDate("date_birth"),
+                        dateToStr(result.getDate("date_birth")),
                         Base64.getEncoder().encodeToString(result.getBytes("image")));
             }
         }
@@ -99,7 +103,7 @@ public class Actor {
         try (PreparedStatement ps = conn.prepareStatement("UPDATE actors set name = ?, description = ?, date_birth = ?, image = ? where id = ?")){
             ps.setString(1, a.getName());
             ps.setString(2, a.getDesc());
-            ps.setDate(3, a.getDate_birth());
+            ps.setDate(3, strToDate(a.getDate_birth()));
             ps.setBytes(4, Base64.getDecoder().decode(a.getImage()));
             ps.setInt(5, a.getId());
             ps.executeUpdate();
@@ -130,7 +134,7 @@ public class Actor {
                 arr.add(new Actor(result.getInt("id"),
                         result.getString("name"),
                         result.getString("description"),
-                        result.getDate("date_birth"),
+                        result.getString("date_birth"),
                         null));
             }
         }
@@ -164,5 +168,21 @@ public class Actor {
             ps.executeUpdate();
         }
         return true;
+    }
+
+
+    private static Date strToDate(String inputString){
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        try {
+            java.util.Date utilDate = formatter.parse(inputString);
+            return new Date(utilDate.getTime());
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+    private static String dateToStr(Date date){
+        if(date == null) return "";
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        return formatter.format(date);
     }
 }

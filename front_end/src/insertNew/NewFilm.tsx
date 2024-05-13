@@ -6,6 +6,11 @@ interface retStatus {
     id: number
 }
 
+interface searchBarReturn{
+    id: number,
+    section: string
+}
+
 export const NewFilm = () => {
 
     const [image, setImage] = useState('');
@@ -15,8 +20,9 @@ export const NewFilm = () => {
     const [textareaInput, setTextareaInput] = useState('');
     const [codFilm, setCodFilm] = useState(586)
 
-    const [codMember, setCodMember] = useState(-1)
+    const [codMember, setCodMember] = useState<searchBarReturn>({'id':-1,'section':'default'})
     const [character, setCharacter] = useState('')
+    const [role, setRole] = useState('')
     const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
         const file: File | undefined = event.target.files?.[0];
         if (file !== undefined) {
@@ -77,31 +83,59 @@ export const NewFilm = () => {
                 <p>Cerca l'attore/direttore che vuoi mettere</p>
                 <Search idMain={codFilm} values={[false, true, true]} setCodMember={setCodMember}/>
 
-                {codMember !== -1 &&
+                {codMember.id !== -1 && (
+                    codMember.section == 'actor' ? (
+                        <div>
+                            <p>Inserisci il nome del personaggio nel film</p>
+                            <input type={'text'} onChange={e => setCharacter(e.target.value)}/>
+                            <button onClick={()=>{
+                                console.log('stai aggiungendo '+character)
+                                /*Query per aggiungere il valore*/
+                                fetch('http://localhost:8080/Progetto_Tweb/actor/insertAIF?id='+ codMember.id +'&cod='+codFilm+'&character='+character,{
+                                    method: 'PUT',
+                                    headers: {
+                                        "token": `tok $${sessionStorage.getItem("token")}`
+                                    },
+                                    body: JSON.stringify({
+                                        "id": codFilm,
+                                        "cod": codMember,
+                                        "character": character
+                                    })
+                                }).then(data => {
+                                    console.log(data.status)
+                                    console.log(data.text())
+                                });
+                            }}>ADD</button>
+                        </div>
+                    ): (
                     <div>
-                    <p>Inserisci il nome del personaggio nel film</p>
-                    <input type={'text'} onChange={e => setCharacter(e.target.value)}/>
-                    <button onClick={()=>{
-                        console.log('hai aggiunto'+character)
-                        /*Query per aggiungere il valore*/
-                        fetch('http://localhost:8080/Progetto_Tweb/actor/insertAIF?id='+codMember+'&cod='+codFilm+'&character='+character,{
-                            method: 'PUT',
-                            headers: {
-                                "token": `tok $${sessionStorage.getItem("token")}`
-                            },
-                            body: JSON.stringify({
-                                "id": codFilm,
-                                "cod": codMember,
-                                "character": character
-                            })
-                        }).then(data => {
-                            console.log(data.status)
-                            console.log(data.text())
-                        });
-                    }}>ADD</button>
+                        <p>Inserisci il dipartimento in cui ha lavorato nel film</p>
+                        <input type={'text'} onChange={e => setCharacter(e.target.value)}/>
+                        <p>Inserisci il ruolo che ha avuto nel dipartimento</p>
+                        <input type={'text'} onChange={e => setRole(e.target.value)}/>
+                        <button onClick={() => {
+                            console.log('hai aggiunto' + character)
+                            /*Query per aggiungere il valore*/
+                            fetch('http://localhost:8080/Progetto_Tweb/director/insertDIF?id=' + codMember.id + '&cod=' + codFilm + '&role=' + role +'&dep='+character, {
+                                method: 'PUT',
+                                headers: {
+                                    "token": `tok $${sessionStorage.getItem("token")}`
+                                },
+                                body: JSON.stringify({
+                                    "id": codFilm,
+                                    "cod": codMember,
+                                    "character": character
+                                })
+                            }).then(data => {
+                                console.log(data.status)
+                                console.log(data.text())
+                            });
+                        }}>ADD
+                        </button>
                     </div>
+                )
+                )
                 }
-
             </>}
         </div>
 

@@ -102,11 +102,24 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
     }, []);
     return memberInfo !== undefined ? (
         <>
-            <button onClick={()=> {
-                props.setView({'view':props.view.preView, 'preView':props.view.view})
-            }}>BACK</button><br/>
+            <button onClick={() => {
+                props.setView({'view': props.view.preView, 'preView': props.view.view})
+            }}>BACK
+            </button>
+            <br/>
+            {sessionStorage.getItem('role') === "true" &&
+                (<>
+                    <button onClick={() => props.setView({
+                        'view': 'modify-member-' + props.section + '?' + props.id,
+                        'preView': props.view.view
+                    })}>Modify
+                    </button>
+                    <br/>
+                </>)}
+
             <div className={'image-container'}>
-                <img src={`data:image/jpeg;base64,${memberInfo.image}`} className={'centered-image'} alt={memberInfo.name+'cover'}/>
+                <img src={`data:image/jpeg;base64,${memberInfo.image}`} className={'centered-image'}
+                     alt={memberInfo.name + 'cover'}/>
                 <p>{memberInfo.name} - {memberInfo.date_birth}</p>
                 <p>{memberInfo.desc}</p>
             </div>
@@ -115,7 +128,7 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
             </div>
         </>
 
-    ):(
+    ) : (
         <p>500 server error</p>
     )
 }

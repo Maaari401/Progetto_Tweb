@@ -123,7 +123,7 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                 })
                     .then(response => response.json())
                     .then((value: MemberI) => {
-                        const imageSrc = value.image ? `data:image/jpeg;base64,${value.image}` : 'src/assets/profile-placeholder-cropped.png'; // why not working?
+                        const imageSrc = value.image !== 'bnVsbA==' ? `data:image/jpeg;base64,${value.image}` : 'src/assets/profile-placeholder-cropped.png'; // why not working?
                         return (
                             <>
                                 <div className={"actor-container"} key={a[0]}>
@@ -188,11 +188,11 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                 }
 
                 const directorDetails: MemberI = await response.json();
-
+                const imageSrc = directorDetails.image !== 'bnVsbA==' ? `data:image/jpeg;base64,${directorDetails.image}` : 'src/assets/profile-placeholder-cropped.png'; // why not working?
                 return (
                     <>
                         <div className="director-container" key={directorData[0]}>
-                            <img src={`data:image/jpeg;base64,${directorDetails.image}`} alt="Director"
+                            <img src={imageSrc} alt="Director"
                                  onClick={()=>{
                                  props.setView({'view':'director?'+directorDetails.id, 'preView':props.view.view})
                                 //code to show info of actor or director
@@ -201,8 +201,6 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                                 <b>{directorDetails.name}</b>
                                 <br/>as<br/>
                                 <b>{directorData[1]}</b> {/* Accessing role from the JSON structure */}
-                                {/*<br/>in<br/>*/}
-                                {/*<b>{directorData[2]}</b> /!* Accessing department from the JSON structure *!/*/}
                             </p>
                         </div>
                     </>

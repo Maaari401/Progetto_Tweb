@@ -28,19 +28,19 @@ export const TopBar: FC<TopBarPropsI> = ({ setLogged, view, setView }) => {
             <Search setView={setView} view={view}/>
             {view.view === "films" ? (
                     <div className="user-button" onClick={() => {setView({'view':'user','preView':view.view})}}>
-                        <img id="home" className="icon" alt="Profile" src={'src/assets/user-solid.svg'} title={'Profile'}/>
+                        <img className="icon" alt="Profile" src={'src/assets/user-solid.svg'} title={'Profile'}/>
                     </div>
                 ) : (
                 <div className="home-button" onClick={() => {
                     setView({'view':'films','preView':'user'})
                 }}>
-                    <img id="home" className="icon" src="src/assets/house-solid.svg" alt="Home" title={'Home'}/>
+                    <img className="icon" src="src/assets/house-solid.svg" alt="Home" title={'Home'}/>
                 </div>
             )
             }
 
 
-            <div className="logout pulsante" onClick={(e) => {
+            <div className="logout-button" onClick={(e) => {
                     e.preventDefault();
                     fetch("http://localhost:8080/Progetto_Tweb/logout", {
                         method: 'GET',
@@ -58,7 +58,7 @@ export const TopBar: FC<TopBarPropsI> = ({ setLogged, view, setView }) => {
                             setLogged(false);
                         })
                 }}>
-                <img id="home" className="icon" src="src/assets/right-from-bracket-solid.svg" alt="Logout"
+                <img className="icon" src="src/assets/right-from-bracket-solid.svg" alt="Logout"
                          title={'Logout'}/>
                 </div>
         </nav>

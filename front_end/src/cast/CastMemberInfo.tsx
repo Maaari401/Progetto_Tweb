@@ -1,4 +1,4 @@
-import {FC, useEffect, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import './CastMemberInfo.css'
 
 interface ViewI {
@@ -78,12 +78,13 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
                 .then(films => {
                     const tmp = films.map((filmo => {
                         return <>
-                            <div className={'image-container'} onClick={() => {
-                                props.setView({'view': 'film?'+filmo.cod, 'preView':props.view.view})
-                                //console.log('filmo.cod'+filmo.cod)
-                                }}>
-                                <img src={`data:image/jpeg;base64,${filmo.cover}`} className={'centered-image'}/>
-                                <p>{filmo.name} - {filmo.publicRelease}</p>
+                            <div className={'filmography-entry-container'}>
+                                <img src={`data:image/jpeg;base64,${filmo.cover}`} className={'centered-image'}
+                                     onClick={() =>
+                                     {props.setView({'view': 'film?'+filmo.cod, 'preView':props.view.view})
+                                         //console.log('filmo.cod'+filmo.cod)
+                                     }}/>
+                                <p>{filmo.name}<br/>{filmo.publicRelease}</p>
                             </div>
                         </>
                     }))
@@ -102,12 +103,22 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
     }, []);
     return memberInfo !== undefined ? (
         <>
-            <button onClick={() => {
-                props.setView({'view': props.view.preView, 'preView': props.view.view})
-            }}>BACK
-            </button>
-            <br/>
-            {sessionStorage.getItem('role') === "true" &&
+            <div className={'artist-info-container'}>
+                <div className={'previous-page'}>
+                    <button onClick={() => {
+                        props.setView({'view': props.view.preView, 'preView': props.view.view})
+                    }}>
+                        <img className='icon' src='src/assets/arrow-left-solid.svg'
+                             title={'Go back'}/>
+                    </button>
+                </div>
+                <div className={'artist-info'}>
+                    <img className={'big-poster'} src={`data:image/jpeg;base64,${memberInfo.image}`} alt={memberInfo.name + 'cover'}/>
+                    <div className={'bio-info-container'}>
+                        <p id={'name'}>{memberInfo.name}</p>
+                        <p id={'birth-date'}>Born {memberInfo.date_birth}</p>
+                        <p id={'bio'}>{memberInfo.desc}</p>
+                      {sessionStorage.getItem('role') === "true" &&
                 (<>
                     <button onClick={() => props.setView({
                         'view': 'modify-member-' + props.section + '?' + props.id,
@@ -116,15 +127,14 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
                     </button>
                     <br/>
                 </>)}
-
-            <div className={'image-container'}>
-                <img src={`data:image/jpeg;base64,${memberInfo.image}`} className={'centered-image'}
-                     alt={memberInfo.name + 'cover'}/>
-                <p>{memberInfo.name} - {memberInfo.date_birth}</p>
-                <p>{memberInfo.desc}</p>
-            </div>
-            <div className={'films'}>
-                {filmList}
+                    </div>
+                </div>
+                <div className={'filmography'}>
+                    <p id={'filmography'}>Filmography</p>
+                    <div className={'filmography-list'}>
+                        {filmList}
+                    </div>
+                </div>
             </div>
         </>
 

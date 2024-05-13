@@ -1,6 +1,8 @@
 import {ChangeEvent, FC, useEffect, useState} from "react";
 import './filminfo.css'
 import React from "react";
+import ConfirmDelete from "../panes/ConfirmDelete.tsx";
+import filmInfo from "./FilmInfo.tsx";
 
 interface ViewI {
     view: string,
@@ -50,6 +52,14 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
     const [ActorList, setActorList] = useState<JSX.Element[]>()
     const [DirectorList, setDirectorList] = useState<Record<string, JSX.Element[]>>()
     const [isLoading, setIsLoading] = useState(true)
+    const [hoverSave, setHoverSave] = useState(false);
+    const [showRemovalConfirmation, setShowRemovalConfirmation] = useState(false);
+    const handleSaveMouseEnter = () => {
+        setHoverSave(true);
+    };
+    const handleSaveMouseLeave = () => {
+        setHoverSave(false);
+    };
 
 
     const [filmName, setFilmName] = useState(FilmInfo.name);
@@ -95,17 +105,15 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                 })
                     .then(response => response.json())
                     .then((value: MemberI) => {
+                        const imageSrc = value.image ? `data:image/jpeg;base64,${value.image}` : 'src/assets/profile-placeholder-cropped.png'; // why not working?
                         return (
                             <>
-                                <div className={"actor_container"} key={a[0]} onClick={() => {
-                            //code to show actor's info
-                            props.setView({'view':'actor?'+value.id, 'preView':props.view.view})
-                        }}>
-                        <img src={`data:image/jpeg;base64,${value.image}`}/>
-                        <p>{value.name} <br/><b>as</b> <br/>{a[1]}</p>
-                        </div>
-                        </>
-                    );
+                                <div className={"actor-container"} key={a[0]}>
+                                    <img src={imageSrc} onClick={() => setShowRemovalConfirmation(true)} alt='Actor'/>
+                                    <p><b>{value.name}</b> <br/>as<br/><b>{a[1]}</b></p>
+                                </div>
+                            </>
+                        );
                     });
             });
 
@@ -163,22 +171,22 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
 
                 return (
                     <>
-                        <div className="director_container" key={directorData[0]} onClick={()=>{
-                    //code to show info of actor or director
-                    props.setView({'view':'director?'+directorDetails.id, 'preView':props.view.view})
-
-                }} >
-                <img src={`data:image/jpeg;base64,${directorDetails.image}`} alt="Director" />
-                    <p>
-                        {directorDetails.name}
-                    <br /><b>as</b> <br />
-                    {directorData[2]} {/* Accessing role from the JSON structure */}
-                <br /><b>in</b>
-                {directorData[1]} {/* Accessing department from the JSON structure */}
-                </p>
-                </div>
-                </>
-            );
+                        <div className="director-container" key={directorData[0]}>
+                            <img src={`data:image/jpeg;base64,${directorDetails.image}`} alt="Director"
+                                 onClick={()=>{
+                                     props.setView({'view':'director?'+directorDetails.id, 'preView':props.view.view})
+                                     //code to show info of actor or director
+                                 }}/>
+                            <p>
+                                <b>{directorDetails.name}</b>
+                                <br/>as<br/>
+                                <b>{directorData[1]}</b> {/* Accessing role from the JSON structure */}
+                                {/*<br/>in<br/>*/}
+                                {/*<b>{directorData[2]}</b> /!* Accessing department from the JSON structure *!/*/}
+                            </p>
+                        </div>
+                    </>
+                );
             } catch (error) {
                 console.error("Error fetching director details:", error);
                 return (
@@ -224,93 +232,101 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
 
 
     return <>
-        <div>
-            <p>MODIFY FILM</p>
-            <button onClick={()=>{
-        props.setView({'view':props.view.preView, 'preView':props.view.view})
-    }}>Back</button><br/>
-            <form>
-                {filmImg === '' ? (
-                    <span>Cover of the film: <input type={"file"} accept="image/*"
-                                                    onChange={e => handleImageChange(e)}/></span>
-                ) : (
-                    <div>
-                        <img src={`data:image/jpeg;base64,${filmImg}`} alt="Uploaded" style={{maxWidth: '200px'}}/>
-                        <button onClick={(event) => handleUndoUpload(event)}>Undo Upload</button>
-                    </div>
-                )}<br/>
-                <span>name: <input type={'label'} value={filmName}
-                                   onChange={e => setFilmName(e.target.value)}/></span><br/>
-                <span>Description: <textarea value={filmDesc}
-                                             onChange={e => setFilmDesc(e.target.value)}/></span><br/>
-                <span>release date: <input type={'date'} value={convertDate(filmDate)}
-                                           onChange={e => setFilmDate(e.target.value.toString())}/></span><br/>
-                <button onClick={(e) => {
-                    e.preventDefault();
-                    fetch('http://localhost:8080/Progetto_Tweb/film/updateFilm',{
-                        method: 'POST',
-                        headers: {
-                            "token": `tok $${sessionStorage.getItem("token")}`
-                        },
-                        body: JSON.stringify({
-                            "cod": FilmInfo.cod,
-                            "name": filmName,
-                            "ranking": "2.12",
-                            "publicRelease": filmDate,
-                            "desc": filmDesc,
-                            "cover": filmImg
-                        })
-                    }).then(response => {
-                        if (response.ok) {
-                            setResult(true);
-                        } else {
-                            setResult(false);
-                            throw new Error(`Request failed with status ${response.status}`);
-                        }
-                    }).catch(error => {
-                        console.error('Error:', error);
-                        const successMessage = document.getElementById('success');
-                        if (successMessage) {
-                            successMessage.innerText = `Error: ${error.message}`;
-                        }
-                    });
-                    setTimeout(() => {
-                        props.setView({'view':'film?'+FilmInfo.cod, 'preView':props.view.view});
-                    }, 3000);
-                }}>Modify values
+        <div className={'film-info-container'}>
+            <div className={'previous-page'}>
+                <button onClick={() => {
+                    props.setView({'view': props.view.preView, 'preView': props.view.view})
+                }}>
+                    <img className='icon' src='src/assets/arrow-left-solid.svg'
+                         title={'Go back'}/>
                 </button>
-            </form>
+            </div>
+            <div className={'edit-main-info'}>
+                <img className={'big-poster'} src={`data:image/jpeg;base64,${FilmInfo.cover}`}/>
+                <div className={'edit-details'}>
+                    <form className={'edit-details'}>
+                        <input id={'edit-title'} type={'label'} value={filmName}
+                               onChange={e => setFilmName(e.target.value)}/>
+                        <input id={'edit-year'} type={'date'} value={convertDate(filmDate)}
+                               onChange={e => setFilmDate(e.target.value.toString)}/>
+                        <textarea id={'edit-plot'} value={filmDesc}
+                                  onChange={e => setFilmDesc(e.target.value)}/>
+                        <input id={'edit-poster'} type={"file"} accept="image/*"
+                               onChange={e => handleImageChange(e)}/>
+                        <img id={'save-edits'} title='Save edits'
+                             src={hoverSave ? 'src/assets/floppy-disk-solid.svg' : 'src/assets/floppy-disk-regular.svg'}
+                             onMouseEnter={handleSaveMouseEnter}
+                             onMouseLeave={handleSaveMouseLeave}
+                             onClick={(e) => {
+                                 e.preventDefault();
+                                 if (filmImg === '') {
+                                     setFilmImg(FilmInfo.cover);
+                                 }
+                                 fetch('http://localhost:8080/Progetto_Tweb/film/updateFilm', {
+                                     method: 'POST',
+                                     headers: {
+                                         "token": `tok $${sessionStorage.getItem("token")}`
+                                     },
+                                     body: JSON.stringify({
+                                         "cod": FilmInfo.cod,
+                                         "name": filmName,
+                                         "ranking": "2.12",
+                                         "publicRelease": filmDate,
+                                         "desc": filmDesc,
+                                         "cover": filmImg
+                                     })
+                                 }).then(response => {
+                                     if (response.ok) {
+                                         setResult(true);
+                                     } else {
+                                         setResult(false);
+                                         throw new Error(`Request failed with status ${response.status}`);
+                                     }
+                                 }).catch(error => {
+                                     console.error('Error:', error);
+                                     const successMessage = document.getElementById('success');
+                                     if (successMessage) {
+                                         successMessage.innerText = `Error: ${error.message}`;
+                                     }
+                                 });
+                                 setTimeout(() => {
+                                     props.setView({'view': 'film?' + FilmInfo.cod, 'preView': props.view.view});
+                                 }, 3000);
+                             }}>
+                        </img>
+                    </form>
+                </div>
+            </div>
+            <div className={'cast-box'}>
+                <p id={'cast'}>Cast</p>
+                <div className={'actor-list'}>
+                    {ActorList}
+                </div>
+            </div>
+            {showRemovalConfirmation && <ConfirmDelete onCancel={() => {setShowRemovalConfirmation(false);}}/>}
+            <div className={'film-crew-box'}>
+                {isLoading ? ( // Conditionally render loading state
+                    <p> Director List is Loading...</p>
+                ) : (
+                    <>
+                        <p id={'crew'}>Film crew</p>
+                        {Object.entries(DirectorList).map(([department, directorList]) => (
+                            <div className={'department'} key={department}>
+                                <hr/>
+                                <p className={'department-name'}>{department}</p>
+                                <div className={'department-list'}>
+                                    {directorList.map((director, index) => (
+                                        <React.Fragment key={index}>
+                                            {director}
+                                        </React.Fragment>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+                    </>
+                )}
+            </div>
         </div>
-        <h1 id={'success'} style={{ display: Result ? 'block' : 'none' }}>MODIFI AVVENUTA CORRETTAMENTE</h1>
-
-        <div className={'actorList'}>
-        Actor list:<br/>
-    {ActorList}
-    </div>
-    <div className={'directorList'}>
-        <br/>
-        {isLoading ? ( // Conditionally render loading state
-                <p> Director List is Loading...</p>
-) : (
-        <>
-            <div className={'directorList'}>
-            Director list:<br/>
-    {Object.entries(DirectorList).map(([department, directorList]) => (
-            <div key={department}>
-                <h2>{department}</h2>
-    {directorList.map((director, index) => (
-        <React.Fragment key={index}>
-            {director}
-            </React.Fragment>
-    ))}
-    </div>
-))}
-    </div>
-    </>
-)}
-    </div>
-
-
     </>
 };
 

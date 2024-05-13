@@ -4,10 +4,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /*padding-left: 30px;*/
-    /*padding-right: 30px;*/
-    /*color: #29333d;*/
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .topbar h1 {
@@ -23,28 +20,23 @@
 }
 
 .topmenu > div {
-    /*background-color: #AFCAC6;*/
     border-radius: 5px;
     margin-left: 20px;
 }
 
-
-.topmenu .icon {
+.icon {
     /*width: 40px;*/
     /*height: 40px;*/
     filter: brightness(0) invert(1);
     transition: filter 0.3s ease;
 }
-.topmenu .icon:hover {
+
+.icon:hover {
     filter: none;
     background-color: white;
     border-radius: 4px;
     transition: background-color 0.3s ease, filter 0.4s ease;
     cursor: pointer;
-}
-
-.topmenu .pulsante:hover {
-    background-color: white;
 }
 
 .topmenu > div > img {

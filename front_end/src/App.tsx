@@ -28,8 +28,8 @@ function App(){
             {(logged &&
                 <>
                     <TopBar setLogged={setLogged} view={view} setView={setView}/>
-                    {view.view === "films" && <Films setView={setView} view={view}/>}
-                    {view.view === "user" && <UserPage/>}
+                    {view.view === "films" && <Films url={''} setView={setView} view={view}/>}
+                    {view.view === "user" && <UserPage view={view} setView={setView}/>}
                     {view.view.startsWith('film?') && <FilmInfo cod={parseInt(view.view.split('?')[1])} setView={setView} view={view}/>}
                     {view.view.startsWith('actor?') && <CastMemberInfo id={parseInt(view.view.split('?')[1])} section={'actor'} setView={setView} view={view}/>}
                     {view.view.startsWith('director?') && <CastMemberInfo id={parseInt(view.view.split('?')[1])} section={'director'} setView={setView} view={view}/>}

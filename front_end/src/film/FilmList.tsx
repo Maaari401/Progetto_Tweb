@@ -71,8 +71,9 @@
 
 
     interface FilmsProps {
-        setView: (value: ViewI) => void
-        view: ViewI
+        setView: (value: ViewI) => void,
+        view: ViewI,
+        url: string
     }
 
     export const Films: FC<FilmsProps> = (props: FilmsProps) => {
@@ -83,7 +84,9 @@
 
         const fetchData = () => {
             setLoading(true);
-            fetch("http://localhost:8080/Progetto_Tweb/film", {
+
+            const url = props.url === "" ? 'http://localhost:8080/Progetto_Tweb/film' : props.url;
+            fetch(url, {
                 method: 'GET',
                 headers: {
                     "token": "tok $" + sessionStorage.getItem("token")
@@ -132,7 +135,7 @@
                                 <img id='previous' className='icon' src='src/assets/arrow-left-solid.svg'
                                      title={'Previous page'}/>
                             </button>
-                            <p>{page}/{Math.floor(films.length / FILM_FOR_Page)}</p>
+                            <p>{page}/{Math.floor(films.length / FILM_FOR_Page)+1}</p>
                             <button onClick={() => {
                                 setPage(page + 1);
                             }} style={{visibility: page=== Math.ceil(films.length / FILM_FOR_Page) ? 'hidden' : 'visible'}}
@@ -147,3 +150,4 @@
             </div> // forse films.length non fa una bella impressione a linea 118?
         );
     };
+

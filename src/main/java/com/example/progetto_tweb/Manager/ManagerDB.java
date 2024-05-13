@@ -259,7 +259,7 @@ public class ManagerDB {
         }
     }
 
-    public boolean insertMovieForDirector(int directorId, int movieCode, String dep, String role) {
+    public boolean insertMovieForDirector(int directorId, int movieCode, String role, String dep){
         try(Connection conn = persistence.getConnection()) {
             return Director.InsertDirectorIntoFilm(directorId, movieCode, role, dep, conn);
         }catch (SQLException e){
@@ -330,4 +330,23 @@ public class ManagerDB {
             return new boolean[]{false, false};
         }
     }
+    public ArrayList<Film> filmLiked(int uId){
+        try(Connection conn = persistence.getConnection()){
+            return User.filmLiked(uId,conn);
+        }catch (SQLException e){
+            System.out.println(e);
+            return new ArrayList<>();
+        }
+    }
+
+    public ArrayList<Film> filmWatched(int uId){
+        try(Connection conn = persistence.getConnection()){
+            return User.filmWatched(uId,conn);
+        }catch (SQLException e){
+            System.out.println(e);
+            return new ArrayList<>();
+        }
+    }
+
+
 }

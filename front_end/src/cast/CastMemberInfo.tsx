@@ -106,8 +106,7 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
             <div className={'artist-info-container'}>
                 <div className={'previous-page'}>
                     <button onClick={() => {
-                        props.setView({'view': props.view.preView, 'preView': props.view.view})
-                    }}>
+                        props.setView({'view': props.view.preView, 'preView': props.view.view})}}>
                         <img className='icon' src='src/assets/arrow-left-solid.svg'
                              title={'Go back'}/>
                     </button>
@@ -118,15 +117,15 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
                         <p id={'name'}>{memberInfo.name}</p>
                         <p id={'birth-date'}>Born {memberInfo.date_birth}</p>
                         <p id={'bio'}>{memberInfo.description}</p>
-                      {sessionStorage.getItem('role') === "true" &&
-                (<>
-                    <button onClick={() => props.setView({
-                        'view': 'modify-member-' + props.section + '?' + props.id,
-                        'preView': props.view.view
-                    })}>Modify
-                    </button>
-                    <br/>
-                </>)}
+                        {sessionStorage.getItem('role') === "true" &&
+                            (<>
+                                <img id={'edit-member'} src={'src/assets/pen-solid.svg'} onClick={() => props.setView({
+                                'view': 'modify-member-' + props.section + '?' + props.id,
+                                'preView': props.view.view
+                                })} alt={'Edit icon'}>
+                                </img>
+                            </>)
+                        }
                     </div>
                 </div>
                 <div className={'filmography'}>

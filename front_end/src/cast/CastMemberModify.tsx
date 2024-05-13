@@ -112,11 +112,34 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
     /*IMPORTANT to render the values in the input we need to rerender this component*/
     return memberInfo !== undefined ? (
         <>
-            <button onClick={() => {
-                props.setView({'view': props.view.preView, 'preView': props.view.view})
-            }}>BACK
-            </button>
-            <br/>
+            <div className={'artist-info-container'}>
+                <div className={'previous-page'}>
+                    <button onClick={() => {
+                        props.setView({'view': props.view.preView, 'preView': props.view.view})
+                    }}>
+                        <img className='icon' src='src/assets/arrow-left-solid.svg'
+                             title={'Go back'}/>
+                    </button>
+                </div>
+                <div className={'artist-info'}>
+                    <img className={'big-poster'} src={`data:image/jpeg;base64,${memberInfo.image}`}
+                         alt={memberInfo.name + 'cover'}/>
+                    <div className={'bio-info-container'}>
+                        <p id={'name'}>{memberInfo.name}</p>
+                        <p id={'birth-date'}>Born {memberInfo.date_birth}</p>
+                        <p id={'bio'}>{memberInfo.description}</p>
+                        {sessionStorage.getItem('role') === "true" &&
+                            (<>
+                                <img id={'edit-member'} src={'src/assets/pen-solid.svg'} onClick={() => props.setView({
+                                    'view': 'modify-member-' + props.section + '?' + props.id,
+                                    'preView': props.view.view
+                                })} alt={'Edit icon'}>
+                                </img>
+                            </>)
+                        }
+                    </div>
+                </div>
+            </div>
             <h1>You are modifying the values of {memberName} {props.section}</h1>
             <form>
                 {memberImg === '' ? (
@@ -223,7 +246,6 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
                     )
                 )
             }
-
         </>
 
     ) : (

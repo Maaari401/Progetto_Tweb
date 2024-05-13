@@ -63,6 +63,16 @@
     font-family: Arial;
 }
 
+#edit-member {
+    margin: 0 4em;
+    width: 48px;
+    height: 48px;
+}
+
+#edit-member:hover {
+    cursor: pointer;
+}
+
 .filmography {
     display: flex;
     flex-direction: column;

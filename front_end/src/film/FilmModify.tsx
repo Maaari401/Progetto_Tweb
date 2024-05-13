@@ -3,6 +3,7 @@ import './filminfo.css'
 import React from "react";
 import ConfirmDelete from "../panes/ConfirmDelete.tsx";
 import filmInfo from "./FilmInfo.tsx";
+import Search from "../insertNew/searchBar/Search.tsx";
 
 interface ViewI {
     view: string,
@@ -50,6 +51,10 @@ interface memberToDelete{
     id: number,
     section: string //actor || director
 }
+interface searchBarReturn{
+    id: number,
+    section: string
+}
 
 const FilmInfo: FC<FilmPropsI> = (props) =>{
     const [FilmInfo, setFilmInfo] = useState<FilmDataI>({cod: 0, desc: "", cover: "", name: "", rate: 0, publicRelease: ""});
@@ -59,6 +64,10 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
     const [hoverSave, setHoverSave] = useState(false);
     const [showRemovalConfirmation, setShowRemovalConfirmation] = useState(false);
     const [selectedMember, setSelectedMember] = useState<memberToDelete>({'id':-1,'section':'null'})
+
+    const [codMember, setCodMember] = useState<searchBarReturn>({'id':-1,'section':'default'})
+    const [character, setCharacter] = useState('')
+    const [role, setRole] = useState('')
 
 
     const handleSaveMouseEnter = () => {
@@ -76,6 +85,7 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
 
 
     const [Result, setResult] = useState<boolean>(false);
+    const [refresh, setRefresh] = useState(false);
     
     useEffect(() => {
         const fetchFilmData = async (cod:number) => {
@@ -215,7 +225,7 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
         fetchFilmData(props.cod)
         fetchFilmActors(props.cod)
         fetchFilmDirectors(props.cod)
-    }, []);
+    }, [refresh]);
     const convertDate = (string: string):string => {
         const inputDate = new Date(string);
 
@@ -295,19 +305,73 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                                          throw new Error(`Request failed with status ${response.status}`);
                                      }
                                  }).catch(error => {
+                                     setResult(false)
                                      console.error('Error:', error);
                                      const successMessage = document.getElementById('success');
                                      if (successMessage) {
                                          successMessage.innerText = `Error: ${error.message}`;
                                      }
                                  });
-                                 setTimeout(() => {
-                                     props.setView({'view': 'film?' + FilmInfo.cod, 'preView': props.view.view});
-                                 }, 3000);
                              }}>
                         </img>
                     </form>
                 </div>
+            </div>
+            <div>
+                <p>Cerca l'attore/direttore che vuoi mettere</p>
+                <Search idMain={props.cod} values={[false, true, true]} setCodMember={setCodMember}/>
+
+                {codMember.id !== -1 && (
+                    codMember.section === 'actor' ? (
+                        <div>
+                            <p>Inserisci il nome del personaggio nel film</p>
+                            <input type={'text'} onChange={e => setCharacter(e.target.value)}/>
+                            <button onClick={()=>{
+                                console.log('stai aggiungendo '+character)
+                                /*Query per aggiungere il valore*/
+                                fetch('http://localhost:8080/Progetto_Tweb/actor/insertAIF?id='+ codMember.id +'&cod='+props.cod+'&character='+character,{
+                                    method: 'PUT',
+                                    headers: {
+                                        "token": `tok $${sessionStorage.getItem("token")}`
+                                    },
+                                    body: JSON.stringify({
+                                        "id": props.cod,
+                                        "cod": codMember,
+                                        "character": character
+                                    })
+                                }).then(data => {
+                                    if(data.status === 200) setRefresh(!refresh)
+                                });
+                            }}>ADD</button>
+                        </div>
+                    ): (
+                        <div>
+                            <p>Inserisci il dipartimento in cui ha lavorato nel film</p>
+                            <input type={'text'} onChange={e => setCharacter(e.target.value)}/>
+                            <p>Inserisci il ruolo che ha avuto nel dipartimento</p>
+                            <input type={'text'} onChange={e => setRole(e.target.value)}/>
+                            <button onClick={() => {
+                                console.log('hai aggiunto' + character)
+                                /*Query per aggiungere il valore*/
+                                fetch('http://localhost:8080/Progetto_Tweb/director/insertDIF?id=' + codMember.id + '&cod=' + props.cod + '&role=' + role +'&dep='+character, {
+                                    method: 'PUT',
+                                    headers: {
+                                        "token": `tok $${sessionStorage.getItem("token")}`
+                                    },
+                                    body: JSON.stringify({
+                                        "id": props.cod,
+                                        "cod": codMember,
+                                        "character": character
+                                    })
+                                }).then(data => {
+                                    if(data.status === 200) setRefresh(!refresh)
+                                });
+                            }}>ADD
+                            </button>
+                        </div>
+                    )
+                )
+                }
             </div>
             <div className={'cast-box'}>
                 <p id={'cast'}>Cast</p>

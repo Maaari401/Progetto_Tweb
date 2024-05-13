@@ -1,5 +1,6 @@
 import React, {ChangeEvent, FC, useEffect, useState} from "react";
 import './CastMemberInfo.css'
+import Search from "../insertNew/searchBar/Search.tsx";
 
 interface ViewI {
     view: string,
@@ -20,6 +21,11 @@ interface MemberInfoI{
     image: string
 }
 
+interface searchBarReturn{
+    id: number,
+    section: string
+}
+
 const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) => {
 
     const [memberInfo, setMemberInfo] = useState<MemberInfoI>({id: 0, description: "", image: "", name: "",  date_birth: ""})
@@ -30,7 +36,9 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
     const [memberImg, setMemberImg] = useState('')
 
     const [Result, setResult] = useState<boolean>(false);
-
+    const [codFilm, setCodFilm] = useState<searchBarReturn>({'id':-1,'section':'default'})
+    const [character, setCharacter] = useState('')
+    const [role, setRole] = useState('')
 
     useEffect(() => {
         const fetchFilmDataActor = async (cod:number) => {
@@ -162,16 +170,59 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
                         if (successMessage) {
                             successMessage.innerText = `Error: ${error.message}`;
                         }
-                    }).finally(() => {
-                        setTimeout(() => {
-                            props.setView({'view': props.section + '?' + memberInfo.id, 'preView': props.view.view});
-                        }, 3000);
-                    })
+                    });
 
                 }}>Modify values
                 </button>
             </form>
             <h1 id={'success'} style={{display: Result ? 'block' : 'none'}}>MODIFI AVVENUTA CORRETTAMENTE</h1>
+            <Search idMain={props.id} values={[true, false, (props.section === 'actor')]}
+                    setCodMember={setCodFilm}/>
+            {
+                codFilm.id !== -1 && (
+                    props.section === 'actor' ? (
+                        <div>
+                            <p>Inserisci il nome del personaggio nel film</p>
+                            <input type={'text'} onChange={e => setCharacter(e.target.value)}/>
+                            <button onClick={() => {
+                                console.log('stai aggiungendo ' + character)
+                                /*Query per aggiungere il valore*/
+                                fetch('http://localhost:8080/Progetto_Tweb/actor/insertAIF?id=' + props.id + '&cod=' + codFilm.id + '&character=' + character, {
+                                    method: 'PUT',
+                                    headers: {
+                                        "token": `tok $${sessionStorage.getItem("token")}`
+                                    }
+                                }).then(data => {
+                                    if(data.status === 200) setResult(true);
+                                    else setResult(false);
+                                }).catch(()=>setResult(false));
+                            }}>ADD
+                            </button>
+                        </div>
+                    ) : (
+                        <div>
+                            <p>Inserisci il dipartimento in cui ha lavorato nel film</p>
+                            <input type={'text'} onChange={e => setCharacter(e.target.value)}/>
+                            <p>Inserisci il ruolo che ha avuto nel dipartimento</p>
+                            <input type={'text'} onChange={e => setRole(e.target.value)}/>
+                            <button onClick={() => {
+                                console.log('hai aggiunto' + character)
+                                /*Query per aggiungere il valore*/
+                                fetch('http://localhost:8080/Progetto_Tweb/director/insertDIF?id=' + props.id + '&cod=' + codFilm.id + '&role=' + role + '&dep=' + character, {
+                                    method: 'PUT',
+                                    headers: {
+                                        "token": `tok $${sessionStorage.getItem("token")}`
+                                    }
+                                }).then(data => {
+                                    if(data.status === 200) setResult(true);
+                                    else setResult(false);
+                                }).catch(()=>setResult(false));
+                            }}>ADD
+                            </button>
+                        </div>
+                    )
+                )
+            }
 
         </>
 

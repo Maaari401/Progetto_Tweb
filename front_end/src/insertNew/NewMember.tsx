@@ -1,11 +1,17 @@
 import React, {ChangeEvent, FC, useState} from "react";
 import Search from "./searchBar/Search.tsx";
 
+interface ViewI {
+    view: string,
+    preView: string
+}
 interface retStatus {
     id: number
 }
 interface NewMemberPropsI{
-    member: string
+    member: string,
+    view: ViewI,
+    setView: (value: ViewI) => void
 }
 interface searchBarReturn{
     id: number,
@@ -57,6 +63,7 @@ export const NewMember: FC<NewMemberPropsI> = (props) => {
         })
             .then(data => data.json())
             .then((data: retStatus) => {
+                props.setView({'view':props.member+'?'+data.id, 'preView':'films'})
                 console.log(data)
                 setCodActor(data.id)
             })
@@ -118,7 +125,7 @@ export const NewMember: FC<NewMemberPropsI> = (props) => {
                                         "token": `tok $${sessionStorage.getItem("token")}`
                                     }
                                 }).then(data => {
-                                    if(data.status === 200) //setResult(true);
+                                    if(data.status === 200) setResult(true);
                                     else setResult(false);
                                 }).catch(()=>setResult(false));
                             }}>ADD

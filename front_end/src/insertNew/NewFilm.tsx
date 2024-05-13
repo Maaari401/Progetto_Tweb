@@ -11,7 +11,12 @@ interface searchBarReturn{
     section: string
 }
 
-export const NewFilm = () => {
+interface NewFilmProps {
+    view: ViewI,
+    setView: (value: ViewI) => void
+}
+
+export const NewFilm = (props: NewFilmProps) => {
 
     const [image, setImage] = useState('');
     const [filmName, setFilmName] = useState('');
@@ -57,6 +62,8 @@ export const NewFilm = () => {
             .then((data: retStatus) => {
                 console.log(data)
                 setCodFilm(data.id)
+                props.setView({'view':'film?'+data.id, 'preView':'films'})
+
             });
     };
 

@@ -34,8 +34,11 @@ public class UserServlet extends HttpServlet {
                         Integer.parseInt(pars.get("user_id")[0]),
                         Integer.parseInt(pars.get("film_id")[0])
                 )));
+            }else if(request.getPathInfo().equals("/filmWatched") && pars.containsKey("user_id")) {
+                out.println(gson.toJson(ManagerDB.getManager().filmWatched(Integer.parseInt(pars.get("user_id")[0]))));
+            }else if(request.getPathInfo().equals("/filmLiked") && pars.containsKey("user_id")) {
+                out.println(gson.toJson(ManagerDB.getManager().filmLiked(Integer.parseInt(pars.get("user_id")[0]))));
             }else response.sendError(HttpServletResponse.SC_NOT_FOUND);
-
         }else response.sendError(HttpServletResponse.SC_NOT_FOUND);
 
     }

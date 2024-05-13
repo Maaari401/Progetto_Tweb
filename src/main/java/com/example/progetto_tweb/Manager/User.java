@@ -1,10 +1,10 @@
 package com.example.progetto_tweb.Manager;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Locale;
 
 public class User {
 
@@ -131,6 +131,51 @@ public class User {
             }
         }
         return res;
+    }
+
+    public static ArrayList<Film> filmWatched(int uId, Connection conn) throws SQLException {
+        ArrayList<Film> arr = new ArrayList<Film>();;
+        try (PreparedStatement ps = conn.prepareStatement("SELECT f.cod, f.name, f.description, f.public_release, f.ranking " +
+                "from film f join tweb.watched w on f.cod = w.film_id\n" +
+                "where user_id = ?")){
+            ps.setInt(1, uId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                arr.add(new Film(rs.getInt("cod"),
+                        rs.getString("name"),
+                        rs.getDouble("ranking"),
+                        dateToStr(rs.getDate("public_release")),
+                        rs.getString("description"),
+                        null)
+                );
+            }
+        }
+        return arr;
+    }
+
+    public static ArrayList<Film> filmLiked(int uId, Connection conn) throws SQLException {
+        ArrayList<Film> arr = new ArrayList<Film>();;
+        try (PreparedStatement ps = conn.prepareStatement("SELECT f.cod, f.name, f.description, f.public_release, f.ranking " +
+                "from film f join tweb.watched w on f.cod = w.film_id\n" +
+                "where user_id = ? and w.liked is true")){
+            ps.setInt(1, uId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                arr.add(new Film(rs.getInt("cod"),
+                        rs.getString("name"),
+                        rs.getDouble("ranking"),
+                        dateToStr(rs.getDate("public_release")),
+                        rs.getString("description"),
+                        null)
+                );
+            }
+        }
+        return arr;
+    }
+    private static String dateToStr(Date date){
+        if(date == null) return "";
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        return formatter.format(date);
     }
 
 }

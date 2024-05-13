@@ -21,7 +21,7 @@ interface searchBarReturn{
     section: string
 }
 interface searchProps{
-    idMain: number,
+    idMain: number, //id of the film/actor that we want to remove the actors/film made
     values: boolean[],
     setCodMember: (value: searchBarReturn) => void
 }

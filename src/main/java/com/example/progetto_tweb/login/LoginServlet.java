@@ -46,7 +46,8 @@ public class LoginServlet extends HttpServlet {
         } else if (request.getServletPath().equals(LOGOUT_PATH)) {
             JsonObject result = new JsonObject();
             String username = tokenManager.getUsernameFromToken(token);
-            if (!username.isEmpty()) {
+            System.out.println('>'+username);
+            if (!username.isEmpty()){
                 tokenManager.doLogOut(username);
                 result.addProperty("operation", "logout");
                 result.addProperty("token", "");
@@ -76,17 +77,16 @@ public class LoginServlet extends HttpServlet {
             String username = loginObject.get("username").getAsString();
             String password = loginObject.get("password").getAsString();
             JsonObject result = new JsonObject();
-            boolean valid = ManagerDB.getManager().validateCredentials(username, password);
-            if (valid) {
+            int valid = ManagerDB.getManager().validateCredentials(username, password);
+            if (valid != -1) {
                 boolean auth = ManagerDB.getManager().checkAuth(username, password);
-                /*if (previous.isEmpty())*/
                 String token = tokenManager.addToken(username, auth);
                 if(token != null){
                     result.addProperty("operation", "login");
                     result.addProperty("token", token);
                     result.addProperty("success", true);
                     result.addProperty("auth", auth);
-                    result.addProperty("errorMessage", "");
+                    result.addProperty("errorMessage", valid);
                 }else response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }else{
                 result.addProperty("operation", "login");

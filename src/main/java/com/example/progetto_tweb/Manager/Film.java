@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Date;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Film {
     private int cod;
@@ -89,16 +88,18 @@ public class Film {
         return "Film{cod=" + cod +"}";
     }
 
-    public static void newFilm(Film f, Connection conn) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement("insert into film (name, ranking, public_release, description, cover) values (?,?,?,?,?)")){
+    public static int newFilm(Film f, Connection conn) throws SQLException {
+        int a = -1;
+        try (PreparedStatement ps = conn.prepareStatement("insert into film (name, ranking, public_release, description, cover) values (?,?,?,?,?) RETURNING cod ")){
             ps.setString(1, f.getName());
             ps.setDouble(2, f.getRanking());
             ps.setDate(3, f.getPublicRelease());
             ps.setString(4, f.getDesc());
             ps.setBytes(5, Base64.getDecoder().decode(f.getCover()));
-            ps.executeUpdate();
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) a = rs.getInt(1);
         }
-        
+        return a;
     }
 
     public static Film loadFilm(int cod, Connection conn) throws SQLException {

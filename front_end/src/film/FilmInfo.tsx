@@ -149,11 +149,10 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
 
         const fetchFilmDirectors = async (cod: number) => {
             try {
-                const value: CreditsDataI = await CastInfo(cod); // Assuming CastInfo is a function that fetches credits data
+                const value: CreditsDataI = await CastInfo(cod);
 
                 const directorPromisesByDepartment: Record<string, Promise<JSX.Element>[]> = {};
 
-                // Iterate over the departments and their crew members
                 for (const department in value.crew) {
                     const crewList = value.crew[department];
                     directorPromisesByDepartment[department] = crewList.map((directorData: string[]) => {

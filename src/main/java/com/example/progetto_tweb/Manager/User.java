@@ -18,14 +18,14 @@ public class User {
         this.pwd = pwd;
     }
 
-    public static boolean validateCredentials(String username, String password, Connection conn) throws SQLException {
-        boolean result = false;
-        try (PreparedStatement st = conn.prepareStatement("SELECT * FROM users WHERE username = ? AND pwd = ?");) {
+    public static int validateCredentials(String username, String password, Connection conn) throws SQLException {
+        int result = -1;
+        try (PreparedStatement st = conn.prepareStatement("SELECT id FROM users WHERE username = ? AND pwd = ?");) {
             st.setString(1, username);
             st.setString(2, password);
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
-                result = true;
+                result = rs.getInt(1);
             }
         }
         return result;
@@ -43,6 +43,7 @@ public class User {
         }
         return result;
     }
+
 
     public String getEmail() {
         return email;
@@ -66,6 +67,23 @@ public class User {
             ps.executeUpdate();
         }
         
+    }
+
+    public static void setWached(int uId, int filmId, Connection conn) throws SQLException{
+        try (PreparedStatement ps = conn.prepareStatement("insert into watched (user_id, film_id) values (?,?)")){
+            ps.setInt(1, uId);
+            ps.setInt(2, filmId);
+            ps.executeUpdate();
+        }
+    }
+
+    public static void setLiked(int uId, int filmId, boolean like, Connection conn) throws SQLException{
+        try (PreparedStatement ps = conn.prepareStatement("UPDATE watched SET liked = ? WHERE film_id = ? AND user_id = ?")){
+            ps.setBoolean(1, like);
+            ps.setInt(2, filmId);
+            ps.setInt(3, uId);
+            ps.executeUpdate();
+        }
     }
 
 }

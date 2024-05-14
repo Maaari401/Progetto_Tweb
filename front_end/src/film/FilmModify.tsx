@@ -2,8 +2,9 @@ import {ChangeEvent, FC, useEffect, useState} from "react";
 import './filminfo.css'
 import React from "react";
 import ConfirmDelete from "../panes/ConfirmDelete.tsx";
-import filmInfo from "./FilmInfo.tsx";
 import Search from "../insertNew/searchBar/Search.tsx";
+import AddActorPanel from "../panes/AddActorPanel.tsx";
+import AddDirectorPanel from "../panes/AddDirectorPanel.tsx";
 
 interface ViewI {
     view: string,
@@ -63,6 +64,7 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
     const [isLoading, setIsLoading] = useState(true)
     const [hoverSave, setHoverSave] = useState(false);
     const [showRemovalConfirmation, setShowRemovalConfirmation] = useState(false);
+    const [showAddActorPanel, setShowAddActorPanel] = useState(false);
     const [selectedMember, setSelectedMember] = useState<memberToDelete>({'id':-1,'section':'null'})
 
     const [codMember, setCodMember] = useState<searchBarReturn>({'id':-1,'section':'default'})
@@ -320,56 +322,27 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
             </div>
             <div>
                 <p>Cerca l'attore/direttore che vuoi mettere</p>
-                <Search idMain={props.cod} values={[false, true, true]} setCodMember={setCodMember}/>
+                <Search idMain={props.cod} values={[false, true, true]} setCodMember={setCodMember} refresh={refresh}/>
 
                 {codMember.id !== -1 && (
                     codMember.section === 'actor' ? (
-                        <div>
-                            <p>Inserisci il nome del personaggio nel film</p>
-                            <input type={'text'} onChange={e => setCharacter(e.target.value)}/>
-                            <button onClick={()=>{
-                                console.log('stai aggiungendo '+character)
-                                /*Query per aggiungere il valore*/
-                                fetch('http://localhost:8080/Progetto_Tweb/actor/insertAIF?id='+ codMember.id +'&cod='+props.cod+'&character='+character,{
-                                    method: 'PUT',
-                                    headers: {
-                                        "token": `tok $${sessionStorage.getItem("token")}`
-                                    },
-                                    body: JSON.stringify({
-                                        "id": props.cod,
-                                        "cod": codMember,
-                                        "character": character
-                                    })
-                                }).then(data => {
-                                    if(data.status === 200) setRefresh(!refresh)
-                                });
-                            }}>ADD</button>
-                        </div>
+                        <AddActorPanel
+                            onCancel={()=> {
+                                setCodMember({'id':-1,'section':'null'});
+                            }}
+                            selectedMember={codMember}
+                            filmId={props.cod}
+                            refresh={refresh}
+                            setRefresh={setRefresh}/>
                     ): (
-                        <div>
-                            <p>Inserisci il dipartimento in cui ha lavorato nel film</p>
-                            <input type={'text'} onChange={e => setCharacter(e.target.value)}/>
-                            <p>Inserisci il ruolo che ha avuto nel dipartimento</p>
-                            <input type={'text'} onChange={e => setRole(e.target.value)}/>
-                            <button onClick={() => {
-                                console.log('hai aggiunto' + character)
-                                /*Query per aggiungere il valore*/
-                                fetch('http://localhost:8080/Progetto_Tweb/director/insertDIF?id=' + codMember.id + '&cod=' + props.cod + '&role=' + role +'&dep='+character, {
-                                    method: 'PUT',
-                                    headers: {
-                                        "token": `tok $${sessionStorage.getItem("token")}`
-                                    },
-                                    body: JSON.stringify({
-                                        "id": props.cod,
-                                        "cod": codMember,
-                                        "character": character
-                                    })
-                                }).then(data => {
-                                    if(data.status === 200) setRefresh(!refresh)
-                                });
-                            }}>ADD
-                            </button>
-                        </div>
+                        <AddDirectorPanel
+                            onCancel={()=> {
+                                setCodMember({'id':-1,'section':'null'});
+                            }}
+                            selectedMember={codMember}
+                            filmId={props.cod}
+                            refresh={refresh}
+                            setRefresh={setRefresh}/>
                     )
                 )
                 }
@@ -382,7 +355,14 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
             </div>
             {showRemovalConfirmation &&
                 selectedMember.id !== -1 &&
-                selectedMember.section !== 'null' && <ConfirmDelete filmId={props.cod} selectedMember={selectedMember} onCancel={() => {setShowRemovalConfirmation(false);}}/>}
+                selectedMember.section !== 'null' &&
+                <ConfirmDelete
+                    filmId={props.cod}
+                    selectedMember={selectedMember}
+                    onCancel={() => {setShowRemovalConfirmation(false);}}
+                    refresh={refresh}
+                    setRefresh={setRefresh}
+                />}
             <div className={'film-crew-box'}>
                 {isLoading ? ( // Conditionally render loading state
                     <p> Director List is Loading...</p>

@@ -6,6 +6,10 @@
     align-items: center;
 }
 
+.userpage-container > #film-container {
+    width: 100%;
+}
+
 .previous-next-page {
     display: flex;
     justify-content: space-between;

@@ -1,7 +1,8 @@
 import {ChangeEventHandler, FC, useEffect, useState} from "react";
 
 import styles from "./Search.module.css";
-import SearchBar from "./Searchbar";
+import "../../TopBar/Search.css"
+import SearchBar from "../../TopBar/Searchbar.tsx";
 import {FilmI} from "../../data/datas.ts";
 
 interface MemberI {
@@ -23,7 +24,8 @@ interface searchBarReturn{
 interface searchProps{
     idMain: number, //id of the film/actor that we want to remove the actors/film made
     values: boolean[],
-    setCodMember: (value: searchBarReturn) => void
+    setCodMember: (value: searchBarReturn) => void,
+    setShowSpecifyRoles: (value: boolean) => void
 }
 
 
@@ -178,14 +180,14 @@ const searchHandler: ChangeEventHandler<HTMLInputElement> = (e) => {
 const renderData = searchContentData.length >= MIN_INPUT_LENTH && !searchDataErr;
 
 return (
-    <div className={styles.searchHolder}>
+    <div style={{marginBottom:'2em'}} className={'search-container'}>
         <SearchBar
             value={searchContentData}
             placeholder={`Search by name`}
             searchHandler={searchHandler}
         />
 
-        <div className={styles.searchData}>
+        <div className={'search-data'}>
             {searchDataErr && <h1 className={'errorMsg'}>Error loading data, please check URL or console for more details!</h1>}
             {renderData && ( // Conditionally render data
                 <ul>
@@ -193,6 +195,8 @@ return (
                             item.name.toLowerCase().startsWith(searchContentData.toLowerCase())
                     ).map((item, index) => <li key={index} onClick={()=>{
                         props.setCodMember({'id':item.id, 'section':item.typo});
+                        props.setShowSpecifyRoles(true);
+                        setSearchContentData('')
                     }}>{item.name} <span className={styles.typo}>{item.typo}</span></li>)
                     }
                 </ul>

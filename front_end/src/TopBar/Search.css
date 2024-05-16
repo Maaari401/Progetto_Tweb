@@ -20,6 +20,7 @@
     width: 100%; /* Take up the full width of the container */
     z-index: 999; /* Ensure it's above other content */
     max-height: 400px; /* Limit max height to viewport height minus some offset */
+    overflow-x: auto;
     overflow-y: auto; /* Enable vertical scrolling if necessary */
     border-radius: 5px;
 }
@@ -34,7 +35,7 @@
 .search-data li {
     padding: 2px;
     display: inline;
-    width: 200px;
+    width: auto;
     border-radius: 5px;
 }
 
@@ -44,7 +45,8 @@
     cursor: pointer;
 }
 
-.typo span {
+.typo {
+    float: right;
     text-align: right;
     color: dimgrey;
 }

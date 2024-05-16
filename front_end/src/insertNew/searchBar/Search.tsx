@@ -22,10 +22,11 @@ interface searchBarReturn{
     section: string
 }
 interface searchProps{
-    idMain: number, //id of the film/actor that we want to remove the actors/film made
+    idMain: number,
     values: boolean[],
     setCodMember: (value: searchBarReturn) => void,
     setShowSpecifyRoles: (value: boolean) => void
+    refresh: boolean
 }
 
 
@@ -104,7 +105,6 @@ useEffect(() => {
                             }
                         });
                         const data = await response.json() as CreditsDataI;
-                        console.log(data)
                         const allIds: SearchData[] = [];
 
                         const actors: SearchData[] = [];
@@ -117,8 +117,6 @@ useEffect(() => {
                         const tmp: SearchData[] = [];
                         for (const crewData in data.crew) {
                             const arr = data.crew[crewData]
-                            console.log(crewData)
-                            console.log(arr)
                             arr.map((directorData: string[]) =>{
                                 tmp.push({
                                     'id':parseInt(directorData[0]),
@@ -129,10 +127,7 @@ useEffect(() => {
                         }
                         allIds.push(...actors);
                         allIds.push(...tmp);
-                        console.log(allIds.length);
-                        console.log(allData.length)
                         allDataRet = allData.filter(value => !allIds.some(item => item.id === value.id && item.typo === value.typo));
-                        console.log(allDataRet.length)
                     }else if(props.values[0] && !props.values[1]){
                         const response = await fetch('http://localhost:8080/Progetto_Tweb/' + (props.values ? 'actor/credits':'director/movies' )+'?id='+props.idMain, {
                             method: 'GET',
@@ -162,14 +157,13 @@ useEffect(() => {
             }
 
             const data = await getAllData();
-            console.log(data);
             setContentData(data)
         } catch (error) {
             console.log(error)
         }
     }
     fetchData();
-}, [])
+}, [props.refresh])
 
 const searchHandler: ChangeEventHandler<HTMLInputElement> = (e) => {
     e.preventDefault();
@@ -194,6 +188,7 @@ return (
                     {contentData.filter(item =>
                             item.name.toLowerCase().startsWith(searchContentData.toLowerCase())
                     ).map((item, index) => <li key={index} onClick={()=>{
+                        setSearchContentData('');
                         props.setCodMember({'id':item.id, 'section':item.typo});
                         props.setShowSpecifyRoles(true);
                         setSearchContentData('')

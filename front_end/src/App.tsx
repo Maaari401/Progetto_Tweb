@@ -27,14 +27,15 @@ function App(){
             {(!logged && <Form logged={logged} setLogged={setLogged}/>)}
             {(logged &&
                 <>
+                    <p style={{display: 'none'}}>{view.view}</p>
                     <TopBar setLogged={setLogged} view={view} setView={setView}/>
-                    {view.view === "films" && <Films url={''} setView={setView} view={view}/>}
-                    {view.view === "user" && <UserPage view={view} setView={setView}/>}
-                    {view.view.startsWith('film?') && <FilmInfo cod={parseInt(view.view.split('?')[1])} setView={setView} view={view}/>}
-                    {view.view.startsWith('actor?') && <CastMemberInfo id={parseInt(view.view.split('?')[1])} section={'actor'} setView={setView} view={view}/>}
-                    {view.view.startsWith('director?') && <CastMemberInfo id={parseInt(view.view.split('?')[1])} section={'director'} setView={setView} view={view}/>}
-                    {view.view.startsWith('modify-Film') && <FilmModify cod={parseInt(view.view.split('?')[1])} setView={setView} view={view}/>}
-                    {view.view.startsWith('modify-member') && <CastMemberModify  id={parseInt(view.view.split('?')[1])} section={view.view.includes('actor') ? 'actor':'director'} setView={setView} view={view}/>}
+                    {view.view === "films" && <Films key={view.view} url={''} setView={setView} view={view}/>}
+                    {view.view === "user" && <UserPage key={view.view} view={view} setView={setView}/>}
+                    {view.view.startsWith('film?') && <FilmInfo key={view.view} cod={parseInt(view.view.split('?')[1])} setView={setView} view={view}/>}
+                    {view.view.startsWith('actor?') && <CastMemberInfo key={view.view} id={parseInt(view.view.split('?')[1])} section={'actor'} setView={setView} view={view}/>}
+                    {view.view.startsWith('director?') && <CastMemberInfo key={view.view} id={parseInt(view.view.split('?')[1])} section={'director'} setView={setView} view={view}/>}
+                    {view.view.startsWith('modify-Film') && <FilmModify key={view.view} cod={parseInt(view.view.split('?')[1])} setView={setView} view={view}/>}
+                    {view.view.startsWith('modify-member') && <CastMemberModify key={view.view} id={parseInt(view.view.split('?')[1])} section={view.view.includes('actor') ? 'actor':'director'} setView={setView} view={view}/>}
                 </>
                 )}
         </>
@@ -47,7 +48,6 @@ export default App
 /*
 
     TODO of mari:
-    - remove a member from a film (class pane)
-    - add the search bar to add member to film
-    - film list viewed and watched
+    - remove a member from a film (glass pane)
+    - glass pane for more info for actor (char) and for films (role, dep)
  */

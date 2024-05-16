@@ -1,5 +1,4 @@
 import React, {ChangeEvent, FC, useState} from "react";
-import Search from "./searchBar/Search.tsx";
 import "./NewMember.css"
 
 interface ViewI {
@@ -14,16 +13,14 @@ interface NewMemberPropsI{
     view: ViewI,
     setView: (value: ViewI) => void
 }
-interface searchBarReturn{
-    id: number,
-    section: string
-}
+
 export const NewMember: FC<NewMemberPropsI> = (props) => {
 
     const [image, setImage] = useState('');
     const [ActorName, setActorName] = useState('');
     const [ActorDate, setActorDate] = useState('');
     const [textareaInput, setTextareaInput] = useState('');
+
     const [codActor, setCodActor] = useState(-1)
     const [hoverSave, setHoverSave] = useState(false);
 
@@ -73,8 +70,6 @@ export const NewMember: FC<NewMemberPropsI> = (props) => {
             .then(data => data.json())
             .then((data: retStatus) => {
                 props.setView({'view':props.member+'?'+data.id, 'preView':'films'})
-                console.log(data)
-                setCodActor(data.id)
             })
     };
 
@@ -112,62 +107,9 @@ export const NewMember: FC<NewMemberPropsI> = (props) => {
                 </img>
             </button>
 
-            {codActor != -1 && <Search idMain={codActor} values={[true, false, (props.member === 'actor')]}
-                                       setCodMember={setCodFilm}/>}
-            {
-                codFilm.id !== -1 && (
-                    props.member === 'actor' ? (
-                        <div>
-                            <p>Inserisci il nome del personaggio nel film</p>
-                            <input type={'text'} onChange={e => setCharacter(e.target.value)}/>
-                            <button onClick={() => {
-                                console.log('stai aggiungendo ' + character)
-                                /*Query per aggiungere il valore*/
-                                fetch('http://localhost:8080/Progetto_Tweb/actor/insertAIF?id=' + codActor + '&cod=' + codFilm.id + '&character=' + character, {
-                                    method: 'PUT',
-                                    headers: {
-                                        "token": `tok $${sessionStorage.getItem("token")}`
-                                    }
-                                }).then(data => {
-                                    if(data.status === 200) setResult(true);
-                                    else setResult(false);
-                                }).catch(()=>setResult(false));
-                            }}>ADD
-                            </button>
-                        </div>
-                    ) : (
-                        <div>
-                            <p>Inserisci il dipartimento in cui ha lavorato nel film</p>
-                            <input type={'text'} onChange={e => setCharacter(e.target.value)}/>
-                            <p>Inserisci il ruolo che ha avuto nel dipartimento</p>
-                            <input type={'text'} onChange={e => setRole(e.target.value)}/>
-                            <button onClick={() => {
-                                console.log('hai aggiunto' + character)
-                                /*Query per aggiungere il valore*/
-                                fetch('http://localhost:8080/Progetto_Tweb/director/insertDIF?id=' + codActor + '&cod=' + codFilm.id + '&role=' + role + '&dep=' + character, {
-                                    method: 'PUT',
-                                    headers: {
-                                        "token": `tok $${sessionStorage.getItem("token")}`
-                                    }
-                                }).then(data => {
-                                    if(data.status === 200) setResult(true);
-                                    else setResult(false);
-                                }).catch(()=>setResult(false));
-                            }}>ADD
-                            </button>
-                        </div>
-                    )
-                )
-            }
-            {Result !== undefined && (
-                <>
-                    <p className={'success'} style={{display: Result ? 'block' : 'none'}}>Aggiunta avvenuta correttamente</p>
-                    <p style={{display: !Result ? 'block' : 'none', color:'red'}}>Aggiunta avvenuta non correttamente</p>
-                </>
-            )}
+            
         </div>
     );
-
 }
 
 

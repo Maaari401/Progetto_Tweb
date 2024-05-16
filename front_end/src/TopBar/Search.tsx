@@ -107,8 +107,12 @@ const Search: FC<searchProps> = (props: searchProps) => {
                                 item.name.toLowerCase().startsWith(searchContentData.toLowerCase())
                         ).map((item, index) => <li key={index} onClick={()=>{
                             setSearchContentData('');
-                            console.log('setView('+item.typo +'?' + item.id+')')
+                            console.log('setView('+item.typo +'?' + item.id+')');
+                            console.log('pizzas')
+                            //props.setView({'view':'films', 'preView':''})
+
                             props.setView({'view':item.typo +'?' + item.id, 'preView':props.view.view})
+                            console.log(props.view)
                         }}>{item.name} <span className={'typo'}>{item.typo}</span></li>)
                         }
                     </ul>

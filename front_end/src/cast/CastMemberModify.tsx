@@ -3,7 +3,6 @@ import './CastMemberInfo.css'
 import Search from "../insertNew/searchBar/Search.tsx";
 import SpecifyRoles from "../panes/SpecifyRoles.tsx";
 
-
 interface ViewI {
     view: string,
     preView: string
@@ -41,8 +40,7 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
 
     const [Result, setResult] = useState<boolean>(false);
     const [codFilm, setCodFilm] = useState<searchBarReturn>({'id':-1,'section':'default'})
-    const [character, setCharacter] = useState('')
-    const [role, setRole] = useState('')
+    const [refresh, setRefresh] = useState(true)
 
     const handleSaveMouseEnter = () => {
         setHoverSave(true);
@@ -90,7 +88,7 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
 
 
 
-    }, []);
+    }, [refresh]);
 
     const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
         const file: File | undefined = event.target.files?.[0];
@@ -212,49 +210,7 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
                         setCodMember={setCodFilm}/>
                 {showSpecifyRoles && <SpecifyRoles searchBarReturn={{id:props.id,section:props.section}} filmProps={{cod:codFilm.id,setView:props.setView,view:props.view}}
                                                    onCancel={() => {setShowSpecifyRoles(false)}}/>}
-                {/*{codFilm.id !== -1 &&*/}
-                {/*    (*/}
-                {/*        props.section === 'actor' ? (*/}
-                {/*            <div>*/}
-                {/*                <p>Inserisci il nome del personaggio nel film</p>*/}
-                {/*                <input type={'text'} onChange={e => setCharacter(e.target.value)}/>*/}
-                {/*                <button onClick={() => {*/}
-                {/*                    console.log('stai aggiungendo ' + character)*/}
-                {/*                    fetch('http://localhost:8080/Progetto_Tweb/actor/insertAIF?id=' + props.id + '&cod=' + codFilm.id + '&character=' + character, {*/}
-                {/*                        method: 'PUT',*/}
-                {/*                        headers: {*/}
-                {/*                            "token": `tok $${sessionStorage.getItem("token")}`*/}
-                {/*                        }*/}
-                {/*                    }).then(data => {*/}
-                {/*                        if(data.status === 200) setResult(true);*/}
-                {/*                        else setResult(false);*/}
-                {/*                    }).catch(()=>setResult(false));*/}
-                {/*                }}>ADD*/}
-                {/*                </button>*/}
-                {/*            </div>*/}
-                {/*        ) : (*/}
-                {/*            <div>*/}
-                {/*                <p>Inserisci il dipartimento in cui ha lavorato nel film</p>*/}
-                {/*                <input type={'text'} onChange={e => setCharacter(e.target.value)}/>*/}
-                {/*                <p>Inserisci il ruolo che ha avuto nel dipartimento</p>*/}
-                {/*                <input type={'text'} onChange={e => setRole(e.target.value)}/>*/}
-                {/*                <button onClick={() => {*/}
-                {/*                    console.log('hai aggiunto' + character)*/}
-                {/*                    fetch('http://localhost:8080/Progetto_Tweb/director/insertDIF?id=' + props.id + '&cod=' + codFilm.id + '&role=' + role + '&dep=' + character, {*/}
-                {/*                        method: 'PUT',*/}
-                {/*                        headers: {*/}
-                {/*                            "token": `tok $${sessionStorage.getItem("token")}`*/}
-                {/*                        }*/}
-                {/*                    }).then(data => {*/}
-                {/*                        if(data.status === 200) setResult(true);*/}
-                {/*                        else setResult(false);*/}
-                {/*                    }).catch(()=>setResult(false));*/}
-                {/*                }}>ADD*/}
-                {/*                </button>*/}
-                {/*            </div>*/}
-                {/*        )*/}
-                {/*    )*/}
-                {/*}*/}
+                
             </div>
         </>
     ) : (

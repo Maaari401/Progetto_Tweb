@@ -23,15 +23,16 @@ const Login: FC<logI> = (props) => {
     return (
         <div className="login-container">
             <form>
-                <input className="username" type="text" placeholder="Username" onChange={(e) => setPwd(e.target.value)}
+                <input className="username" type="text" placeholder="Username" onChange={(e) => setUsr(e.target.value)}
                        required/>
                 <br/>
                 <input className="password" type="password" placeholder="Password"
-                       onChange={(e) => setUsr(e.target.value)} required/>
+                       onChange={(e) => setPwd(e.target.value)} required/>
                 <br/>
                 <div className="login-buttons-container">
                     <button className="login-button" onClick={(e) => {
                         e.preventDefault();
+                        console.log(usr + ' & '+pwd)
                         const password: string = sha256.sha256(pwd);
                         fetch("http://localhost:8080/Progetto_Tweb/login", {
                             method: 'POST',

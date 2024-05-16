@@ -3,7 +3,6 @@ import './filminfo.css'
 import React from "react";
 import ConfirmDelete from "../panes/ConfirmDelete.tsx";
 import SpecifyRoles from "../panes/SpecifyRoles.tsx";
-// import filmInfo from "./FilmInfo.tsx";
 import Search from "../insertNew/searchBar/Search.tsx";
 
 interface ViewI {
@@ -325,55 +324,6 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
             <p style={{fontFamily:'Arial'}} >Add one member to the film personnel</p>
             <Search idMain={props.cod} values={[false, true, true]} setCodMember={setCodMember} setShowSpecifyRoles={setShowSpecifyRoles}/>
             {showSpecifyRoles && <SpecifyRoles filmProps={props} searchBarReturn={codMember} onCancel={() => {setShowSpecifyRoles(false)}}/>}
-                {/*{codMember.id !== -1 && (*/}
-                {/*    codMember.section === 'actor' ? (*/}
-                {/*        <div>*/}
-                {/*            <p>Inserisci il nome del personaggio nel film</p>*/}
-                {/*            <input type={'text'} onChange={e => setCharacter(e.target.value)}/>*/}
-                {/*            <button onClick={()=>{*/}
-                {/*                console.log('stai aggiungendo '+character)*/}
-                {/*                fetch('http://localhost:8080/Progetto_Tweb/actor/insertAIF?id='+ codMember.id +'&cod='+props.cod+'&character='+character,{*/}
-                {/*                    method: 'PUT',*/}
-                {/*                    headers: {*/}
-                {/*                        "token": `tok $${sessionStorage.getItem("token")}`*/}
-                {/*                    },*/}
-                {/*                    body: JSON.stringify({*/}
-                {/*                        "id": props.cod,*/}
-                {/*                        "cod": codMember,*/}
-                {/*                        "character": character*/}
-                {/*                    })*/}
-                {/*                }).then(data => {*/}
-                {/*                    if(data.status === 200) setRefresh(!refresh)*/}
-                {/*                });*/}
-                {/*            }}>ADD</button>*/}
-                {/*        </div>*/}
-                {/*    ): (*/}
-                {/*        <div>*/}
-                {/*            <p>Inserisci il dipartimento in cui ha lavorato nel film</p>*/}
-                {/*            <input type={'text'} onChange={e => setCharacter(e.target.value)}/>*/}
-                {/*            <p>Inserisci il ruolo che ha avuto nel dipartimento</p>*/}
-                {/*            <input type={'text'} onChange={e => setRole(e.target.value)}/>*/}
-                {/*            <button onClick={() => {*/}
-                {/*                console.log('hai aggiunto' + character)*/}
-                {/*                fetch('http://localhost:8080/Progetto_Tweb/director/insertDIF?id=' + codMember.id + '&cod=' + props.cod + '&role=' + role +'&dep='+character, {*/}
-                {/*                    method: 'PUT',*/}
-                {/*                    headers: {*/}
-                {/*                        "token": `tok $${sessionStorage.getItem("token")}`*/}
-                {/*                    },*/}
-                {/*                    body: JSON.stringify({*/}
-                {/*                        "id": props.cod,*/}
-                {/*                        "cod": codMember,*/}
-                {/*                        "character": character*/}
-                {/*                    })*/}
-                {/*                }).then(data => {*/}
-                {/*                    if(data.status === 200) setRefresh(!refresh)*/}
-                {/*                });*/}
-                {/*            }}>ADD*/}
-                {/*            </button>*/}
-                {/*        </div>*/}
-                {/*    )*/}
-                {/*)*/}
-                {/*}*/}
             </div>
             <div className={'cast-box'}>
                 <p id={'cast'}>Cast</p>
@@ -383,7 +333,14 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
             </div>
             {showRemovalConfirmation &&
                 selectedMember.id !== -1 &&
-                selectedMember.section !== 'null' && <ConfirmDelete filmId={props.cod} selectedMember={selectedMember} onCancel={() => {setShowRemovalConfirmation(false);}}/>}
+                selectedMember.section !== 'null' &&
+                <ConfirmDelete
+                    filmId={props.cod}
+                    selectedMember={selectedMember}
+                    onCancel={() => {setShowRemovalConfirmation(false);}}
+                    refresh={refresh}
+                    setRefresh={setRefresh}
+                />}
             <div className={'film-crew-box'}>
                 {isLoading ? ( // Conditionally render loading state
                     <p> Director List is Loading...</p>

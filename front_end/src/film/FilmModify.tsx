@@ -125,7 +125,7 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                 })
                     .then(response => response.json())
                     .then((value: MemberI) => {
-                        const imageSrc = value.image !== 'bnVsbA==' ? `data:image/jpeg;base64,${value.image}` : 'src/assets/profile-placeholder-cropped.png'; // why not working?
+                        const imageSrc = value.image !== 'bnVsbA==' && value.image !== '' ? `data:image/jpeg;base64,${value.image}` : 'src/assets/profile-placeholder-cropped.png'; // why not working?
                         return (
                             <>
                                 <div className={"actor-container"} key={a[0]}>
@@ -192,7 +192,7 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                 }
 
                 const directorDetails: MemberI = await response.json();
-                const imageSrc = directorDetails.image !== 'bnVsbA==' ? `data:image/jpeg;base64,${directorDetails.image}` : 'src/assets/profile-placeholder-cropped.png';
+                const imageSrc = directorDetails.image !== 'bnVsbA==' && directorDetails.image !== ''? `data:image/jpeg;base64,${directorDetails.image}` : 'src/assets/profile-placeholder-cropped.png';
 
                 return (
                     <>

@@ -121,7 +121,7 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
 
     let imageSrc: string;
     if (memberInfo !== undefined) {
-        imageSrc = memberInfo.image !== 'bnVsbA==' ? `data:image/jpeg;base64,${memberInfo.image}` : 'src/assets/profile-placeholder-cropped.png';
+        imageSrc = memberInfo.image !== 'bnVsbA==' && memberInfo.image !== ''? `data:image/jpeg;base64,${memberInfo.image}` : 'src/assets/profile-placeholder-cropped.png';
     }
     /*IMPORTANT to render the values in the input we need to rerender this component*/
     return memberInfo !== undefined ? (

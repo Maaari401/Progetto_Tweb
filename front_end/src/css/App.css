@@ -16,7 +16,7 @@ html, body {
     box-shadow: 0 0 0 200vmax #263340;
 }
 
-.glasspane {
+.glass-pane {
     position: fixed;
     top: 0;
     left: 0;
@@ -27,6 +27,25 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.temp-pic-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.temp-pic {
+    width: 20%;
+    height: auto;
+    border-radius: 8px;
+    margin: 0 2em;
+}
+
+.success {
+    color: #00cc00;
+    font-family: Arial;
 }
 
 /*.page-container {*/

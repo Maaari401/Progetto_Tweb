@@ -101,6 +101,10 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
 
 
     }, []);
+    let imageSrc: string;
+    if (memberInfo !== undefined) {
+        imageSrc = memberInfo.image !== 'bnVsbA=='  && memberInfo.image !== '' ? `data:image/jpeg;base64,${memberInfo.image}` : 'src/assets/profile-placeholder-cropped.png';
+    }
     return memberInfo !== undefined ? (
         <>
             <div className={'artist-info-container'}>
@@ -112,7 +116,7 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
                     </button>
                 </div>
                 <div className={'artist-info'}>
-                    <img className={'big-poster'} src={`data:image/jpeg;base64,${memberInfo.image}`} alt={memberInfo.name + 'cover'}/>
+                    <img className={'big-poster'} src={imageSrc} alt={memberInfo.name + ' photo'}/>
                     <div className={'bio-info-container'}>
                         <p id={'name'}>{memberInfo.name}</p>
                         <p id={'birth-date'}>Born {memberInfo.date_birth}</p>

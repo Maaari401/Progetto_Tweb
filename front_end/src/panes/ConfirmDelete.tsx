@@ -37,7 +37,7 @@ const ConfirmDelete: FC<ConfirmDeletePropsI> = (props) => {
         })
     }
 
-    return <div className={'glasspane'}
+    return <div className={'glass-pane'}
                 onClick={(e) => {
                     if (e.target === e.currentTarget) props.onCancel();
                 }}>

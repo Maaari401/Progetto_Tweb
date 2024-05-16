@@ -129,17 +129,16 @@
                 ) : (
                     <>
                         <div className={'previous-next-page'}>
-                            <button onClick={() => {
-                                setPage(page - 1);
-                            }} style={{visibility: page=== 1 ? 'hidden' : 'visible'}} disabled={page === 1}>
+                            <button onClick={() => {setPage(page - 1);}}
+                                    style={{visibility: page=== 1 ? 'hidden' : 'visible'}} disabled={page === 1}>
                                 <img id='previous' className='icon' src='src/assets/arrow-left-solid.svg'
                                      title={'Previous page'}/>
                             </button>
                             <p>{page}/{Math.floor(films.length / FILM_FOR_Page)+1}</p>
                             <button onClick={() => {
                                 setPage(page + 1);
-                            }} style={{visibility: page=== Math.ceil(films.length / FILM_FOR_Page) ? 'hidden' : 'visible'}}
-                                disabled={page === Math.ceil(films.length / FILM_FOR_Page)}>
+                            }} style={{visibility: page=== Math.floor(films.length / FILM_FOR_Page)+1 ? 'hidden' : 'visible'}}
+                                disabled={page === Math.floor(films.length / FILM_FOR_Page)+1}>
                                 <img id='previous' className='icon' src='src/assets/arrow-right-solid.svg'
                                 title={'Next page'}/>
                             </button>

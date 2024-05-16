@@ -1,8 +1,7 @@
 import React, {ChangeEvent, FC, useEffect, useState} from "react";
 import './CastMemberInfo.css'
 import Search from "../insertNew/searchBar/Search.tsx";
-import AddActorPanel from "../panes/AddActorPanel.tsx";
-import AddDirectorPanel from "../panes/AddDirectorPanel.tsx";
+import SpecifyRoles from "../panes/SpecifyRoles.tsx";
 
 interface ViewI {
     view: string,
@@ -36,10 +35,19 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
     const [memberDesc, setMemberDesc] = useState("")
     const [memberDate, setMemberDate] = useState("")
     const [memberImg, setMemberImg] = useState('')
+    const [hoverSave, setHoverSave] = useState(false)
+    const [showSpecifyRoles, setShowSpecifyRoles] = useState(false)
 
     const [Result, setResult] = useState<boolean>(false);
     const [codFilm, setCodFilm] = useState<searchBarReturn>({'id':-1,'section':'default'})
     const [refresh, setRefresh] = useState(true)
+
+    const handleSaveMouseEnter = () => {
+        setHoverSave(true);
+    };
+    const handleSaveMouseLeave = () => {
+        setHoverSave(false);
+    };
 
     useEffect(() => {
         const fetchFilmDataActor = async (cod:number) => {
@@ -109,7 +117,10 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
         return `${year}-${month}-${day}`;
     }*/
 
-
+    let imageSrc: string;
+    if (memberInfo !== undefined) {
+        imageSrc = memberInfo.image !== 'bnVsbA==' && memberInfo.image !== ''? `data:image/jpeg;base64,${memberInfo.image}` : 'src/assets/profile-placeholder-cropped.png';
+    }
     /*IMPORTANT to render the values in the input we need to rerender this component*/
     return memberInfo !== undefined ? (
         <>
@@ -122,110 +133,86 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
                              title={'Go back'}/>
                     </button>
                 </div>
+                <p style={{fontSize:'1.5em'}} >Editing details about {memberName} as {props.section}</p>
                 <div className={'artist-info'}>
-                    <img className={'big-poster'} src={`data:image/jpeg;base64,${memberInfo.image}`}
+                    <img className={'big-poster'} src={imageSrc}
                          alt={memberInfo.name + 'cover'}/>
                     <div className={'bio-info-container'}>
-                        <p id={'name'}>{memberInfo.name}</p>
-                        <p id={'birth-date'}>Born {memberInfo.date_birth}</p>
-                        <p id={'bio'}>{memberInfo.description}</p>
-                        {sessionStorage.getItem('role') === "true" &&
-                            (<>
-                                <img id={'edit-member'} src={'src/assets/pen-solid.svg'} onClick={() => props.setView({
-                                    'view': 'modify-member-' + props.section + '?' + props.id,
-                                    'preView': props.view.view
-                                })} alt={'Edit icon'}>
-                                </img>
-                            </>)
-                        }
+                        <form className={'bio-info-container'}>
+                            <input id={'edit-name'} type={'label'} value={memberName}
+                                   onChange={e => setMemberName(e.target.value)}/>
+                            <input id={'edit-birthdate'} type={'date'}
+                                   onChange={e => setMemberDate(e.target.value.toString())}/>
+                            <textarea id={'edit-bio'} value={memberDesc}
+                                      onChange={e => setMemberDesc(e.target.value)}/>
+                            <div className={'temp-pic-container'}>
+                                {memberImg === '' ? (
+                                    <>
+                                        <p style={{marginRight:'1em'}}>Choose a picture</p>
+                                        <input type={"file"} accept="image/*"
+                                               onChange={e => handleImageChange(e)}/>
+                                    </>
+                                ) : (
+                                    <>
+                                        <p>Picture preview</p>
+                                        <img className={'temp-pic'} src={`data:image/jpeg;base64,${memberImg}`} alt="Uploaded" style={{maxWidth: '200px'}}/>
+                                        <button onClick={(event) => handleUndoUpload(event)}>Undo Upload</button>
+                                    </>
+                                )}
+                            </div>
+                            <img id={'save-edit-member'} title='Save edits'
+                                 src={hoverSave ? 'src/assets/floppy-disk-solid.svg' : 'src/assets/floppy-disk-regular.svg'}
+                                 onMouseEnter={handleSaveMouseEnter}
+                                 onMouseLeave={handleSaveMouseLeave}
+                                 onClick={(e) => {
+                                     e.preventDefault();
+                                     console.log(memberImg === '')
+                                     let url = '';
+                                     if (props.section === 'actor') {
+                                         url = 'http://localhost:8080/Progetto_Tweb/actor/updateActor';
+                                     } else {
+                                         url = 'http://localhost:8080/Progetto_Tweb/director/updateDirector'
+                                     }
+                                     fetch(url, {
+                                         method: 'POST',
+                                         headers: {
+                                             "token": `tok $${sessionStorage.getItem("token")}`
+                                         },
+                                         body: JSON.stringify({
+                                             "id": memberInfo.id,
+                                             "name": memberName,
+                                             "date_birth": memberDate,
+                                             "description": memberDesc,
+                                             "image": memberImg
+                                         })
+                                     }).then(response => {
+                                         if (response.ok) {
+                                             setResult(true);
+                                         } else {
+                                             setResult(false);
+                                             throw new Error(`Request failed with status ${response.status}`);
+                                         }
+                                     }).catch(error => {
+                                         console.error('Error:', error);
+                                         const successMessage = document.getElementById('success');
+                                         if (successMessage) {
+                                             successMessage.innerText = `Error: ${error.message}`;
+                                         }
+                                     });
+
+                                 }}/>
+                            <p className={'success'} style={{display: Result ? 'block' : 'none'}}>Successfully saved edits</p>
+                        </form>
                     </div>
                 </div>
+                <p style={{fontFamily:'Arial'}}>Add {memberName} in a film personnel</p>
+                <Search setShowSpecifyRoles={setShowSpecifyRoles} idMain={props.id} values={[true, false, (props.section === 'actor')]}
+                        setCodMember={setCodFilm}/>
+                {showSpecifyRoles && <SpecifyRoles searchBarReturn={{id:props.id,section:props.section}} filmProps={{cod:codFilm.id,setView:props.setView,view:props.view}}
+                                                   onCancel={() => {setShowSpecifyRoles(false)}}/>}
+                
             </div>
-            <h1>You are modifying the values of {memberName} {props.section}</h1>
-            <form>
-                {memberImg === '' ? (
-                    <span>Cover of the film: <input type={"file"} accept="image/*"
-                                                    onChange={e => handleImageChange(e)}/></span>
-                ) : (
-                    <div>
-                        <img src={`data:image/jpeg;base64,${memberImg}`} alt="Uploaded" style={{maxWidth: '200px'}}/>
-                        <button onClick={(event) => handleUndoUpload(event)}>Undo Upload</button>
-                    </div>
-                )}<br/>
-
-                <span>name: <input type={'label'} value={memberName}
-                                   onChange={e => setMemberName(e.target.value)}/></span><br/>
-                <span>Description: <textarea value={memberDesc}
-                                             onChange={e => setMemberDesc(e.target.value)}/></span><br/>
-                <span>release date: <input type={'date'}
-                                           onChange={e => setMemberDate(e.target.value.toString())}/></span><br/>
-
-                <button onClick={(e) => {
-                    e.preventDefault();
-                    console.log(memberImg === '')
-                    let url = '';
-                    if (props.section === 'actor') {
-                        url = 'http://localhost:8080/Progetto_Tweb/actor/updateActor';
-                    } else {
-                        url = 'http://localhost:8080/Progetto_Tweb/director/updateDirector'
-                    }
-                    fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            "token": `tok $${sessionStorage.getItem("token")}`
-                        },
-                        body: JSON.stringify({
-                            "id": memberInfo.id,
-                            "name": memberName,
-                            "date_birth": memberDate,
-                            "description": memberDesc,
-                            "image": memberImg
-                        })
-                    }).then(response => {
-                        if (response.ok) {
-                            setResult(true);
-                        } else {
-                            setResult(false);
-                            throw new Error(`Request failed with status ${response.status}`);
-                        }
-                    }).catch(error => {
-                        console.error('Error:', error);
-                        const successMessage = document.getElementById('success');
-                        if (successMessage) {
-                            successMessage.innerText = `Error: ${error.message}`;
-                        }
-                    });
-
-                }}>Modify values
-                </button>
-            </form>
-            <h1 id={'success'} style={{display: Result ? 'block' : 'none'}}>MODIFI AVVENUTA CORRETTAMENTE</h1>
-            <Search idMain={props.id} values={[true, false, (props.section === 'actor')]}
-                    setCodMember={setCodFilm} refresh={true}/>
-            {codFilm.id !== -1 && (
-                props.section === 'actor' ? (
-                    <AddActorPanel
-                        onCancel={()=> {
-                            setCodFilm({'id':-1,'section':'null'});
-                        }}
-                        selectedMember={{'id':props.id, 'section':'actor'}}
-                        filmId={codFilm.id}
-                        refresh={refresh}
-                        setRefresh={setRefresh}/>
-                ): (
-                    <AddActorPanel
-                        onCancel={()=> {
-                            setCodFilm({'id':-1,'section':'null'});
-                        }}
-                        selectedMember={{'id':props.id, 'section':'director'}}
-                        filmId={codFilm.id}
-                        refresh={refresh}
-                        setRefresh={setRefresh}/>
-                )
-            )
-            }
         </>
-
     ) : (
         <p>500 server error</p>
     )

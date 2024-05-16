@@ -48,14 +48,31 @@
     max-width: 70%;
 }
 
+form.bio-info-container {
+    height: 100%
+}
+
 #name {
     font-size: 4em;
     margin-top: 0;
     text-align: center;
 }
 
+#edit-name {
+    font-size: 4em;
+    margin-top: 0;
+    text-align: center;
+    border-radius: 8px;
+    border: none;
+}
+
 #birth-date {
     font-family: Arial;
+}
+
+#edit-birthdate {
+    border-radius: 5px;
+    border:none;
 }
 
 #bio {
@@ -63,13 +80,20 @@
     font-family: Arial;
 }
 
-#edit-member {
+#edit-bio {
+    width: 60%;
+    height: 20%;
+    border-radius: 5px;
+    border: none;
+}
+
+#edit-member, #save-edit-member {
     margin: 0 4em;
     width: 48px;
     height: 48px;
 }
 
-#edit-member:hover {
+#edit-member:hover, #save-edit-member:hover {
     cursor: pointer;
 }
 

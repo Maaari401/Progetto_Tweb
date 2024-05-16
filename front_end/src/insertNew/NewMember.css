@@ -1,0 +1,47 @@
+.add-artist {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.add-artist > input {
+    border: none;
+    margin: 5% 0;
+}
+
+.add-artist > button {
+    background: none;
+    border: none;
+}
+
+#new-artist-name, #new-film-title {
+    border-radius: 8px;
+    font-size: 4em;
+}
+
+#new-artist-birthdate, #new-film-date {
+    font-size: 2em;
+    border-radius: 4px;
+}
+
+#new-artist-bio, #new-film-plot {
+    width: 60%;
+    height: 150px; /* Set the desired height */
+    min-height: 40%;
+    border-radius: 4px;
+}
+
+#new-artist-pic {
+    margin: 5% 0;
+}
+
+#save-new-artist {
+    margin: 0 4em;
+    width: 48px;
+    height: 48px;
+}
+
+#save-new-artist:hover {
+    cursor: pointer;
+}

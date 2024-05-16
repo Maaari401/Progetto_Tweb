@@ -2,9 +2,8 @@ import {ChangeEvent, FC, useEffect, useState} from "react";
 import './filminfo.css'
 import React from "react";
 import ConfirmDelete from "../panes/ConfirmDelete.tsx";
+import SpecifyRoles from "../panes/SpecifyRoles.tsx";
 import Search from "../insertNew/searchBar/Search.tsx";
-import AddActorPanel from "../panes/AddActorPanel.tsx";
-import AddDirectorPanel from "../panes/AddDirectorPanel.tsx";
 
 interface ViewI {
     view: string,
@@ -64,7 +63,7 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
     const [isLoading, setIsLoading] = useState(true)
     const [hoverSave, setHoverSave] = useState(false);
     const [showRemovalConfirmation, setShowRemovalConfirmation] = useState(false);
-    const [showAddActorPanel, setShowAddActorPanel] = useState(false);
+    const [showSpecifyRoles, setShowSpecifyRoles] = useState(false);
     const [selectedMember, setSelectedMember] = useState<memberToDelete>({'id':-1,'section':'null'})
 
     const [codMember, setCodMember] = useState<searchBarReturn>({'id':-1,'section':'default'})
@@ -125,11 +124,11 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                 })
                     .then(response => response.json())
                     .then((value: MemberI) => {
-                        const imageSrc = value.image !== 'bnVsbA==' ? `data:image/jpeg;base64,${value.image}` : 'src/assets/profile-placeholder-cropped.png'; // why not working?
+                        const imageSrc = value.image !== 'bnVsbA==' && value.image !== '' ? `data:image/jpeg;base64,${value.image}` : 'src/assets/profile-placeholder-cropped.png'; // why not working?
                         return (
                             <>
                                 <div className={"actor-container"} key={a[0]}>
-                                    <img src={imageSrc} onClick={() => {
+                                    <img src={imageSrc} title={'Remove from cast'} onClick={() => {
                                         setSelectedMember({'id': value.id, 'section': 'actor'});
                                         setShowRemovalConfirmation(true)
                                     }
@@ -192,12 +191,12 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                 }
 
                 const directorDetails: MemberI = await response.json();
-                const imageSrc = directorDetails.image !== 'bnVsbA==' ? `data:image/jpeg;base64,${directorDetails.image}` : 'src/assets/profile-placeholder-cropped.png';
+                const imageSrc = directorDetails.image !== 'bnVsbA==' && directorDetails.image !== ''? `data:image/jpeg;base64,${directorDetails.image}` : 'src/assets/profile-placeholder-cropped.png';
 
                 return (
                     <>
                         <div className="director-container" key={directorData[0]}>
-                            <img src={imageSrc} alt="Director"
+                            <img src={imageSrc} alt="Director" title={'Remove from crew'}
                                  onClick={() => {
                                      setSelectedMember({'id': directorDetails.id, 'section': 'director'});
                                      setShowRemovalConfirmation(true)
@@ -317,35 +316,14 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
                                  });
                              }}>
                         </img>
+                        <p className={'success'} style={{display: Result ? 'block' : 'none'}}>Successfully saved edits</p>
                     </form>
                 </div>
             </div>
             <div>
-                <p>Cerca l'attore/direttore che vuoi mettere</p>
-                <Search idMain={props.cod} values={[false, true, true]} setCodMember={setCodMember} refresh={refresh}/>
-
-                {codMember.id !== -1 && (
-                    codMember.section === 'actor' ? (
-                        <AddActorPanel
-                            onCancel={()=> {
-                                setCodMember({'id':-1,'section':'null'});
-                            }}
-                            selectedMember={codMember}
-                            filmId={props.cod}
-                            refresh={refresh}
-                            setRefresh={setRefresh}/>
-                    ): (
-                        <AddDirectorPanel
-                            onCancel={()=> {
-                                setCodMember({'id':-1,'section':'null'});
-                            }}
-                            selectedMember={codMember}
-                            filmId={props.cod}
-                            refresh={refresh}
-                            setRefresh={setRefresh}/>
-                    )
-                )
-                }
+            <p style={{fontFamily:'Arial'}} >Add one member to the film personnel</p>
+            <Search idMain={props.cod} values={[false, true, true]} setCodMember={setCodMember} setShowSpecifyRoles={setShowSpecifyRoles}/>
+            {showSpecifyRoles && <SpecifyRoles filmProps={props} searchBarReturn={codMember} onCancel={() => {setShowSpecifyRoles(false)}}/>}
             </div>
             <div className={'cast-box'}>
                 <p id={'cast'}>Cast</p>

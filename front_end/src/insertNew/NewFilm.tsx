@@ -1,5 +1,6 @@
 import '../userSection/userPage.css'
 import React, {ChangeEvent, useState} from "react";
+import "./NewMember.css"
 
 interface retStatus {
     id: number
@@ -21,6 +22,16 @@ export const NewFilm = (props: NewFilmProps) => {
     const [filmDate, setFilmDate] = useState('');
     const [filmRatio, setFilmRatio] = useState('');
     const [textareaInput, setTextareaInput] = useState('');
+
+    const [codFilm, setCodFilm] = useState(-1)
+    const [hoverSave, setHoverSave] = useState(false);
+
+    const handleSaveMouseEnter = () => {
+        setHoverSave(true);
+    };
+    const handleSaveMouseLeave = () => {
+        setHoverSave(false);
+    };
 
     const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
         const file: File | undefined = event.target.files?.[0];
@@ -59,26 +70,41 @@ export const NewFilm = (props: NewFilmProps) => {
     };
 
     return (
-        <div className="formNew">
-            <input id="FilmImage" type="file" accept="image/*" onChange={e => handleImageChange(e)} required/><br/>
-            {image !== '' && (
-                <div>
-                    <img src={`data:image/jpeg;base64,${image}`} alt="Uploaded" style={{maxWidth: '200px'}}/>
-                    <button onClick={handleUndoUpload}>Undo Upload</button>
-                </div>
-            )}
-            <input id="FilmName" type="text" value={filmName} onChange={(e) => setFilmName(e.target.value)}
-                   placeholder={'Name of the Film'} required/><br/>
-            <input id="FilmDate" type="date" value={filmDate} onChange={(e) => setFilmDate(e.target.value)}
-                   placeholder={'Release Date of the Film'} required/><br/>
-            <input id="FilmRatio" type="number" value={filmRatio} onChange={(e) => setFilmRatio(e.target.value)}
-                   placeholder={'Ratio'} min={0} max={5} required/><br/>
-            <textarea value={textareaInput} onChange={(e) => setTextareaInput(e.target.value)}
-                      placeholder={'Description of the Film'} required/><br/>
-            <button onClick={e => handleQuery(e)}>Query</button>
+        <div className="add-artist">
+            {/*<p>{codFilm}</p>*/}
+            <input id="new-film-title" type="text" value={filmName}
+                   onChange={(e) => setFilmName(e.target.value)}
+                   placeholder={'Insert new film title'} required/>
+            <input id="new-film-date" type="date" value={filmDate}
+                   onChange={(e) => setFilmDate(e.target.value)} required/>
+            <textarea id={'new-film-plot'} value={textareaInput}
+                      onChange={(e) => setTextareaInput(e.target.value)}
+                      placeholder={'Insert new film plot'} required/>
+            <div id={'new-artist-pic'} className={'temp-pic-container'}>
+                {image === '' ? (
+                    <>
+                        <p style={{marginRight: '1em'}}>Choose a picture</p>
+                        <input type={"file"} accept="image/*"
+                               onChange={e => handleImageChange(e)}/>
+                    </>
+                ) : (
+                    <>
+                        <p>Picture preview</p>
+                        <img className={'temp-pic'} src={`data:image/jpeg;base64,${image}`} alt="Uploaded"
+                             style={{maxWidth: '300px'}}/>
+                        <button onClick={handleUndoUpload}>Undo Upload</button>
+                    </>
+                )}
+            </div>
+            <button onClick={e => handleQuery(e)}>
+                <img id={'save-new-artist'}
+                     src={hoverSave ? 'src/assets/floppy-disk-solid.svg' : 'src/assets/floppy-disk-regular.svg'}
+                     onMouseEnter={handleSaveMouseEnter}
+                     onMouseLeave={handleSaveMouseLeave}
+                     alt={'Save new film'} title={'Save new film'}>
+                </img>
+            </button>
         </div>
-
-
     );
 
 }

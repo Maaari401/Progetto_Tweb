@@ -18,51 +18,29 @@ export const UserPage = (props: UserPageProps) => {
     const [option, setOption] = useState("FilmWatched")
 
     return (
-        <>
-            <div className={"section"}>
-                <ul className="selection-menu">
-                    <li className={option === "FilmWatched" ? "Active" : ""}
-                        onClick={()=>{setOption("FilmWatched")}}>
-                            Film Watched</li>
-                    <li className={option === "FilmLiked" ? "Active" : ""}
-                        onClick={()=>{setOption("FilmLiked")}}>
-                            Film Liked</li>
-                    {sessionStorage.getItem("role") === "true" && (
-
-                        <>
-                            <li className={option === "newActor" ? "Active" : ""}
-                                onClick={() => {
-                                    setOption("newActor");
-                                }}>
-                                new Actor
-                            </li>
-                            <li className={option === "newDirector" ? "Active" : ""}
-                                onClick={() => {
-                                    setOption("newDirector");
-                                }}>
-                                new Director
-                            </li>
-                            <li className={option === "newFilm" ? "Active" : ""}
-                                onClick={() => {
-                                    setOption("newFilm")
-                                }}>
-                                new Film
-                            </li>
-                        </>
-
-
-                    )}
-                </ul>
+        <div className="userpage-container">
+            <div className={"section-bar"}>
+                <img src={option === 'FilmWatched' ? 'src/assets/green-eye-solid.svg' : 'src/assets/eye-regular.svg'}
+                     onClick={() => {setOption("FilmWatched")}} alt={'FilmWatched'}></img>
+                <img src={option === 'FilmLiked' ? 'src/assets/red-heart-solid.svg' : 'src/assets/heart-regular.svg'}
+                     onClick={() => {setOption("FilmLiked")}} alt={'FilmLiked'}></img>
+                {sessionStorage.getItem("role") === "true" && (
+                    <>
+                        <img src={option === 'newActor' ? 'src/assets/star-solid.svg' : 'src/assets/star-regular.svg'}
+                             onClick={() => {setOption("newActor");}} alt={'NewActor'} title={'Add new actor'}></img>
+                        <img src={option === 'newDirector' ? 'src/assets/orange-video-solid.svg' : 'src/assets/video-solid.svg'}
+                             onClick={() => {setOption("newDirector");}} alt={'NewDirector'} title={'Add new film worker'}></img>
+                        <img src={option === 'newFilm' ? 'src/assets/orange-film-solid.svg' : 'src/assets/film-solid.svg'}
+                             onClick={() => {setOption("newFilm");}} alt={'NewFilm'} title={'Add new film'}></img>
+                    </>
+                )}
             </div>
-            <div className={'values'}>
-                {option === 'FilmWatched' && <Films url={'http://localhost:8080/Progetto_Tweb/user/filmWatched?user_id='+sessionStorage.getItem('id')} setView={props.setView} view={props.view}/>}
-                {option === 'FilmLiked' && <Films url={'http://localhost:8080/Progetto_Tweb/user/filmLiked?user_id='+sessionStorage.getItem('id')} setView={props.setView} view={props.view}/>}
-                {option === 'newFilm' && <NewFilm view={props.view} setView={props.setView}/>}
-                {option === 'newActor' && <NewMember view={props.view} setView={props.setView} member={'actor'}/>}
-                {option === 'newDirector' && <NewMember view={props.view} setView={props.setView} member={'director'}/>}
-
-            </div>
-        </>
+            {option === 'FilmWatched' && <Films url={'http://localhost:8080/Progetto_Tweb/user/filmWatched?user_id='+sessionStorage.getItem('id')} setView={props.setView} view={props.view}/>}
+            {option === 'FilmLiked' && <Films url={'http://localhost:8080/Progetto_Tweb/user/filmLiked?user_id='+sessionStorage.getItem('id')} setView={props.setView} view={props.view}/>}
+            {option === 'newFilm' && <NewFilm view={props.view} setView={props.setView}/>}
+            {option === 'newActor' && <NewMember view={props.view} setView={props.setView} member={'actor'}/>}
+            {option === 'newDirector' && <NewMember view={props.view} setView={props.setView} member={'director'}/>}
+        </div>
     )
 }
 

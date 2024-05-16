@@ -58,7 +58,7 @@ export const NewFilm = (props: NewFilmProps) => {
             },
             body: JSON.stringify({
                 "name": filmName,
-                "ranking": filmRatio,
+                "ranking": 4.01,
                 "publicRelease": filmDate,
                 "desc": textareaInput,
                 "cover": image

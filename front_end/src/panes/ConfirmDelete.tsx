@@ -29,10 +29,11 @@ const ConfirmDelete: FC<ConfirmDeletePropsI> = (props) => {
         }).then(data => {
             if(data.status === 200) setIsVisible(false);
             else console.log('nope')
-            props.setRefresh(!props.refresh)
+
         }).catch((e)=>{
             console.error(e)
         }).finally(()=>{
+            props.setRefresh(!props.refresh)
             setTimeout(props.onCancel, 2000)
         })
     }
@@ -41,13 +42,13 @@ const ConfirmDelete: FC<ConfirmDeletePropsI> = (props) => {
                 onClick={(e) => {
                     if (e.target === e.currentTarget) props.onCancel();
                 }}>
-        <div className={'confirm-deletion'} style={{display: isVisible ? 'block' : 'none'}}>
+        <div className={'confirm-deletion'} style={{display: isVisible ? 'flex' : 'none'}}>
             <p>Are you sure you want to remove the selected member from the film personnel?</p>
             <button onClick={handleDelete}>
                 Confirm
             </button>
         </div>
-        <div className={'confirm-deletion'} style={{display: !isVisible ? 'block' : 'none'}}>
+        <div className={'confirm-deletion'} style={{display: !isVisible ? 'flex' : 'none'}}>
             <p>Elimination success!</p>
         </div>
     </div>

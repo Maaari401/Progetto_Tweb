@@ -20,15 +20,17 @@ interface FilmPropsI {
 interface SpecifyRolesProps {
     onCancel: () => void,
     searchBarReturn: searchBarReturn,
-    filmProps: FilmPropsI
+    filmProps: FilmPropsI,
+    refresh: boolean,
+    setRefresh: (value: boolean) => void
 }
 
 const SpecifyRoles: FC<SpecifyRolesProps> = (props) => {
 
     const [codMember, setCodMember] = useState<searchBarReturn>(props.searchBarReturn)
     const [character, setCharacter] = useState('')
-    const [refresh, setRefresh] = useState(false);
     const [role, setRole] = useState('')
+    const [dep, setDep] = useState('');
 
     console.log(props.searchBarReturn.id);
     return (
@@ -55,7 +57,7 @@ const SpecifyRoles: FC<SpecifyRolesProps> = (props) => {
                                         "character": character
                                     })
                                 }).then(data => {
-                                    if(data.status === 200) setRefresh(!refresh)
+                                    if(data.status === 200) props.setRefresh(!props.refresh)
                                 });
                                 props.onCancel();
                             }}>
@@ -65,13 +67,12 @@ const SpecifyRoles: FC<SpecifyRolesProps> = (props) => {
                     ) : (
                         <div className={'define-roles'}>
                             <p>Enter crew department</p>
-                            <input type={'text'} onChange={e => setCharacter(e.target.value)}/>
+                            <input type={'text'} onChange={e => setDep(e.target.value)}/>
                             <p>Enter department specific role</p>
                             <input type={'text'} onChange={e => setRole(e.target.value)}/>
                             <button onClick={() => {
-                                console.log('hai aggiunto' + character)
                                 /*Query per aggiungere il valore*/
-                                fetch('http://localhost:8080/Progetto_Tweb/director/insertDIF?id=' + codMember.id + '&cod=' + props.filmProps.cod + '&role=' + role +'&dep='+character, {
+                                fetch('http://localhost:8080/Progetto_Tweb/director/insertDIF?id=' + codMember.id + '&cod=' + props.filmProps.cod + '&role=' + role +'&dep='+dep, {
                                     method: 'PUT',
                                     headers: {
                                         "token": `tok $${sessionStorage.getItem("token")}`
@@ -82,7 +83,7 @@ const SpecifyRoles: FC<SpecifyRolesProps> = (props) => {
                                         "character": character
                                     })
                                 }).then(data => {
-                                    if(data.status === 200) setRefresh(!refresh)
+                                    if(data.status === 200) props.setRefresh(!props.refresh)
                                 });
                                 props.onCancel();
                             }}>

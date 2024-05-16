@@ -323,7 +323,14 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
             <div>
             <p style={{fontFamily:'Arial'}} >Add one member to the film personnel</p>
             <Search idMain={props.cod} values={[false, true, true]} setCodMember={setCodMember} setShowSpecifyRoles={setShowSpecifyRoles}/>
-            {showSpecifyRoles && <SpecifyRoles filmProps={props} searchBarReturn={codMember} onCancel={() => {setShowSpecifyRoles(false)}}/>}
+            {showSpecifyRoles &&
+                <SpecifyRoles
+                    filmProps={props}
+                    searchBarReturn={codMember}
+                    onCancel={() => {setShowSpecifyRoles(false)}}
+                    setRefresh={setRefresh}
+                    refresh={refresh}
+                />}
             </div>
             <div className={'cast-box'}>
                 <p id={'cast'}>Cast</p>

@@ -207,9 +207,9 @@ const CastMemberInfo: FC<castMemberInfoPropsI> = (props: castMemberInfoPropsI) =
                 </div>
                 <p style={{fontFamily:'Arial'}}>Add {memberName} in a film personnel</p>
                 <Search setShowSpecifyRoles={setShowSpecifyRoles} idMain={props.id} values={[true, false, (props.section === 'actor')]}
-                        setCodMember={setCodFilm}/>
+                        setCodMember={setCodFilm} refresh={refresh}/>
                 {showSpecifyRoles && <SpecifyRoles searchBarReturn={{id:props.id,section:props.section}} filmProps={{cod:codFilm.id,setView:props.setView,view:props.view}}
-                                                   onCancel={() => {setShowSpecifyRoles(false)}}/>}
+                                                   onCancel={() => {setShowSpecifyRoles(false)}} refresh={refresh} setRefresh={setRefresh}/>}
                 
             </div>
         </>

@@ -67,8 +67,7 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
     const [selectedMember, setSelectedMember] = useState<memberToDelete>({'id':-1,'section':'null'})
 
     const [codMember, setCodMember] = useState<searchBarReturn>({'id':-1,'section':'default'})
-    const [character, setCharacter] = useState('')
-    const [role, setRole] = useState('')
+
 
 
     const handleSaveMouseEnter = () => {
@@ -322,7 +321,13 @@ const FilmInfo: FC<FilmPropsI> = (props) =>{
             </div>
             <div>
             <p style={{fontFamily:'Arial'}} >Add one member to the film personnel</p>
-            <Search idMain={props.cod} values={[false, true, true]} setCodMember={setCodMember} setShowSpecifyRoles={setShowSpecifyRoles}/>
+            <Search
+                idMain={props.cod}
+                values={[false, true, true]}
+                setCodMember={setCodMember}
+                setShowSpecifyRoles={setShowSpecifyRoles}
+                refresh={refresh}
+            />
             {showSpecifyRoles &&
                 <SpecifyRoles
                     filmProps={props}

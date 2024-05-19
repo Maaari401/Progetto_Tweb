@@ -26,9 +26,6 @@ public class LoginServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        // GET accetta sia /login che /logout
-        // GET /login restituisce il login status corrente
-        // GET /logout effettua il logout e restituisce l'esito
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
         String token = request.getHeader("token");
@@ -46,7 +43,7 @@ public class LoginServlet extends HttpServlet {
         } else if (request.getServletPath().equals(LOGOUT_PATH)) {
             JsonObject result = new JsonObject();
             String username = tokenManager.getUsernameFromToken(token);
-            System.out.println('>'+username);
+            //System.out.println('>'+username);
             if (!username.isEmpty()){
                 tokenManager.doLogOut(username);
                 result.addProperty("operation", "logout");

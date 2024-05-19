@@ -29,10 +29,10 @@ public class tokenManager {
     }
 
     public static boolean isValidToken(String username, String token) {
-        token = token.replace("Bearer $", "");
         return (
                 userTokens.containsKey(username) &&
-                        userTokens.get(username).getToken().equals(token)
+                        userTokens.get(username).getToken().equals(token) &&
+                        userTokens.get(username).checkTime()
         );
     }
 

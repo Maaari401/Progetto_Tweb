@@ -6,7 +6,7 @@ import java.security.NoSuchProviderException;
 import java.util.Date;
 
 public class tokenData {
-    final int EXPIRATION_SEC = 1800; //30 minuti in secondi
+    final int EXPIRATION_SEC = 30 * 60 * 1000; //30 minuti in secondi
     private String token;
     private final boolean auth;
     private final Date expiration_time;
@@ -25,13 +25,10 @@ public class tokenData {
         return auth;
     }
 
-    /**
-     * check if the x time is before
-     * @param x
-     * @return true if x is before now or false if is after
-     */
-    public boolean checkTime(Date x){
-        return x.before(new Date());
+    public boolean checkTime(){
+
+        boolean a = this.expiration_time.after(new Date());
+        return  a;
     }
 
     private static String generateToken(String input) {
